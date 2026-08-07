@@ -38,3 +38,6 @@ dist-ssr
 
 # pnpm
 .pnpm-store
+
+# 文档
+doc/*
