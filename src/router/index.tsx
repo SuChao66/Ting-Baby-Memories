@@ -4,22 +4,20 @@ import React from "react";
 /* eslint-disable react-refresh/only-export-components */
 
 // 懒加载布局组件
-const Layout = React.lazy(() => import("@/Layout"));
+const Layout = React.lazy(() => import("@/Layout/index"));
 // 懒加载页面组件
-const Home = React.lazy(() => import("@/pages/Home"));
-const Albums = React.lazy(() => import("@/pages/Albums"));
-const Timeline = React.lazy(() => import("@/pages/Timeline"));
-const NotFound = React.lazy(() => import("@/pages/NotFound"));
+const Home = React.lazy(() => import("@/pages/Home/index"));
+const Mine = React.lazy(() => import("@/pages/Mine/index"));
+const NotFound = React.lazy(() => import("@/pages/NotFound/index"));
 
 export const router = createHashRouter([
   {
     path: "/",
-    element: <Layout />,
+    element: React.createElement(Layout),
     children: [
-      { index: true, element: <Home /> },
-      { path: "albums", element: <Albums /> },
-      { path: "timeline", element: <Timeline /> },
-      { path: "*", element: <NotFound /> },
+      { index: true, element: React.createElement(Home) },
+      { path: "mine", element: React.createElement(Mine) },
+      { path: "*", element: React.createElement(NotFound) },
     ],
   },
 ]);

@@ -8,11 +8,21 @@ export const LayoutContainer = styled.div`
   display: flex;
   flex-direction: column;
   height: 100vh;
+
+  /* NutUI Tabbar 圆角阴影样式覆盖 */
+  .nut-tabbar {
+    background: #fff;
+    border-radius: ${vw(8)} ${vw(8)} 0 0;
+    box-shadow: 0 ${vw(-4)} ${vw(16)} rgba(0, 0, 0, 0.06);
+    padding: ${vw(8)};
+    box-sizing: border-box;
+  }
 `;
 
 /** 内容区域 */
 export const Content = styled.main`
   flex: 1;
   overflow-y: auto;
-  padding: ${vw(16)} ${vw(16)} ${vw(60)};
+  padding: ${vw(16)} ${vw(16)};
+  box-sizing: border-box;
 `;

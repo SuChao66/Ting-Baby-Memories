@@ -2,8 +2,8 @@
 export const theme = {
   colors: {
     bg: "#fff",
-    pageBg: "#f7f8fa",
-    text: "#323233",
+    pageBg: "#fff0f3",
+    text: "#2d2d2d",
     textH: "#08060d",
     textSecondary: "#646566",
     border: "#ebedf0",

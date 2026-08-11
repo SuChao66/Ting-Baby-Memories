@@ -9,6 +9,19 @@ export const GlobalStyle = createGlobalStyle<{ theme?: Theme }>`
     box-sizing: border-box;
   }
 
+  html, body {
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: "Noto Sans SC", sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    margin: 0;
+  }
+
   a {
     color: ${({ theme }) => theme.colors.primaryColor};
     text-decoration: none;

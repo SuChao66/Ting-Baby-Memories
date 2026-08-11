@@ -1,4 +1,4 @@
-import { StrictMode } from "react";
+import { StrictMode, Suspense } from "react";
 // 引入 React DOM 客户端模块的 createRoot 函数
 import { createRoot } from "react-dom/client";
 // 引入 styled-components 的 ThemeProvider 组件
@@ -19,7 +19,9 @@ root.render(
   <StrictMode>
     <ThemeProvider theme={theme}>
       <GlobalStyle /> {/* 全局样式 */}
-      <App /> {/* 应用组件 */}
+      <Suspense fallback={<div>加载中...</div>}>
+        <App /> {/* 应用组件 */}
+      </Suspense>
     </ThemeProvider>
   </StrictMode>,
 );
