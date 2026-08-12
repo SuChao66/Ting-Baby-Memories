@@ -25,5 +25,5 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "styled-components.d.ts"]
+  "include": ["src", "styled-components.d.ts", "src/auto-imports.d.ts"]
 }

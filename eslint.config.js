@@ -4,6 +4,9 @@ import reactRefresh from 'eslint-plugin-react-refresh'
 import tseslint from 'typescript-eslint'
 import eslintConfigPrettier from 'eslint-config-prettier'
 import { defineConfig, globalIgnores } from 'eslint/config'
+import { nutuiComponents } from './nutui-components.js'
+
+const nutuiGlobals = Object.fromEntries(nutuiComponents.map((name) => [name, 'readonly']))
 
 export default defineConfig([
   globalIgnores(['dist']),
@@ -16,10 +19,14 @@ export default defineConfig([
       eslintConfigPrettier,
     ],
     languageOptions: {
-      globals: globals.browser,
+      globals: {
+        ...globals.browser,
+        ...nutuiGlobals,
+      },
     },
     rules: {
       '@typescript-eslint/no-empty-object-type': 'off',
+      'react-refresh/only-export-components': 'off',
     },
   },
 ])

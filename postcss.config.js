@@ -6,7 +6,7 @@ export default {
       viewportWidth: 375,
       unitPrecision: 5,
       viewportUnit: "vw",
-      selectorBlackList: [".nut-"],
+      selectorBlackList: [".nut-"], // 忽略 NutUI 组件
       minPixelValue: 1,
       mediaQuery: false,
     }),

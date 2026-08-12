@@ -5,11 +5,15 @@ import { vw } from "@/utils";
 
 /** 404 容器 */
 export const NotFoundContainer = styled.div`
-  text-align: center;
-  padding-top: ${vw(80)};
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
 `;
 
-/** 404 标题 */
-export const NotFoundTitle = styled.h1`
-  font-size: ${vw(48)};
+/** 404 标题容器 */
+export const TitleContainer = styled.div`
+  font-size: ${vw(14)};
+  margin: ${vw(12)};
 `;

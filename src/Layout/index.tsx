@@ -1,5 +1,3 @@
-// 导入 NutUI 组件
-import { Tabbar } from "@nutui/nutui-react";
 // 导入 NutUI 图标
 import { Home, User } from "@nutui/icons-react";
 // 导入路由相关方法
