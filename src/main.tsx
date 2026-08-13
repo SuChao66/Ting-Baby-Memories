@@ -19,7 +19,7 @@ root.render(
   <StrictMode>
     <ThemeProvider theme={theme}>
       <GlobalStyle /> {/* 全局样式 */}
-      <Suspense fallback={<div>加载中...</div>}>
+      <Suspense>
         <App /> {/* 应用组件 */}
       </Suspense>
     </ThemeProvider>

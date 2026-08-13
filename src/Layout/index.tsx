@@ -1,5 +1,5 @@
 // 导入 NutUI 图标
-import { Home, User } from "@nutui/icons-react";
+import { AiOutlineHome, AiOutlineUser } from "react-icons/ai";
 // 导入路由相关方法
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 // 导入布局样式组件
@@ -34,13 +34,13 @@ export default function Layout() {
         <Tabbar.Item
           title={tabs[0].title}
           icon={(active: boolean) => (
-            <Home color={active ? "#ff6b8a" : "#7d7e80"} />
+            <AiOutlineHome color={active ? "#ff6b8a" : "#7d7e80"} />
           )}
         />
         <Tabbar.Item
           title={tabs[1].title}
           icon={(active: boolean) => (
-            <User color={active ? "#ff6b8a" : "#7d7e80"} />
+            <AiOutlineUser color={active ? "#ff6b8a" : "#7d7e80"} />
           )}
         />
       </Tabbar>
