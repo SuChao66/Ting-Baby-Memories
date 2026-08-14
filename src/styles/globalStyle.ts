@@ -26,4 +26,9 @@ export const GlobalStyle = createGlobalStyle<{ theme?: Theme }>`
     color: ${({ theme }) => theme.colors.primaryColor};
     text-decoration: none;
   }
+
+  // 自定义 toast 样式
+  .nut-toast-inner {
+    gap: 12px;
+  }
 `;

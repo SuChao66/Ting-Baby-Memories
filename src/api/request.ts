@@ -4,6 +4,7 @@ import axios, {
   type AxiosResponse,
   type InternalAxiosRequestConfig,
 } from "axios";
+import { useNavigate } from "react-router-dom";
 
 /** 统一响应数据结构 */
 export interface ApiResponse<T = unknown> {
@@ -14,7 +15,7 @@ export interface ApiResponse<T = unknown> {
 
 /** 创建 axios 实例 */
 const instance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || "/api",
+  baseURL: "/",
   timeout: 10000,
   headers: {
     "Content-Type": "application/json",
@@ -38,26 +39,41 @@ instance.interceptors.response.use(
   (response: AxiosResponse<ApiResponse>) => {
     const res = response.data;
     // 业务逻辑错误
-    if (res.code !== 0 && res.code !== 200) {
-      console.error(`[API Error] ${res.message}`);
-      // token 过期或未授权
-      if (res.code === 401) {
-        localStorage.removeItem("token");
-        window.location.hash = "#/login";
-      }
+    if (res.code === 0) {
+      return response;
+    } else {
+      Toast.show({
+        title: res.message || "请求失败",
+        icon: "fail",
+      });
       return Promise.reject(new Error(res.message || "请求失败"));
     }
-    return response;
   },
   (error) => {
     // HTTP 错误
     const status = error.response?.status;
+    const navigate = useNavigate();
     if (status === 401) {
       localStorage.removeItem("token");
-      window.location.hash = "#/login";
+      navigate("/login");
+    } else if (status === 400) {
+      // 业务逻辑错误，提示用户
+      Toast.show({
+        title: error.response?.data.message || "请求参数错误",
+        icon: "fail",
+      });
+      console.error("[API Error] 请求参数错误");
     } else if (status === 500) {
+      Toast.show({
+        title: error.response?.data.message || "服务器内部错误",
+        icon: "fail",
+      });
       console.error("[API Error] 服务器内部错误");
     } else if (error.code === "ECONNABORTED") {
+      Toast.show({
+        title: "请求超时",
+        icon: "fail",
+      });
       console.error("[API Error] 请求超时");
     }
     return Promise.reject(error);
