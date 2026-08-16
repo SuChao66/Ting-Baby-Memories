@@ -19,8 +19,6 @@ const svgList = Object.entries(modules).reduce<
   return acc;
 }, {});
 
-console.log(svgList);
-
 // 3. 定义 Props 类型
 type SvgIconName = keyof typeof svgList;
 interface IconProps {

@@ -2,6 +2,8 @@
 import { createGlobalStyle } from "styled-components";
 // 导入主题类型
 import type { Theme } from "./theme";
+// 导入 vw 函数
+import { vw } from "@/utils";
 
 /** 全局样式 */
 export const GlobalStyle = createGlobalStyle<{ theme?: Theme }>`
@@ -30,5 +32,15 @@ export const GlobalStyle = createGlobalStyle<{ theme?: Theme }>`
   // 自定义 toast 样式
   .nut-toast-inner {
     gap: 12px;
+  }
+
+  .nut-navbar {
+    background-color: transparent;
+    padding: 0;
+  }
+
+  .nut-navbar-title {
+    font-size: ${vw(14)};
+    font-weight: 400;
   }
 `;

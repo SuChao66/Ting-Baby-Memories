@@ -1,3 +1,5 @@
+import type { User } from "@/interface/user";
+
 // 定义宝宝状态类型
 export interface BabyState {
   name: string;
@@ -10,6 +12,7 @@ export interface BabyState {
 export interface UserState {
   isLogin: boolean; // 是否登录
   token: string | null; // 登录凭证
+  userInfo: User | null; // 用户信息
   login: (username: string, password: string) => Promise<boolean>; // 登录
   register: (
     username: string,
@@ -22,4 +25,5 @@ export interface UserState {
     confirmPassword: string,
   ) => Promise<boolean>; // 忘记密码
   logout: () => void; // 退出登录
+  getUserInfo: () => void; // 获取用户信息
 }

@@ -1,4 +1,4 @@
-import { StrictMode, Suspense } from "react";
+import { Suspense } from "react";
 // 引入 React DOM 客户端模块的 createRoot 函数
 import { createRoot } from "react-dom/client";
 // 引入 styled-components 的 ThemeProvider 组件
@@ -16,12 +16,12 @@ import App from "./App.tsx";
 
 const root = createRoot(document.getElementById("root")!);
 root.render(
-  <StrictMode>
-    <ThemeProvider theme={theme}>
-      <GlobalStyle /> {/* 全局样式 */}
-      <Suspense>
-        <App /> {/* 应用组件 */}
-      </Suspense>
-    </ThemeProvider>
-  </StrictMode>,
+  // <StrictMode>
+  <ThemeProvider theme={theme}>
+    <GlobalStyle /> {/* 全局样式 */}
+    <Suspense>
+      <App /> {/* 应用组件 */}
+    </Suspense>
+  </ThemeProvider>,
+  // </StrictMode>
 );

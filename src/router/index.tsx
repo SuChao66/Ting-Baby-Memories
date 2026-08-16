@@ -1,5 +1,5 @@
 // 导入路由方法
-import { createHashRouter } from "react-router-dom";
+import { createHashRouter, Navigate } from "react-router-dom";
 import React from "react";
 // 导入路由鉴权组件
 import { AuthRoute } from "./AuthRoute";
@@ -9,6 +9,7 @@ const Layout = React.lazy(() => import("@/Layout/index"));
 const Login = React.lazy(() => import("@/pages/Login/index"));
 const Home = React.lazy(() => import("@/pages/Home/index"));
 const Mine = React.lazy(() => import("@/pages/Mine/index"));
+const User = React.lazy(() => import("@/pages/User/index"));
 const NotFound = React.lazy(() => import("@/pages/NotFound/index"));
 
 export const router = createHashRouter([
@@ -17,11 +18,17 @@ export const router = createHashRouter([
     path: "/",
     element: React.createElement(AuthRoute),
     children: [
+      // 访问 / 时重定向到 /home
+      {
+        path: "",
+        element: React.createElement(Navigate, { to: "/home", replace: true }),
+      },
       {
         element: React.createElement(Layout),
         children: [
-          { index: true, element: React.createElement(Home) },
+          { path: "home", element: React.createElement(Home) },
           { path: "mine", element: React.createElement(Mine) },
+          { path: "user", element: React.createElement(User) },
         ],
       },
     ],

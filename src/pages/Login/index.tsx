@@ -59,7 +59,7 @@ export default function Login() {
   const handleLogin = async () => {
     const success = await login(username, password);
     if (success) {
-      navigate("/");
+      navigate("/home");
     }
   };
 

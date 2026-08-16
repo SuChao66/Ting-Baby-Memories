@@ -4,6 +4,25 @@ export interface LoginRequest {
   password: string;
 }
 
+// 用户信息
+export interface User {
+  profile: {
+    birthday: Date | null | undefined;
+    height: number | null | undefined;
+  };
+  gender: 0 | 1;
+  phone: string | null | undefined;
+  _id: string;
+  username: string;
+  password: string;
+  confirmPassword: string | null | undefined;
+  nickname: string | null | undefined;
+  avatarUrl: string | null | undefined;
+  status: 1 | 0;
+  createdAt: string;
+  updatedAt: string;
+}
+
 // 注册请求参数
 export interface RegisterRequest {
   username: string;

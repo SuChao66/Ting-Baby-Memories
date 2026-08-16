@@ -2,7 +2,12 @@ import { create } from "zustand";
 // 导入类型
 import type { UserState } from "../types";
 // 导入登录接口
-import { loginApi, registerApi, forgetPasswordApi } from "@/api/user";
+import {
+  loginApi,
+  registerApi,
+  forgetPasswordApi,
+  getUserInfoApi,
+} from "@/api/user";
 // 导入加密方法
 import { encrypt } from "@/utils";
 // 导入密码强度校验正则表达式
@@ -60,6 +65,7 @@ const validateParams = (
 export const useUserStore = create<UserState>((set) => ({
   isLogin: !!initialToken,
   token: initialToken,
+  userInfo: null,
   // 登录方法
   login: async (username: string, password: string) => {
     if (!username) {
@@ -81,8 +87,8 @@ export const useUserStore = create<UserState>((set) => ({
       password: encrypt(password),
     });
     if (code === 0) {
-      localStorage.setItem("token", data);
-      set({ isLogin: true, token: data });
+      localStorage.setItem("token", data.token);
+      set({ isLogin: true, token: data.token, userInfo: data.userInfo });
       Toast.show({
         title: "登录成功",
         icon: "success",
@@ -143,5 +149,12 @@ export const useUserStore = create<UserState>((set) => ({
   logout: () => {
     localStorage.removeItem("token");
     set({ isLogin: false, token: null });
+  },
+  // 获取用户消息
+  getUserInfo: async () => {
+    const { code, data } = await getUserInfoApi();
+    if (code === 0) {
+      set({ userInfo: data });
+    }
   },
 }));
