@@ -26,4 +26,11 @@ export interface UserState {
   ) => Promise<boolean>; // 忘记密码
   logout: () => void; // 退出登录
   getUserInfo: () => void; // 获取用户信息
+  updateUserInfo: (data: {
+    id: string;
+    nickname?: string;
+    gender?: number;
+    phone?: string;
+    birthday?: string;
+  }) => Promise<boolean>; // 更新用户信息
 }

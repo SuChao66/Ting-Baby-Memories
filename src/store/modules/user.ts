@@ -7,6 +7,7 @@ import {
   registerApi,
   forgetPasswordApi,
   getUserInfoApi,
+  updateUserInfoApi,
 } from "@/api/user";
 // 导入加密方法
 import { encrypt } from "@/utils";
@@ -15,6 +16,8 @@ import { PASSWORD_REGEX } from "@/enums";
 
 // 初始化 token（从 localStorage 读取）
 const initialToken = localStorage.getItem("token");
+// 初始化 userInfo（从 localStorage 读取）
+const initialUserInfo = JSON.parse(localStorage.getItem("userInfo") || "{}");
 // 校验注册参数
 const validateParams = (
   username: string,
@@ -65,7 +68,7 @@ const validateParams = (
 export const useUserStore = create<UserState>((set) => ({
   isLogin: !!initialToken,
   token: initialToken,
-  userInfo: null,
+  userInfo: initialUserInfo,
   // 登录方法
   login: async (username: string, password: string) => {
     if (!username) {
@@ -88,6 +91,7 @@ export const useUserStore = create<UserState>((set) => ({
     });
     if (code === 0) {
       localStorage.setItem("token", data.token);
+      localStorage.setItem("userInfo", JSON.stringify(data.userInfo));
       set({ isLogin: true, token: data.token, userInfo: data.userInfo });
       Toast.show({
         title: "登录成功",
@@ -148,13 +152,20 @@ export const useUserStore = create<UserState>((set) => ({
   // 退出登录方法
   logout: () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("userInfo");
     set({ isLogin: false, token: null });
   },
   // 获取用户消息
   getUserInfo: async () => {
     const { code, data } = await getUserInfoApi();
     if (code === 0) {
+      localStorage.setItem("userInfo", JSON.stringify(data));
       set({ userInfo: data });
     }
+  },
+  // 更新用户信息
+  updateUserInfo: async (params) => {
+    const { code } = await updateUserInfoApi(params);
+    return code === 0 ? true : false;
   },
 }));

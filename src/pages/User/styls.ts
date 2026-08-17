@@ -6,4 +6,9 @@ export const UserContainer = styled.div`
   flex-direction: column;
   height: 100%;
   gap: ${vw(12)};
+  .avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 `;

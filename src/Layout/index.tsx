@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 // 导入 NutUI 图标
 import { AiOutlineHome, AiOutlineUser } from "react-icons/ai";
 // 导入路由相关方法
@@ -10,7 +10,7 @@ import { useUserStore } from "@/store";
 
 /** 底部导航栏配置 */
 const tabs = [
-  { path: "/", title: "首页" },
+  { path: "/home", title: "首页" },
   { path: "/mine", title: "我的" },
 ];
 
@@ -18,10 +18,18 @@ export default function Layout() {
   const { userInfo, getUserInfo } = useUserStore((state) => state);
   const navigate = useNavigate();
   const location = useLocation();
-  const activeIndex = Math.max(
-    0,
-    tabs.findIndex((t) => t.path === location.pathname),
-  );
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  // 监听路由变化，更新 activeIndex
+  useEffect(() => {
+    if (location.pathname === "/mine") {
+      setActiveIndex(1);
+    } else if (location.pathname === "/home") {
+      setActiveIndex(0);
+    } else {
+      setActiveIndex(-1);
+    }
+  }, [location.pathname]);
 
   useEffect(() => {
     // 仅在 userInfo 不存在时获取，存在则跳过

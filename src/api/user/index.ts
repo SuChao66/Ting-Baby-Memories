@@ -27,3 +27,8 @@ export function forgetPasswordApi(data: ForgetPasswordRequest) {
 export function getUserInfoApi() {
   return get<User>("/api/v1/user/user");
 }
+
+// 更新用户信息接口
+export function updateUserInfoApi(data: { id: string }) {
+  return post<string>("/api/v1/user/update", data);
+}

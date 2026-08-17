@@ -14,3 +14,6 @@ export const LOGIN_MODE = {
 /** 密码强度校验正则表达式 */
 export const PASSWORD_REGEX =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?`~]).{6,}$/;
+
+/** 手机号校验正则表达式 */
+export const PHONE_REGEX = /^1[3456789]\d{9}$/;
