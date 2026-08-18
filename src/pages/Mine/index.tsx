@@ -46,7 +46,11 @@ export default function Mine() {
       {userInfo?.username && (
         <ProfileBanner>
           <BannerAvatar>
-            <AiOutlineUser color="#ff6b8a" size={vw(32)} />
+            {userInfo.avatarUrl ? (
+              <img src={userInfo.avatarUrl} alt="头像" className="avatar" />
+            ) : (
+              <AiOutlineUser color="#ff6b8a" size={vw(32)} />
+            )}
           </BannerAvatar>
           <BannerInfo>
             <BannerName>{userInfo?.nickname || userInfo?.username}</BannerName>

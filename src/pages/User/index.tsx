@@ -4,7 +4,9 @@ import { useNavigate } from "react-router-dom";
 import { IoIosArrowBack } from "react-icons/io";
 import { AiOutlineUser, AiOutlineRight } from "react-icons/ai";
 // 导入 vw 工具函数
-import { vw, formatBirthday } from "@/utils";
+import { vw, formatBirthday, compressImage } from "@/utils";
+// 导入上传接口
+import { getPresignedUrlApi } from "@/api/upload";
 // 导入状态
 import { useUserStore } from "@/store";
 // 导入通用样式组件
@@ -26,7 +28,9 @@ import BirthdayPicker from "./Modules/BirthdayPicker";
 
 function User() {
   const navigate = useNavigate();
-  const { userInfo } = useUserStore((state) => state);
+  const { userInfo, updateUserInfo, getUserInfo } = useUserStore(
+    (state) => state,
+  );
 
   // 本地编辑状态（优先级高于 store 中的 userInfo）
   const [avatarUrl, setAvatarUrl] = useState<string | null>(
@@ -51,19 +55,68 @@ function User() {
     avatarInputRef.current?.click();
   };
 
-  // 头像文件选择后转 base64 预览
-  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // 头像上传处理
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    console.log("file", file);
     if (!file) return;
     if (!file.type.startsWith("image/")) {
       Toast.show({ title: "请选择图片文件", icon: "warn" });
       return;
     }
-    const reader = new FileReader();
-    reader.onload = () => {
-      setAvatarUrl(reader.result as string);
-    };
-    reader.readAsDataURL(file);
+    if (file.size > 10 * 1024 * 1024) {
+      Toast.show({ title: "图片不能超过 10MB", icon: "warn" });
+      return;
+    }
+    // 1. 本地即时预览
+    const previewUrl = URL.createObjectURL(file);
+    setAvatarUrl(previewUrl);
+    // 2. 压缩
+    let compressed = file;
+    try {
+      compressed = await compressImage(file, 0.8);
+    } catch {
+      // 压缩失败回退用原图
+      console.log("压缩失败，使用原图");
+    }
+    console.log("compressed", compressed);
+    // 3. 获取预签名地址并上传
+    Toast.show({ title: "上传中...", icon: "loading", duration: 0 });
+    try {
+      // 获取预签名上传地址
+      const { data } = await getPresignedUrlApi({
+        filename: compressed.name,
+        contentType: compressed.type,
+      });
+      // 4. 直传对象存储（必须用原生 fetch，不能走 axios 实例）
+      const res = await fetch(data.uploadUrl, {
+        method: "PUT",
+        headers: {
+          "Content-Type": compressed.type,
+          "x-cos-acl": "public-read",
+        },
+        body: compressed,
+      });
+      if (!res.ok) throw new Error("上传失败");
+
+      // 5. 更新用户资料
+      const ok = await updateUserInfo({
+        id: userInfo!._id,
+        avatarUrl: data.accessUrl,
+      });
+      if (ok) {
+        setAvatarUrl(data.accessUrl);
+        getUserInfo();
+      }
+    } catch {
+      Toast.show({ title: "上传失败，请重试", icon: "fail" });
+      // 回退到旧头像
+      setAvatarUrl(userInfo?.avatarUrl || null);
+    } finally {
+      // 释放预览对象 URL，避免内存泄漏
+      URL.revokeObjectURL(previewUrl);
+      Toast.clear();
+    }
     // 清空 value，允许重复选择同一张
     e.target.value = "";
   };

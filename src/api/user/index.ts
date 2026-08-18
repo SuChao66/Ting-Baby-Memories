@@ -29,6 +29,13 @@ export function getUserInfoApi() {
 }
 
 // 更新用户信息接口
-export function updateUserInfoApi(data: { id: string }) {
+export function updateUserInfoApi(data: {
+  id: string;
+  nickname?: string;
+  gender?: number;
+  phone?: string;
+  birthday?: string;
+  avatarUrl?: string;
+}) {
   return post<string>("/api/v1/user/update", data);
 }

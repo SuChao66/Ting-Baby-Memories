@@ -32,5 +32,6 @@ export interface UserState {
     gender?: number;
     phone?: string;
     birthday?: string;
+    avatarUrl?: string;
   }) => Promise<boolean>; // 更新用户信息
 }
