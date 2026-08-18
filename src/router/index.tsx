@@ -9,7 +9,7 @@ const Layout = React.lazy(() => import("@/Layout/index"));
 const Login = React.lazy(() => import("@/pages/Login/index"));
 const Home = React.lazy(() => import("@/pages/Home/index"));
 const Mine = React.lazy(() => import("@/pages/Mine/index"));
-const User = React.lazy(() => import("@/pages/User/index"));
+const User = React.lazy(() => import("@/pages/UserManager/index"));
 const NotFound = React.lazy(() => import("@/pages/NotFound/index"));
 
 export const router = createHashRouter([
