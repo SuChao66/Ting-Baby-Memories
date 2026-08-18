@@ -58,7 +58,6 @@ function User() {
   // 头像上传处理
   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    console.log("file", file);
     if (!file) return;
     if (!file.type.startsWith("image/")) {
       Toast.show({ title: "请选择图片文件", icon: "warn" });
@@ -79,7 +78,6 @@ function User() {
       // 压缩失败回退用原图
       console.log("压缩失败，使用原图");
     }
-    console.log("compressed", compressed);
     // 3. 获取预签名地址并上传
     Toast.show({ title: "上传中...", icon: "loading", duration: 0 });
     try {
