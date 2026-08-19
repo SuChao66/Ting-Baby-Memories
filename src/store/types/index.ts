@@ -34,5 +34,8 @@ export interface BabyState {
   getBabyList: () => Promise<IBabyItem[]>;
   addBaby: (data: IBabyInfo) => Promise<boolean>;
   getBabyInfo: (data: { id: string }) => Promise<IBabyItem>;
-  updateBabyInfo: (data: Partial<IBabyInfo> & { id: string }) => Promise<boolean>;
+  updateBabyInfo: (
+    data: Partial<IBabyInfo> & { id: string },
+  ) => Promise<boolean>;
+  deleteBaby: (data: { id: string }) => Promise<boolean>;
 }

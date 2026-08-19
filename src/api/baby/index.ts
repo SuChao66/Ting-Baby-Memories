@@ -1,5 +1,5 @@
 // 导入请求方法
-import { get, post } from "@/api/request";
+import { get, post, del } from "@/api/request";
 // 导入通用响应类型
 import type { ApiResponse } from "@/api/request";
 // 导入宝宝信息类型
@@ -27,4 +27,9 @@ export function updateBabyInfoApi(
   data: Partial<IBabyInfo> & { id: string },
 ): Promise<ApiResponse<IBabyItem>> {
   return post<IBabyItem>("/api/v1/baby/update", data);
+}
+
+/** 删除宝宝档案 */
+export function deleteBabyApi(params: { id: string }): Promise<ApiResponse> {
+  return del("/api/v1/baby/delete", params);
 }
