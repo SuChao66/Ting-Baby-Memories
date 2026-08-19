@@ -16,13 +16,15 @@ export function addBabyApi(data: IBabyInfo): Promise<ApiResponse> {
 }
 
 /** 获取宝宝信息 */
-export function getBabyInfoApi(): Promise<ApiResponse<IBabyItem>> {
-  return get<IBabyItem>("/api/v1/baby/info");
+export function getBabyInfoApi(params: {
+  id: string;
+}): Promise<ApiResponse<IBabyItem>> {
+  return get<IBabyItem>("/api/v1/baby/info", params);
 }
 
 /** 更新宝宝信息 */
 export function updateBabyInfoApi(
-  data: Partial<IBabyItem>,
+  data: Partial<IBabyInfo> & { id: string },
 ): Promise<ApiResponse<IBabyItem>> {
   return post<IBabyItem>("/api/v1/baby/update", data);
 }

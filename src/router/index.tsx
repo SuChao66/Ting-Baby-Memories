@@ -11,7 +11,12 @@ const Home = React.lazy(() => import("@/pages/Home/index"));
 const Mine = React.lazy(() => import("@/pages/Mine/index"));
 const UserManager = React.lazy(() => import("@/pages/UserManager/index"));
 const BabyManager = React.lazy(() => import("@/pages/BabyManager/index"));
-const AddBaby = React.lazy(() => import("@/pages/AddBaby/index"));
+const AddBaby = React.lazy(
+  () => import("@/pages/BabyManager/modules/AddBaby/index"),
+);
+const BabyFile = React.lazy(
+  () => import("@/pages/BabyManager/modules/BabyFile/index"),
+);
 const NotFound = React.lazy(() => import("@/pages/NotFound/index"));
 
 export const router = createHashRouter([
@@ -33,6 +38,7 @@ export const router = createHashRouter([
           { path: "user-manager", element: React.createElement(UserManager) },
           { path: "baby-manager", element: React.createElement(BabyManager) },
           { path: "add-baby", element: React.createElement(AddBaby) },
+          { path: "baby-file/:id", element: React.createElement(BabyFile) },
         ],
       },
     ],

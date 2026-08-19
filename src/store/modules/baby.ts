@@ -3,7 +3,7 @@ import { create } from "zustand";
 import type { BabyState } from "../types";
 import type { IBabyInfo } from "@/interface/baby";
 // 导入接口
-import { getBabyListApi, addBabyApi } from "@/api";
+import { getBabyListApi, addBabyApi, getBabyInfoApi, updateBabyInfoApi } from "@/api";
 
 export const useBabyStore = create<BabyState>(() => ({
   // 获取宝宝列表
@@ -16,6 +16,18 @@ export const useBabyStore = create<BabyState>(() => ({
   // 新增宝宝信息
   addBaby: async (babyForm: IBabyInfo) => {
     const { code } = await addBabyApi(babyForm);
+    return code === 0 ? true : false;
+  },
+  // 获取宝宝信息
+  getBabyInfo: async (params: { id: string }) => {
+    const { code, data } = await getBabyInfoApi(params);
+    if (code === 0) {
+      return data;
+    }
+  },
+  // 更新宝宝信息
+  updateBabyInfo: async (data: Partial<IBabyInfo> & { id: string }) => {
+    const { code } = await updateBabyInfoApi(data);
     return code === 0 ? true : false;
   },
 }));

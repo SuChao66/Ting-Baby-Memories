@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 // 导入宝宝列表样式组件
 import {
   BabyListContainer,
@@ -26,6 +27,7 @@ import { useBabyStore } from "@/store";
 function BabyList() {
   const { getBabyList } = useBabyStore((state) => state);
   const [babies, setBabies] = useState<IBabyItem[]>([]);
+  const naviagte = useNavigate();
 
   useEffect(() => {
     // 获取宝宝列表
@@ -34,12 +36,21 @@ function BabyList() {
     });
   }, []);
 
+  // 查看宝宝档案
+  const handleViewBabyFile = (id: string) => {
+    naviagte(`/baby-file/${id}`);
+  };
+
   return (
     <BabyListContainer>
       {babies.length > 0 ? (
         <BabyItem>
           {babies.map((baby, index) => (
-            <CardRow key={baby._id} $isLast={index === babies.length - 1}>
+            <CardRow
+              key={baby._id}
+              $isLast={index === babies.length - 1}
+              onClick={() => handleViewBabyFile(baby._id)}
+            >
               <BabyAvatar>
                 {baby.avatarUrl ? (
                   <img src={baby.avatarUrl} alt="头像" className="avatar" />

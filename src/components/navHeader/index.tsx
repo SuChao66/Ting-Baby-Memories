@@ -4,10 +4,11 @@ import { IoIosArrowBack } from "react-icons/io";
 
 interface NavBarProps {
   title: string;
+  right?: React.ReactNode;
 }
 
 function NavHeader(props: NavBarProps) {
-  const { title } = props;
+  const { title, right } = props;
 
   const navigate = useNavigate();
 
@@ -20,6 +21,7 @@ function NavHeader(props: NavBarProps) {
     <NavBar
       title={title}
       back={<IoIosArrowBack size={22} />}
+      right={right}
       onBackClick={handleBack}
     />
   );

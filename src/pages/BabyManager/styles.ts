@@ -23,12 +23,13 @@ export const AddBabyCard = styled.div`
   justify-content: center;
   align-items: center;
   gap: ${vw(8)};
-  height: ${vw(52)};
-  border-radius: ${vw(12)};
+  padding: ${vw(16)} ${vw(16)};
+  box-sizing: border-box;
+  border-radius: ${vw(80)};
   background: #fff;
   border: ${vw(1)} dashed #ffc0d0;
   box-shadow: 0 ${vw(4)} ${vw(24)} rgba(255, 107, 138, 0.1);
-  font-size: ${vw(15)};
+  font-size: ${vw(14)};
   color: #ff6b8a;
   cursor: pointer;
 
