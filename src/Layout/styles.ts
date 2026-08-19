@@ -22,7 +22,9 @@ export const LayoutContainer = styled.div`
 /** 内容区域 */
 export const Content = styled.main`
   flex: 1;
-  overflow-y: auto;
+  overflow: hidden;
   padding: ${vw(16)} ${vw(16)};
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 `;

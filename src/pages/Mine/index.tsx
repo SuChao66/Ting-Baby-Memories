@@ -35,11 +35,6 @@ export default function Mine() {
     navigate("/login", { replace: true });
   };
 
-  // 进入用户信息页处理函数
-  const handleToUserPage = () => {
-    navigate("/user");
-  };
-
   return (
     <MineContainer>
       {/* 用户信息横幅 */}
@@ -61,7 +56,7 @@ export default function Mine() {
 
       {/* 菜单卡片 */}
       <Card>
-        <CardRow onClick={handleToUserPage}>
+        <CardRow onClick={() => navigate("/user-manager")}>
           <RowIcon>
             <AiOutlineUser color="#ff6b8a" size={vw(18)} />
           </RowIcon>
@@ -70,7 +65,7 @@ export default function Mine() {
             <AiOutlineRight size={vw(14)} />
           </RowArrow>
         </CardRow>
-        <CardRow>
+        <CardRow onClick={() => navigate("/baby-manager")}>
           <RowIcon>
             <PiBabyLight color="#ff6b8a" size={vw(18)} />
           </RowIcon>

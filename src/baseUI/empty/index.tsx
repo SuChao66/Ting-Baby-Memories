@@ -4,14 +4,14 @@ import { vw } from "@/utils";
 import { EmptyContainer } from "./styles";
 
 interface IProps {
-  text: string;
+  text?: string;
 }
 
 function Empty(props: IProps) {
   return (
     <EmptyContainer>
       <SvgIcon name="empty" size={vw(128)} />
-      <p className="text">{props.text || "暂无数据"}</p>
+      <p className="text">{props?.text || "暂无数据"}</p>
     </EmptyContainer>
   );
 }

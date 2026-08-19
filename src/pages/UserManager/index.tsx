@@ -1,7 +1,5 @@
 import { useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 // 导入图标
-import { IoIosArrowBack } from "react-icons/io";
 import { AiOutlineUser, AiOutlineRight } from "react-icons/ai";
 // 导入 vw 工具函数
 import { vw, formatBirthday, compressImage } from "@/utils";
@@ -21,13 +19,13 @@ import {
 // 导入样式
 import { UserContainer } from "./styls";
 // 导入组件
+import NavHeader from "@/components/navHeader";
 import NicknameDialog from "./Modules/NicknameDialog";
 import PhoneDialog from "./Modules/PhoneDialog";
 import GenderSheet from "./Modules/GenderSheet";
 import BirthdayPicker from "./Modules/BirthdayPicker";
 
-function User() {
-  const navigate = useNavigate();
+function UserManager() {
   const { userInfo, updateUserInfo, getUserInfo } = useUserStore(
     (state) => state,
   );
@@ -119,18 +117,9 @@ function User() {
     e.target.value = "";
   };
 
-  // 返回上一页
-  const handleBack = () => {
-    navigate(-1);
-  };
-
   return (
     <UserContainer>
-      <NavBar
-        title="用户信息"
-        back={<IoIosArrowBack size={22} />}
-        onBackClick={handleBack}
-      />
+      <NavHeader title="用户信息" />
       {/* 我的资料卡片 */}
       <Card>
         {/* 头像：点击整行选择图片并预览 */}
@@ -231,4 +220,4 @@ function User() {
   );
 }
 
-export default User;
+export default UserManager;

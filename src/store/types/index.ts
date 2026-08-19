@@ -1,12 +1,5 @@
 import type { User } from "@/interface/user";
-
-// 定义宝宝状态类型
-export interface BabyState {
-  name: string;
-  birthday: string;
-  setName: (name: string) => void;
-  setBirthday: (birthday: string) => void;
-}
+import type { IBabyInfo, IBabyItem } from "@/interface/baby";
 
 // 定义用户状态类型
 export interface UserState {
@@ -34,4 +27,10 @@ export interface UserState {
     birthday?: string;
     avatarUrl?: string;
   }) => Promise<boolean>; // 更新用户信息
+}
+
+// 定义宝宝状态类型
+export interface BabyState {
+  getBabyList: () => Promise<IBabyItem[]>;
+  addBaby: (data: IBabyInfo) => Promise<boolean>;
 }

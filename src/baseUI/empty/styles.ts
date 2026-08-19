@@ -9,4 +9,9 @@ export const EmptyContainer = styled.div`
   height: 100%;
   font-size: ${vw(16)};
   color: #000000e0;
+  .text {
+    font-size: ${vw(14)};
+    margin-top: ${vw(12)};
+    color: #00000073;
+  }
 `;

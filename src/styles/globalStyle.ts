@@ -41,6 +41,6 @@ export const GlobalStyle = createGlobalStyle<{ theme?: Theme }>`
 
   .nut-navbar-title {
     font-size: ${vw(14)};
-    font-weight: 400;
+    font-weight: 600;
   }
 `;

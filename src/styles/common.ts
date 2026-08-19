@@ -8,11 +8,12 @@ export const Card = styled.div`
   background: #fff;
   border-radius: ${vw(20)};
   box-shadow: 0 ${vw(4)} ${vw(24)} rgba(255, 107, 138, 0.1);
-  overflow: hidden;
 `;
 
 /** 卡片行 */
 export const CardRow = styled.div<{ $isLast?: boolean }>`
+  width: 100%;
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   gap: ${vw(12)};
@@ -20,6 +21,9 @@ export const CardRow = styled.div<{ $isLast?: boolean }>`
   padding: ${vw(10)} ${vw(20)};
   border-bottom: ${(props) => (props.$isLast ? "none" : "1px solid #f5f5f5")};
   cursor: pointer;
+  background: #fff;
+  border-radius: ${vw(12)};
+  box-shadow: 0 ${vw(4)} ${vw(24)} rgba(255, 107, 138, 0.1);
 
   &:active {
     background: #fafafa;
