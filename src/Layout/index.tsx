@@ -43,26 +43,28 @@ export default function Layout() {
       <Content>
         <Outlet />
       </Content>
-      <Tabbar
-        value={activeIndex}
-        onSwitch={(index: number) => navigate(tabs[index].path)}
-        activeColor="#ff6b8a"
-        inactiveColor="#7d7e80"
-        safeArea
-      >
-        <Tabbar.Item
-          title={tabs[0].title}
-          icon={(active: boolean) => (
-            <AiOutlineHome color={active ? "#ff6b8a" : "#7d7e80"} />
-          )}
-        />
-        <Tabbar.Item
-          title={tabs[1].title}
-          icon={(active: boolean) => (
-            <AiOutlineUser color={active ? "#ff6b8a" : "#7d7e80"} />
-          )}
-        />
-      </Tabbar>
+      {(location.pathname === "/mine" || location.pathname === "/home") && (
+        <Tabbar
+          value={activeIndex}
+          onSwitch={(index: number) => navigate(tabs[index].path)}
+          activeColor="#ff6b8a"
+          inactiveColor="#7d7e80"
+          safeArea
+        >
+          <Tabbar.Item
+            title={tabs[0].title}
+            icon={(active: boolean) => (
+              <AiOutlineHome color={active ? "#ff6b8a" : "#7d7e80"} />
+            )}
+          />
+          <Tabbar.Item
+            title={tabs[1].title}
+            icon={(active: boolean) => (
+              <AiOutlineUser color={active ? "#ff6b8a" : "#7d7e80"} />
+            )}
+          />
+        </Tabbar>
+      )}
     </LayoutContainer>
   );
 }

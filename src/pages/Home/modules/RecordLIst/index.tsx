@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 // 导入宝宝列表样式组件
 import {
   BabyListContainer,
@@ -23,7 +24,10 @@ import { useBabyStore } from "@/store";
 
 function BabyList() {
   const { getBabyList } = useBabyStore((state) => state);
+  // 当前用户相关联的宝宝
   const [babies, setBabies] = useState<IBabyItem[]>([]);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     // 获取宝宝列表
@@ -32,11 +36,19 @@ function BabyList() {
     });
   }, []);
 
+  // 查看记录详情
+  const handleViewTimeline = (babyId: string) => {
+    navigate(`/timeline/${babyId}`);
+  };
+
   return (
     <BabyListContainer>
       <BabyItem>
         {babies.map((baby) => (
-          <SwipeItem key={baby._id}>
+          <SwipeItem
+            key={baby._id}
+            onClick={() => handleViewTimeline(baby._id)}
+          >
             <BabyAvatar>
               {baby.avatarUrl ? (
                 <img src={baby.avatarUrl} alt="头像" className="avatar" />

@@ -9,6 +9,8 @@ const Layout = React.lazy(() => import("@/Layout/index"));
 const Login = React.lazy(() => import("@/pages/Login/index"));
 const Home = React.lazy(() => import("@/pages/Home/index"));
 const Mine = React.lazy(() => import("@/pages/Mine/index"));
+const TimeLine = React.lazy(() => import("@/pages/TimeLine/index"));
+const BabyCenter = React.lazy(() => import("@/pages/BabyCenter/index"));
 const UserManager = React.lazy(
   () => import("@/pages/Mine/modules/UserManager/index"),
 );
@@ -42,6 +44,8 @@ export const router = createHashRouter([
         children: [
           { path: "home", element: React.createElement(Home) },
           { path: "mine", element: React.createElement(Mine) },
+          { path: "timeline/:id", element: React.createElement(TimeLine) },
+          { path: "baby-center/:id", element: React.createElement(BabyCenter) },
           { path: "user-manager", element: React.createElement(UserManager) },
           { path: "baby-manager", element: React.createElement(BabyManager) },
           { path: "add-baby", element: React.createElement(AddBaby) },

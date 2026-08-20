@@ -24,7 +24,7 @@ export interface IBabyItem {
   nickname: string;
   avatarUrl: string;
   gender: number;
-  birthday: string;
+  birthday: Date;
   birthTime: string;
   creatorId: string;
   createdAt: string;
