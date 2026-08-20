@@ -10,7 +10,7 @@ import { useUserStore } from "@/store";
 
 /** 底部导航栏配置 */
 const tabs = [
-  { path: "/home", title: "首页" },
+  { path: "/home", title: "汀宝宝" },
   { path: "/mine", title: "我的" },
 ];
 

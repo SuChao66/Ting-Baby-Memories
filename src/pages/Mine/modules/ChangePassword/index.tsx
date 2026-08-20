@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 // 导入 React Icons 图标
 import { AiOutlineUnlock, AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+import { IoIosArrowBack } from "react-icons/io";
 // 导入 vw 工具函数
 import { vw } from "@/utils";
 // 导入样式组件
@@ -55,7 +56,7 @@ export default function ChangePassword() {
 
   return (
     <>
-      <NavHeader title="修改密码" />
+      <NavHeader title="修改密码" back={<IoIosArrowBack size={22} />} />
       <ChangePasswordContainer>
         {/* 表单卡片 */}
         <FormCard>

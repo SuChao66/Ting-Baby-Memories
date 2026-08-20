@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 // 导入图标
 import { AiOutlineUser, AiOutlineRight } from "react-icons/ai";
+import { IoIosArrowBack } from "react-icons/io";
 // 导入 vw 工具函数
 import { vw, formatBirthday, compressImage } from "@/utils";
 // 导入上传接口
@@ -20,10 +21,10 @@ import {
 import { UserContainer } from "./styls";
 // 导入组件
 import NavHeader from "@/components/navHeader";
-import NicknameDialog from "./Modules/NicknameDialog";
-import PhoneDialog from "./Modules/PhoneDialog";
-import GenderSheet from "./Modules/GenderSheet";
-import BirthdayPicker from "./Modules/BirthdayPicker";
+import NicknameDialog from "./components/NicknameDialog";
+import PhoneDialog from "./components/PhoneDialog";
+import GenderSheet from "./components/GenderSheet";
+import BirthdayPicker from "./components/BirthdayPicker";
 
 function UserManager() {
   const { userInfo, updateUserInfo, getUserInfo } = useUserStore(
@@ -119,7 +120,7 @@ function UserManager() {
 
   return (
     <UserContainer>
-      <NavHeader title="用户信息" />
+      <NavHeader title="用户信息" back={<IoIosArrowBack size={22} />} />
       {/* 我的资料卡片 */}
       <Card>
         {/* 头像：点击整行选择图片并预览 */}

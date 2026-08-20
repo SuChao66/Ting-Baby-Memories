@@ -1,3 +1,8 @@
+:root {
+  /* 对话框内容文本对齐方式 */
+  --nutui-dialog-content-text-align: center;
+}
+
 #root {
   width: 100%;
   max-width: 750px;

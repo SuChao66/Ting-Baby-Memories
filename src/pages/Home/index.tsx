@@ -1,16 +1,49 @@
 // 导入首页样式组件
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { HomeContainer } from "./styles";
-// 导入空状态组件
-import Empty from "@/baseUI/empty";
+// 导入组件
+import RecordList from "./modules/RecordLIst";
+import NavHeader from "@/components/navHeader";
+// 导入store
+import { useBabyStore } from "@/store";
 
 export default function Home() {
-  // 记录列表
-  const [records] = useState([]);
+  const navigate = useNavigate();
+  // 初始化store
+  const { hasBaby } = useBabyStore((state) => state);
+  // 是否已经添加了宝宝
+  const [isAddbaby, setIsAddBaby] = useState(false);
+  // visible
+  const [visible, setVisible] = useState(true);
+
+  useEffect(() => {
+    // 定义异步函数在useEffect内部执行
+    const checkBabyStatus = async () => {
+      const status = await hasBaby();
+      setIsAddBaby(status);
+    };
+    checkBabyStatus();
+  }, []);
 
   return (
-    <HomeContainer>
-      {records.length === 0 ? <Empty text="暂无记录" /> : "home"}
-    </HomeContainer>
+    <>
+      <NavHeader title="汀宝宝" />
+      <HomeContainer>
+        {isAddbaby ? (
+          <RecordList />
+        ) : (
+          <Dialog
+            title="提示"
+            content="请先添加宝宝信息"
+            visible={visible}
+            onConfirm={() => navigate("/add-baby")}
+            onCancel={() => {
+              setVisible(false);
+            }}
+          ></Dialog>
+        )}
+      </HomeContainer>
+    </>
   );
 }

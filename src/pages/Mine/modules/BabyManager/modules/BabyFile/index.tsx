@@ -5,7 +5,7 @@ import { AiOutlineCamera, AiOutlineRight } from "react-icons/ai";
 import { CiEdit } from "react-icons/ci";
 import { PiBabyLight } from "react-icons/pi";
 import { IoFemale, IoMale } from "react-icons/io5";
-import { IoMdClose } from "react-icons/io";
+import { IoMdClose, IoIosArrowBack } from "react-icons/io";
 // 导入 vw 工具函数
 import { vw, getTodayDate, formatBirthday, compressImage } from "@/utils";
 // 导入通用样式组件
@@ -228,6 +228,7 @@ function BabyFile() {
     <>
       <NavHeader
         title="宝宝档案"
+        back={<IoIosArrowBack size={22} />}
         right={
           !isEditing ? (
             <CiEdit

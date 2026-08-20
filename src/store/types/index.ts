@@ -32,6 +32,7 @@ export interface UserState {
 
 // 定义宝宝状态类型
 export interface BabyState {
+  hasBaby: () => Promise<boolean>;
   getBabyList: () => Promise<IBabyItem[]>;
   addBaby: (data: IBabyInfo) => Promise<boolean>;
   getBabyInfo: (data: { id: string }) => Promise<IBabyItem>;

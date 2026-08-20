@@ -5,6 +5,11 @@ import type { ApiResponse } from "@/api/request";
 // 导入宝宝信息类型
 import type { IBabyInfo, IBabyItem } from "@/interface/baby";
 
+/** 是否添加了宝宝 */
+export function hasBabyAPi(): Promise<ApiResponse<boolean>> {
+  return get<boolean>("/api/v1/baby/is_add_baby");
+}
+
 /** 获取宝宝列表 */
 export function getBabyListApi(): Promise<ApiResponse<IBabyItem[]>> {
   return get<IBabyItem[]>("/api/v1/baby/list");

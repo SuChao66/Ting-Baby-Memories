@@ -9,15 +9,21 @@ const Layout = React.lazy(() => import("@/Layout/index"));
 const Login = React.lazy(() => import("@/pages/Login/index"));
 const Home = React.lazy(() => import("@/pages/Home/index"));
 const Mine = React.lazy(() => import("@/pages/Mine/index"));
-const UserManager = React.lazy(() => import("@/pages/UserManager/index"));
-const BabyManager = React.lazy(() => import("@/pages/BabyManager/index"));
+const UserManager = React.lazy(
+  () => import("@/pages/Mine/modules/UserManager/index"),
+);
+const BabyManager = React.lazy(
+  () => import("@/pages/Mine/modules/BabyManager/index"),
+);
 const AddBaby = React.lazy(
-  () => import("@/pages/BabyManager/modules/AddBaby/index"),
+  () => import("@/pages/Mine/modules/BabyManager/modules/AddBaby/index"),
 );
 const BabyFile = React.lazy(
-  () => import("@/pages/BabyManager/modules/BabyFile/index"),
+  () => import("@/pages/Mine/modules/BabyManager/modules/BabyFile/index"),
 );
-const ChangePassword = React.lazy(() => import("@/pages/ChangePassword/index"));
+const ChangePassword = React.lazy(
+  () => import("@/pages/Mine/modules/ChangePassword/index"),
+);
 const NotFound = React.lazy(() => import("@/pages/NotFound/index"));
 
 export const router = createHashRouter([

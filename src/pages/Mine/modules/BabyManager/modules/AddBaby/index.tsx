@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 // 导入图标
 import { AiOutlineCamera, AiOutlineRight } from "react-icons/ai";
 import { PiBabyLight } from "react-icons/pi";
+import { IoIosArrowBack } from "react-icons/io";
 // 导入 vw 工具函数
 import { vw, getTodayDate, formatBirthday, compressImage } from "@/utils";
 // 导入通用样式组件
@@ -188,7 +189,7 @@ function AddBaby() {
 
   return (
     <>
-      <NavHeader title="添加宝宝" />
+      <NavHeader title="添加宝宝" back={<IoIosArrowBack size={22} />} />
       <AddBabyContainer>
         {/* 头像上传区域 */}
         <AvatarUpload>

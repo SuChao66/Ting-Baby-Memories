@@ -12,6 +12,8 @@ import { useNavigate } from "react-router-dom";
 import { useUserStore } from "@/store";
 // 导入 vw 工具函数
 import { vw } from "@/utils";
+// 导入组件
+import NavHeader from "@/components/navHeader";
 // 导入我的页面样式组件
 import {
   MineContainer,
@@ -36,60 +38,65 @@ export default function Mine() {
   };
 
   return (
-    <MineContainer>
-      {/* 用户信息横幅 */}
-      {userInfo?.username && (
-        <ProfileBanner>
-          <BannerAvatar>
-            {userInfo.avatarUrl ? (
-              <img src={userInfo.avatarUrl} alt="头像" className="avatar" />
-            ) : (
-              <AiOutlineUser color="#ff6b8a" size={vw(32)} />
-            )}
-          </BannerAvatar>
-          <BannerInfo>
-            <BannerName>{userInfo?.nickname || userInfo?.username}</BannerName>
-            <BannerDesc>用户名：{userInfo?.username}</BannerDesc>
-          </BannerInfo>
-        </ProfileBanner>
-      )}
+    <>
+      <NavHeader title="我" />
+      <MineContainer>
+        {/* 用户信息横幅 */}
+        {userInfo?.username && (
+          <ProfileBanner>
+            <BannerAvatar>
+              {userInfo.avatarUrl ? (
+                <img src={userInfo.avatarUrl} alt="头像" className="avatar" />
+              ) : (
+                <AiOutlineUser color="#ff6b8a" size={vw(32)} />
+              )}
+            </BannerAvatar>
+            <BannerInfo>
+              <BannerName>
+                {userInfo?.nickname || userInfo?.username}
+              </BannerName>
+              <BannerDesc>用户名：{userInfo?.username}</BannerDesc>
+            </BannerInfo>
+          </ProfileBanner>
+        )}
 
-      {/* 菜单卡片 */}
-      <Card>
-        <CardRow onClick={() => navigate("/user-manager")}>
-          <RowIcon>
-            <AiOutlineUser color="#ff6b8a" size={vw(18)} />
-          </RowIcon>
-          <RowLabel>我的信息</RowLabel>
-          <RowArrow>
-            <AiOutlineRight size={vw(14)} />
-          </RowArrow>
-        </CardRow>
-        <CardRow onClick={() => navigate("/baby-manager")}>
-          <RowIcon>
-            <PiBabyLight color="#ff6b8a" size={vw(18)} />
-          </RowIcon>
-          <RowLabel>宝宝管理</RowLabel>
-          <RowArrow>
-            <AiOutlineRight size={vw(14)} />
-          </RowArrow>
-        </CardRow>
-        <CardRow onClick={() => navigate("/change-password")}>
-          <RowIcon>
-            <AiOutlineLock color="#ff6b8a" size={vw(18)} />
-          </RowIcon>
-          <RowLabel>修改密码</RowLabel>
-          <RowArrow>
-            <AiOutlineRight size={vw(14)} />
-          </RowArrow>
-        </CardRow>
-      </Card>
+        {/* 菜单卡片 */}
+        <Card>
+          <CardRow onClick={() => navigate("/user-manager")}>
+            <RowIcon>
+              <AiOutlineUser color="#ff6b8a" size={vw(18)} />
+            </RowIcon>
+            <RowLabel>我的信息</RowLabel>
+            <RowArrow>
+              <AiOutlineRight size={vw(14)} />
+            </RowArrow>
+          </CardRow>
+          <CardRow onClick={() => navigate("/baby-manager")}>
+            <RowIcon>
+              <PiBabyLight color="#ff6b8a" size={vw(18)} />
+            </RowIcon>
+            <RowLabel>宝宝管理</RowLabel>
+            <RowArrow>
+              <AiOutlineRight size={vw(14)} />
+            </RowArrow>
+          </CardRow>
+          <CardRow onClick={() => navigate("/change-password")}>
+            <RowIcon>
+              <AiOutlineLock color="#ff6b8a" size={vw(18)} />
+            </RowIcon>
+            <RowLabel>修改密码</RowLabel>
+            <RowArrow>
+              <AiOutlineRight size={vw(14)} />
+            </RowArrow>
+          </CardRow>
+        </Card>
 
-      {/* 退出登录按钮 */}
-      <LogoutButton onClick={handleLogout}>
-        <AiOutlineLogout size={vw(16)} />
-        退出登录
-      </LogoutButton>
-    </MineContainer>
+        {/* 退出登录按钮 */}
+        <LogoutButton onClick={handleLogout}>
+          <AiOutlineLogout size={vw(16)} />
+          退出登录
+        </LogoutButton>
+      </MineContainer>
+    </>
   );
 }

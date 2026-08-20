@@ -1,14 +1,13 @@
 import { useNavigate } from "react-router-dom";
-// 导入图标
-import { IoIosArrowBack } from "react-icons/io";
 
 interface NavBarProps {
   title: string;
+  back?: React.ReactNode;
   right?: React.ReactNode;
 }
 
 function NavHeader(props: NavBarProps) {
-  const { title, right } = props;
+  const { title, right, back } = props;
 
   const navigate = useNavigate();
 
@@ -18,12 +17,7 @@ function NavHeader(props: NavBarProps) {
   };
 
   return (
-    <NavBar
-      title={title}
-      back={<IoIosArrowBack size={22} />}
-      right={right}
-      onBackClick={handleBack}
-    />
+    <NavBar title={title} back={back} right={right} onBackClick={handleBack} />
   );
 }
 

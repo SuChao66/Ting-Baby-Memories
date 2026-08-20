@@ -4,6 +4,7 @@ import type { BabyState } from "../types";
 import type { IBabyInfo } from "@/interface/baby";
 // 导入接口
 import {
+  hasBabyAPi,
   getBabyListApi,
   addBabyApi,
   getBabyInfoApi,
@@ -12,6 +13,11 @@ import {
 } from "@/api";
 
 export const useBabyStore = create<BabyState>(() => ({
+  // 是否添加了宝宝
+  hasBaby: async () => {
+    const { data } = await hasBabyAPi();
+    return data;
+  },
   // 获取宝宝列表
   getBabyList: async () => {
     const { code, data } = await getBabyListApi();
