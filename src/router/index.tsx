@@ -17,6 +17,7 @@ const AddBaby = React.lazy(
 const BabyFile = React.lazy(
   () => import("@/pages/BabyManager/modules/BabyFile/index"),
 );
+const ChangePassword = React.lazy(() => import("@/pages/ChangePassword/index"));
 const NotFound = React.lazy(() => import("@/pages/NotFound/index"));
 
 export const router = createHashRouter([
@@ -39,6 +40,10 @@ export const router = createHashRouter([
           { path: "baby-manager", element: React.createElement(BabyManager) },
           { path: "add-baby", element: React.createElement(AddBaby) },
           { path: "baby-file/:id", element: React.createElement(BabyFile) },
+          {
+            path: "change-password",
+            element: React.createElement(ChangePassword),
+          },
         ],
       },
     ],

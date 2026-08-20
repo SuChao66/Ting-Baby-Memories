@@ -176,7 +176,9 @@ function UserManager() {
         {/* 生日 */}
         <CardRow onClick={() => setBirthdayVisible(true)}>
           <RowLabel>生日</RowLabel>
-          <RowValue>{formatBirthday(birthday) || "未设置"}</RowValue>
+          <RowValue>
+            {formatBirthday(birthday || userInfo?.profile.birthday) || "未设置"}
+          </RowValue>
           <RowArrow>
             <AiOutlineRight size={vw(14)} />
           </RowArrow>

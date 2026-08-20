@@ -1,4 +1,4 @@
-import type { User } from "@/interface/user";
+import type { User, ChangePasswordRequest } from "@/interface/user";
 import type { IBabyInfo, IBabyItem } from "@/interface/baby";
 
 // 定义用户状态类型
@@ -17,6 +17,7 @@ export interface UserState {
     password: string,
     confirmPassword: string,
   ) => Promise<boolean>; // 忘记密码
+  changePassword: (data: ChangePasswordRequest) => Promise<boolean>;
   logout: () => void; // 退出登录
   getUserInfo: () => void; // 获取用户信息
   updateUserInfo: (data: {

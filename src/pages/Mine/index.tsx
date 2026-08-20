@@ -74,7 +74,7 @@ export default function Mine() {
             <AiOutlineRight size={vw(14)} />
           </RowArrow>
         </CardRow>
-        <CardRow>
+        <CardRow onClick={() => navigate("/change-password")}>
           <RowIcon>
             <AiOutlineLock color="#ff6b8a" size={vw(18)} />
           </RowIcon>

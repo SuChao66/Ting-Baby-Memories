@@ -6,9 +6,12 @@ import {
   loginApi,
   registerApi,
   forgetPasswordApi,
+  changePasswordApi,
   getUserInfoApi,
   updateUserInfoApi,
 } from "@/api/user";
+// 导入用户接口类型
+import type { ChangePasswordRequest } from "@/interface/user";
 // 导入加密方法
 import { encrypt } from "@/utils";
 // 导入密码强度校验正则表达式
@@ -148,6 +151,53 @@ export const useUserStore = create<UserState>((set) => ({
       return false;
     }
     return false;
+  },
+  // 修改密码
+  changePassword: async (params: ChangePasswordRequest) => {
+    const { oldPassword, newPassword, confirmPassword } = params;
+    if (!oldPassword) {
+      Toast.show({
+        title: "请输入原密码",
+        icon: "warn",
+      });
+      return;
+    }
+    if (!newPassword) {
+      Toast.show({
+        title: "请输入新密码",
+        icon: "warn",
+      });
+      return;
+    }
+    if (!confirmPassword) {
+      Toast.show({
+        title: "请再次输入新密码",
+        icon: "warn",
+      });
+      return;
+    }
+    // 校验密码强度
+    if (!PASSWORD_REGEX.test(newPassword)) {
+      Toast.show({
+        title: "密码至少6位，需包含大小写字母、数字和特殊字符",
+        icon: "warn",
+      });
+      return;
+    }
+    // 判断两次密码是否一致
+    if (newPassword !== confirmPassword) {
+      Toast.show({
+        title: "两次输入密码不一致",
+        icon: "warn",
+      });
+      return;
+    }
+    const { code } = await changePasswordApi({
+      oldPassword,
+      newPassword: encrypt(newPassword),
+      confirmPassword: encrypt(confirmPassword),
+    });
+    return code === 0 ? true : false;
   },
   // 退出登录方法
   logout: () => {
