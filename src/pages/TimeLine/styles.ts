@@ -7,7 +7,7 @@ export const TimeLineContainer = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
-  overflow: auto;
+  overflow: hidden;
   gap: ${vw(12)};
 
   &::-webkit-scrollbar {
@@ -27,8 +27,12 @@ export const TimelineWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${vw(16)};
-  padding-left: ${vw(8)};
-  margin-top: ${vw(8)};
+  flex: 1;
+  overflow: auto;
+  background-color: #fff;
+  padding: ${vw(24)} ${vw(12)};
+  box-sizing: border-box;
+  border-radius: ${vw(12)};
 `;
 
 /** 时间线日期分组 */
