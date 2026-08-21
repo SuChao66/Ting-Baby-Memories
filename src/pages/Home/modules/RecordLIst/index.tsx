@@ -21,6 +21,8 @@ import type { IBabyItem } from "@/interface/baby";
 import { vw } from "@/utils";
 // 导入store
 import { useBabyStore } from "@/store";
+// 导入组件
+import Empty from "@/baseUI/empty";
 
 function BabyList() {
   const { getBabyList } = useBabyStore((state) => state);
@@ -44,34 +46,38 @@ function BabyList() {
   return (
     <BabyListContainer>
       <BabyItem>
-        {babies.map((baby) => (
-          <SwipeItem
-            key={baby._id}
-            onClick={() => handleViewTimeline(baby._id)}
-          >
-            <BabyAvatar>
-              {baby.avatarUrl ? (
-                <img src={baby.avatarUrl} alt="头像" className="avatar" />
-              ) : (
-                <PiBabyLight color="#ff6b8a" size={vw(24)} />
-              )}
-            </BabyAvatar>
-            <BabyInfoSection>
-              <BabyName>
-                {baby.nickname}
-                {baby.gender === 0 ? (
-                  <IoFemale color="red" />
+        {babies.length > 0 ? (
+          babies.map((baby) => (
+            <SwipeItem
+              key={baby._id}
+              onClick={() => handleViewTimeline(baby._id)}
+            >
+              <BabyAvatar>
+                {baby.avatarUrl ? (
+                  <img src={baby.avatarUrl} alt="头像" className="avatar" />
                 ) : (
-                  <IoMale color="blue" />
+                  <PiBabyLight color="#ff6b8a" size={vw(24)} />
                 )}
-              </BabyName>
-              <BabyRecords>0条成长记录</BabyRecords>
-            </BabyInfoSection>
-            <RowArrow>
-              <AiOutlineRight size={vw(14)} />
-            </RowArrow>
-          </SwipeItem>
-        ))}
+              </BabyAvatar>
+              <BabyInfoSection>
+                <BabyName>
+                  {baby.nickname}
+                  {baby.gender === 0 ? (
+                    <IoFemale color="red" />
+                  ) : (
+                    <IoMale color="blue" />
+                  )}
+                </BabyName>
+                <BabyRecords>0条成长记录</BabyRecords>
+              </BabyInfoSection>
+              <RowArrow>
+                <AiOutlineRight size={vw(14)} />
+              </RowArrow>
+            </SwipeItem>
+          ))
+        ) : (
+          <Empty text="暂无数据，快来添加你的宝宝～" />
+        )}
       </BabyItem>
     </BabyListContainer>
   );

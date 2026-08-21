@@ -13,6 +13,7 @@ export const BabyItem = styled.div`
   flex-direction: column;
   align-items: center;
   gap: ${vw(12)};
+  height: 100%;
 `;
 
 /** 左滑容器 */

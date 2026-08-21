@@ -10,6 +10,9 @@ const Login = React.lazy(() => import("@/pages/Login/index"));
 const Home = React.lazy(() => import("@/pages/Home/index"));
 const Mine = React.lazy(() => import("@/pages/Mine/index"));
 const TimeLine = React.lazy(() => import("@/pages/TimeLine/index"));
+const AddTimeLine = React.lazy(
+  () => import("@/pages/TimeLine/modules/AddTimeline/index"),
+);
 const BabyCenter = React.lazy(() => import("@/pages/BabyCenter/index"));
 const CloudAlbum = React.lazy(
   () => import("@/pages/BabyCenter/modules/CloudAlbum/index"),
@@ -34,9 +37,6 @@ const Teeth = React.lazy(
 );
 const FutureMessage = React.lazy(
   () => import("@/pages/BabyCenter/modules/FutureMessage/index"),
-);
-const AddTimeLine = React.lazy(
-  () => import("@/pages/TimeLine/modules/addTimeline/index"),
 );
 const UserManager = React.lazy(
   () => import("@/pages/Mine/modules/UserManager/index"),

@@ -1,6 +1,6 @@
 // 导入 React hooks
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 // 导入 React Icons 图标
 import {
   AiOutlineUser,
@@ -47,6 +47,7 @@ export default function Login() {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
 
+  const location = useLocation();
   const navigate = useNavigate();
   // 登录方法
   const login = useUserStore((state) => state.login);
@@ -59,7 +60,9 @@ export default function Login() {
   const handleLogin = async () => {
     const success = await login(username, password);
     if (success) {
-      navigate("/home");
+      navigate("/home", {
+        state: { from: location.pathname },
+      });
     }
   };
 

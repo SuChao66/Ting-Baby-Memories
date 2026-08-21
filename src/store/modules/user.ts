@@ -13,7 +13,7 @@ import {
 // 导入用户接口类型
 import type { ChangePasswordRequest } from "@/interface/user";
 // 导入加密方法
-import { encrypt } from "@/utils";
+import { decrypt, encrypt } from "@/utils";
 // 导入密码强度校验正则表达式
 import { PASSWORD_REGEX } from "@/enums";
 
