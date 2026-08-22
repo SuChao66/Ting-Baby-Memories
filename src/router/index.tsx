@@ -13,6 +13,9 @@ const TimeLine = React.lazy(() => import("@/pages/TimeLine/index"));
 const AddTimeLine = React.lazy(
   () => import("@/pages/TimeLine/modules/AddTimeline/index"),
 );
+const TagManager = React.lazy(
+  () => import("@/pages/TimeLine/modules/TagManager/index"),
+);
 const BabyCenter = React.lazy(() => import("@/pages/BabyCenter/index"));
 const CloudAlbum = React.lazy(
   () => import("@/pages/BabyCenter/modules/CloudAlbum/index"),
@@ -73,6 +76,7 @@ export const router = createHashRouter([
           { path: "mine", element: React.createElement(Mine) },
           { path: "timeline/:id", element: React.createElement(TimeLine) },
           { path: "add-timeline", element: React.createElement(AddTimeLine) },
+          { path: "tag", element: React.createElement(TagManager) },
           { path: "baby-center/:id", element: React.createElement(BabyCenter) },
           { path: "cloud-album/:id", element: React.createElement(CloudAlbum) },
           { path: "mile-stone/:id", element: React.createElement(MileStone) },

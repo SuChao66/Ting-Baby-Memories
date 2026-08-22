@@ -1,5 +1,6 @@
 import type { User, ChangePasswordRequest } from "@/interface/user";
 import type { IBabyInfo, IBabyItem } from "@/interface/baby";
+import type { ITag } from "@/interface/tag";
 
 // 定义用户状态类型
 export interface UserState {
@@ -40,4 +41,14 @@ export interface BabyState {
     data: Partial<IBabyInfo> & { id: string },
   ) => Promise<boolean>;
   deleteBaby: (data: { id: string }) => Promise<boolean>;
+}
+
+// 定义标签状态类型
+export interface TagsState {
+  tags: ITag[];
+  selectedTags: Array<string>;
+  setSelectedTags: (tags: Array<string>) => void;
+  getTags: () => Promise<boolean>;
+  deleteTag: (id: string) => Promise<boolean>;
+  addTag: (name: string) => Promise<boolean>;
 }

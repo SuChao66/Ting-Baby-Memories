@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+// 导入图标
 import { IoIosArrowBack } from "react-icons/io";
 import { AiOutlinePlus, AiOutlineClose } from "react-icons/ai";
 import { HiOutlinePhotograph } from "react-icons/hi";
@@ -29,14 +31,16 @@ import {
   TimeValue,
   PublishButton,
 } from "./styles";
+// 导入store
+import { useTagStore } from "@/store";
 
 function AddTimeLine() {
+  const navigate = useNavigate();
+  const { selectedTags, setSelectedTags } = useTagStore((state) => state);
   // 内容
   const [content, setContent] = useState("");
   // 图片列表
   const [images, setImages] = useState<string[]>([]);
-  // 标签列表
-  const [tags, setTags] = useState<string[]>(["第一次", "日常"]);
   // 日期时间
   const [datetime] = useState("");
 
@@ -46,8 +50,14 @@ function AddTimeLine() {
   };
 
   // 删除标签
-  const handleDeleteTag = (index: number) => {
-    setTags((prev) => prev.filter((_, i) => i !== index));
+  const handleDeleteTag = (name: string) => {
+    const newTags = selectedTags.filter((tag) => tag !== name);
+    setSelectedTags(newTags);
+  };
+
+  // 跳转进入标签管理
+  const handleToTagManager = () => {
+    navigate("/tag");
   };
 
   return (
@@ -89,16 +99,16 @@ function AddTimeLine() {
         <TagSection>
           <TagHeader>
             <TagTitle>标签</TagTitle>
-            <TagAddBtn>
+            <TagAddBtn onClick={handleToTagManager}>
               <AiOutlinePlus size={vw(14)} />
               添加标签
             </TagAddBtn>
           </TagHeader>
           <TagList>
-            {tags.map((tag, index) => (
+            {selectedTags.map((tag, index) => (
               <TagItem key={index}>
                 {tag}
-                <TagClose onClick={() => handleDeleteTag(index)}>
+                <TagClose onClick={() => handleDeleteTag(tag)}>
                   <AiOutlineClose size={vw(12)} />
                 </TagClose>
               </TagItem>
