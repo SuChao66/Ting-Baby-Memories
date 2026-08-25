@@ -25,7 +25,7 @@ import { useBabyStore } from "@/store";
 import Empty from "@/baseUI/empty";
 
 function BabyList() {
-  const { getBabyList } = useBabyStore((state) => state);
+  const { getBabyList, setBabyId } = useBabyStore((state) => state);
   // 当前用户相关联的宝宝
   const [babies, setBabies] = useState<IBabyItem[]>([]);
 
@@ -40,6 +40,8 @@ function BabyList() {
 
   // 查看记录详情
   const handleViewTimeline = (babyId: string) => {
+    // 更新当前babyId
+    setBabyId(babyId);
     navigate(`/timeline/${babyId}`);
   };
 

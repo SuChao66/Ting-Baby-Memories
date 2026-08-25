@@ -90,7 +90,20 @@ export const MyTagsTitle = styled.div`
 
 export const MyTagsList = styled.div`
   display: flex;
+  flex-wrap: wrap;
   gap: ${vw(8)};
+
+  & > span {
+    width: calc((100% - ${vw(16)}) / 2);
+    box-sizing: border-box;
+  }
+
+  .tag-name {
+    flex: 1;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
 `;
 
 /* ========== 标签删除按钮 ========== */

@@ -12,7 +12,11 @@ import {
   deleteBabyApi,
 } from "@/api";
 
-export const useBabyStore = create<BabyState>(() => ({
+export const useBabyStore = create<BabyState>((set, get) => ({
+  babyId: "",
+  setBabyId: (id: string) => {
+    set({ babyId: id });
+  },
   // 是否添加了宝宝
   hasBaby: async () => {
     const { data } = await hasBabyAPi();
@@ -22,6 +26,9 @@ export const useBabyStore = create<BabyState>(() => ({
   getBabyList: async () => {
     const { code, data } = await getBabyListApi();
     if (code === 0) {
+      // 默认选择第一个宝宝
+      const defaultBabyId = data[0]._id;
+      get().setBabyId(defaultBabyId);
       return data;
     }
   },

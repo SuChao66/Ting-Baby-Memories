@@ -1,6 +1,12 @@
 import type { User, ChangePasswordRequest } from "@/interface/user";
 import type { IBabyInfo, IBabyItem } from "@/interface/baby";
 import type { ITag } from "@/interface/tag";
+import type {
+  ITimelineReq,
+  IPagination,
+  ITimelineRes,
+  ITimelineGroup,
+} from "@/interface/timeline";
 
 // 定义用户状态类型
 export interface UserState {
@@ -33,6 +39,8 @@ export interface UserState {
 
 // 定义宝宝状态类型
 export interface BabyState {
+  babyId: string;
+  setBabyId: (id: string) => void;
   hasBaby: () => Promise<boolean>;
   getBabyList: () => Promise<IBabyItem[]>;
   addBaby: (data: IBabyInfo) => Promise<boolean>;
@@ -51,4 +59,14 @@ export interface TagsState {
   getTags: () => Promise<boolean>;
   deleteTag: (id: string) => Promise<boolean>;
   addTag: (name: string) => Promise<boolean>;
+}
+
+// 定义记录状态类型
+export interface TimelineState {
+  timeLineList: ITimelineGroup[];
+  setTimelineList: (item: ITimelineGroup[]) => void;
+  addTimeline: (params: ITimelineReq) => Promise<boolean>;
+  getTimeLineList: (
+    params: IPagination & { babyId: string },
+  ) => Promise<ITimelineRes>;
 }

@@ -42,6 +42,11 @@ function TagManager() {
     }
   };
 
+  // 删除选中标签
+  const handleRemoveSelectedTag = (name: string) => {
+    setSelectedTags(selectedTags.filter((tag) => tag !== name));
+  };
+
   // 获取标签列表
   const getTagsList = async () => {
     await getTags();
@@ -54,6 +59,14 @@ function TagManager() {
 
   // 新增标签
   const handleSave = () => {
+    // 判断name是否存在
+    if (!name.trim()) {
+      Toast.show({
+        title: "请输入标签内容",
+        icon: "warn",
+      });
+      return;
+    }
     addTag(name).then((success) => {
       if (success) {
         setTagName("");
@@ -76,7 +89,7 @@ function TagManager() {
       <NavHeader
         title="添加标签"
         back={<IoIosArrowBack size={22} />}
-        right={<SaveBtn onClick={handleSave}>保存</SaveBtn>}
+        right={name ? <SaveBtn onClick={handleSave}>保存</SaveBtn> : ""}
       />
       <TagManagerContainer>
         {/* 标签输入卡片 */}
@@ -84,7 +97,12 @@ function TagManager() {
           {selectedTags.length > 0 && (
             <SelectedTagsWrap>
               {selectedTags.map((tag, index) => (
-                <TagPill key={index}>{tag}</TagPill>
+                <TagPill key={index}>
+                  {tag}
+                  <TagDelete onClick={() => handleRemoveSelectedTag(tag)}>
+                    <AiOutlineClose size={vw(12)} />
+                  </TagDelete>
+                </TagPill>
               ))}
             </SelectedTagsWrap>
           )}
@@ -104,7 +122,7 @@ function TagManager() {
                   key={tag._id}
                   onClick={() => handleSelectTag(tag.name)}
                 >
-                  {tag.name}
+                  <span className="tag-name">{tag.name}</span>
                   <TagDelete onClick={() => handleDeleteTag(tag._id)}>
                     <AiOutlineClose size={vw(12)} />
                   </TagDelete>

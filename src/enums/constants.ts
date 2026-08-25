@@ -1,3 +1,5 @@
+import type { IVisibleRoles } from "@/types";
+
 /** 设计稿宽度(375px) */
 export const DESIGN_WIDTH = 375;
 
@@ -39,4 +41,14 @@ export const RELATION_OPTIONS = [
   { name: "爸爸", value: "father" },
   { name: "爷爷奶奶/外公外婆", value: "grandparent" },
   { name: "其他亲属", value: "other" },
+];
+
+/** 记录可见性选项 */
+export const visibilityOptions: {
+  value: IVisibleRoles;
+  label: string;
+}[] = [
+  { value: "public", label: "公开" },
+  { value: "family", label: "仅家人可见" },
+  { value: "private", label: "仅自己可见" },
 ];

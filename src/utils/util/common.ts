@@ -6,6 +6,9 @@ export const getTodayDate = () => {
     year: today.getFullYear(),
     month: today.getMonth() + 1,
     day: today.getDate(),
+    hour: today.getHours(),
+    minute: today.getMinutes(),
+    seconds: today.getSeconds(),
   };
 };
 
