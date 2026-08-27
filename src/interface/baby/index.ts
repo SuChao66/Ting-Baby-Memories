@@ -32,6 +32,7 @@ export interface IBabyItem {
   __v: number;
   relation: string;
   role: string;
+  record_count: number;
 }
 
 export interface Profile {

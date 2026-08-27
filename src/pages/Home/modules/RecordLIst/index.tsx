@@ -70,7 +70,7 @@ function BabyList() {
                     <IoMale color="blue" />
                   )}
                 </BabyName>
-                <BabyRecords>0条成长记录</BabyRecords>
+                <BabyRecords>{baby.record_count}条成长记录</BabyRecords>
               </BabyInfoSection>
               <RowArrow>
                 <AiOutlineRight size={vw(14)} />

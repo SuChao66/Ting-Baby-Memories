@@ -42,15 +42,17 @@ export interface ITimelineItem {
 }
 
 // 分组后的记录类型
+export interface ITimelineGroupRecord {
+  time: string;
+  tags: string[];
+  content: string;
+  files: IFile[];
+  isMilestone: boolean;
+  visibleRoles: string;
+  comments: any[];
+}
+
 export interface ITimelineGroup {
   date: string;
-  records: {
-    time: string;
-    tags: string[];
-    content: string;
-    files: IFile[];
-    isMilestone: boolean;
-    visibleRoles: string;
-    comments: any[];
-  }[];
+  records: ITimelineGroupRecord[];
 }
