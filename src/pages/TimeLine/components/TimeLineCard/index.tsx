@@ -19,6 +19,7 @@ import {
 import { AiOutlinePlayCircle, AiOutlinePicture } from "react-icons/ai";
 // 导入组件
 import VideoPreview from "@/baseUI/videoPreview";
+import Menu from "../Menu";
 
 interface IProps {
   record: ITimelineGroupRecord;
@@ -94,7 +95,8 @@ function TimeLineCard(props: IProps) {
               ))}
             </ImageGrid>
           )}
-          {/* 评论 */}
+          {/* 操作栏 */}
+          <Menu record={record} />
         </RecordCard>
       </TimelineItem>
 

@@ -6,6 +6,7 @@ export interface IFile {
 }
 
 export interface ITimelineReq {
+  id?: string; // timeLine id
   babyId: string;
   content: string;
   files?: IFile[];
@@ -27,10 +28,10 @@ export interface ITimelineRes {
 
 export interface ITimelineItem {
   _id: string;
-  userId: string;
+  userId: UserId;
   babyId: string;
   content: string;
-  files: any[];
+  files: IFile[];
   tags: string[];
   isMilestone: boolean;
   publishTime: string;
@@ -39,10 +40,25 @@ export interface ITimelineItem {
   createdAt: string;
   updatedAt: string;
   __v: number;
+  userInfo: IUserInfo;
+}
+
+export interface UserId {
+  _id: string;
+  nickname: string;
+  avatarUrl: string;
+}
+
+export interface IUserInfo {
+  _id: string;
+  nickname: string;
+  avatarUrl: string;
+  relation: string;
 }
 
 // 分组后的记录类型
 export interface ITimelineGroupRecord {
+  _id: string;
   time: string;
   tags: string[];
   content: string;
@@ -50,6 +66,8 @@ export interface ITimelineGroupRecord {
   isMilestone: boolean;
   visibleRoles: string;
   comments: any[];
+  userInfo: IUserInfo;
+  userId: UserId;
 }
 
 export interface ITimelineGroup {

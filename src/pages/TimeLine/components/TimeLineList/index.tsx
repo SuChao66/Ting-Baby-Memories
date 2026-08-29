@@ -8,6 +8,8 @@ import TimeLineCard from "../TimeLineCard";
 import { useTimelineStore } from "@/store";
 // 导入类型
 import type { ITimelineItem, ITimelineGroup } from "@/interface/timeline";
+// 导入context
+import { TimeLineContext } from "@/context";
 
 function TimeLineList(props: { id: string }) {
   const { id } = props;
@@ -16,6 +18,8 @@ function TimeLineList(props: { id: string }) {
     pageSize: 10,
   });
   const [, setTotal] = useState(0);
+  // 刷新获取记录列表
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const { timeLineList, getTimeLineList, setTimelineList } = useTimelineStore(
     (state) => state,
@@ -23,7 +27,7 @@ function TimeLineList(props: { id: string }) {
 
   useEffect(() => {
     getTimeLineLists();
-  }, []);
+  }, [refreshKey]);
 
   // 获取列表
   const getTimeLineLists = async () => {
@@ -52,43 +56,52 @@ function TimeLineList(props: { id: string }) {
     });
 
     // 转换为目标结构
-    const result: ITimelineGroup[] = Object.keys(groupMap).map((date) => ({
-      date,
-      records: groupMap[date].map((item) => {
-        const d = new Date(item.publishTime);
-        const hh = String(d.getHours()).padStart(2, "0");
-        const mm = String(d.getMinutes()).padStart(2, "0");
-        return {
-          time: `${hh}:${mm}`,
-          tags: item.tags || [],
-          content: item.content,
-          files: item.files || [],
-          isMilestone: item.isMilestone,
-          visibleRoles: item.visibleRoles,
-          comments: item.comments || [],
-        };
-      }),
-    }));
+    const result: ITimelineGroup[] = Object.keys(groupMap).map(
+      (date) =>
+        ({
+          date,
+          records: groupMap[date].map((item) => {
+            const d = new Date(item.publishTime);
+            const hh = String(d.getHours()).padStart(2, "0");
+            const mm = String(d.getMinutes()).padStart(2, "0");
+            return {
+              _id: item._id,
+              time: `${hh}:${mm}`,
+              tags: item.tags || [],
+              content: item.content,
+              files: item.files || [],
+              isMilestone: item.isMilestone,
+              visibleRoles: item.visibleRoles,
+              comments: item.comments || [],
+              userInfo: item.userInfo,
+            };
+          }),
+        }) as any,
+    );
 
     setTimelineList(result);
   };
 
   return (
     <>
-      <TimelineWrapper>
-        {timeLineList.length > 0 ? (
-          (timeLineList as unknown as ITimelineGroup[]).map((group, gIndex) => (
-            <TimelineGroup key={gIndex}>
-              <DateLabel>{group.date}</DateLabel>
-              {group.records.map((record, rIndex) => (
-                <TimeLineCard record={record} key={rIndex} />
-              ))}
-            </TimelineGroup>
-          ))
-        ) : (
-          <Empty text="暂无记录" />
-        )}
-      </TimelineWrapper>
+      <TimeLineContext.Provider value={{ refreshKey, setRefreshKey }}>
+        <TimelineWrapper>
+          {timeLineList.length > 0 ? (
+            (timeLineList as unknown as ITimelineGroup[]).map(
+              (group, gIndex) => (
+                <TimelineGroup key={gIndex}>
+                  <DateLabel>{group.date}</DateLabel>
+                  {group.records.map((record, rIndex) => (
+                    <TimeLineCard record={record} key={rIndex} />
+                  ))}
+                </TimelineGroup>
+              ),
+            )
+          ) : (
+            <Empty text="暂无记录" />
+          )}
+        </TimelineWrapper>
+      </TimeLineContext.Provider>
     </>
   );
 }

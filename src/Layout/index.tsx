@@ -7,6 +7,8 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { LayoutContainer, Content } from "./styles";
 // 导入用户 store
 import { useUserStore } from "@/store";
+// 导入工具函数
+import { initRouter } from "@/utils";
 
 /** 底部导航栏配置 */
 const tabs = [
@@ -19,6 +21,11 @@ export default function Layout() {
   const navigate = useNavigate();
   const location = useLocation();
   const [activeIndex, setActiveIndex] = useState(0);
+
+  // 组件挂载时，把真实的 navigate 注入到全局工具中
+  useEffect(() => {
+    initRouter(navigate);
+  }, [navigate]);
 
   // 监听路由变化，更新 activeIndex
   useEffect(() => {

@@ -7,7 +7,13 @@ import type {
   ITimelineGroup,
 } from "@/interface/timeline";
 // 导入接口
-import { addTimeLineApi, getTimeLineListApi } from "@/api";
+import {
+  addTimeLineApi,
+  editTimeLineApi,
+  getTimeLineListApi,
+  deleteTimeLineApi,
+  getTimeLineInfoApi,
+} from "@/api";
 
 export const useTimelineStore = create<TimelineState>((set) => ({
   timeLineList: [],
@@ -19,9 +25,26 @@ export const useTimelineStore = create<TimelineState>((set) => ({
     const { code } = await addTimeLineApi(params);
     return code === 0 ? true : false;
   },
+  // 编辑记录
+  editTimeline: async (params: ITimelineReq) => {
+    const { code } = await editTimeLineApi(params);
+    return code === 0 ? true : false;
+  },
   // 获取记录
   getTimeLineList: async (params: IPagination & { babyId: string }) => {
     const { code, data } = await getTimeLineListApi(params);
+    if (code === 0) {
+      return data;
+    }
+  },
+  // 删除记录
+  deleteTimeLine: async (id: string) => {
+    const { code } = await deleteTimeLineApi({ id });
+    return code === 0 ? true : false;
+  },
+  // 获取记录详情
+  getTimeLineInfo: async (id: string) => {
+    const { code, data } = await getTimeLineInfoApi({ id });
     if (code === 0) {
       return data;
     }

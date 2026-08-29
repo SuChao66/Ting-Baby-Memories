@@ -6,6 +6,7 @@ import type {
   IPagination,
   ITimelineRes,
   ITimelineGroup,
+  ITimelineItem,
 } from "@/interface/timeline";
 
 // 定义用户状态类型
@@ -66,7 +67,10 @@ export interface TimelineState {
   timeLineList: ITimelineGroup[];
   setTimelineList: (item: ITimelineGroup[]) => void;
   addTimeline: (params: ITimelineReq) => Promise<boolean>;
+  editTimeline: (params: ITimelineReq) => Promise<boolean>;
   getTimeLineList: (
     params: IPagination & { babyId: string },
   ) => Promise<ITimelineRes>;
+  deleteTimeLine: (id: string) => Promise<boolean>;
+  getTimeLineInfo: (id: string) => Promise<ITimelineItem>;
 }

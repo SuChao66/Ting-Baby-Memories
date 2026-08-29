@@ -1,7 +1,12 @@
 import { useNavigate } from "react-router-dom";
 
 // 自定义导航钩子
-export const useRouter = (path: string) => {
+export const useRouter = () => {
   const navigate = useNavigate();
-  navigate(path);
+
+  const goToLogin = () => navigate("/login");
+
+  return {
+    goToLogin,
+  };
 };

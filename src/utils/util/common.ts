@@ -1,6 +1,6 @@
 // 获取今日日期
-export const getTodayDate = () => {
-  const today = new Date();
+export const getTodayDate = (date?: string) => {
+  const today = date ? new Date(date) : new Date();
   return {
     fullDate: `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}`,
     year: today.getFullYear(),

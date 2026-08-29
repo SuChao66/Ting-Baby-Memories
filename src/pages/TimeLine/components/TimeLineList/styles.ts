@@ -9,8 +9,7 @@ export const TimelineWrapper = styled.div`
   gap: ${vw(16)};
   flex: 1;
   overflow: auto;
-  background-color: #fff;
-  padding: ${vw(24)} ${vw(12)};
+  padding: ${vw(24)} ${vw(0)};
   box-sizing: border-box;
   border-radius: ${vw(12)};
 `;

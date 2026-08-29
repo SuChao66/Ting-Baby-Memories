@@ -76,6 +76,7 @@ export const router = createHashRouter([
           { path: "mine", element: React.createElement(Mine) },
           { path: "timeline/:id", element: React.createElement(TimeLine) },
           { path: "add-timeline", element: React.createElement(AddTimeLine) },
+          { path: "edit-timeline", element: React.createElement(AddTimeLine) },
           { path: "tag", element: React.createElement(TagManager) },
           { path: "baby-center/:id", element: React.createElement(BabyCenter) },
           { path: "cloud-album/:id", element: React.createElement(CloudAlbum) },

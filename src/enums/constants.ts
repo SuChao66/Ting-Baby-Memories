@@ -52,3 +52,18 @@ export const visibilityOptions: {
   { value: "family", label: "仅家人可见" },
   { value: "private", label: "仅自己可见" },
 ];
+
+// 记录权限
+export const TIME_LINE_VISIBLE_ROLES = {
+  PUBLIC: "public", // 公开
+  FAMILY: "family", // 家庭
+  PRIVATE: "private", // 私有
+};
+
+// 用户与宝宝关系
+export const USER_AND_BABY_RELATION = {
+  MOTHER: "mother",
+  FATHER: "father",
+  GRAND_PARENT: "grandparent",
+  OTHER: "other",
+};

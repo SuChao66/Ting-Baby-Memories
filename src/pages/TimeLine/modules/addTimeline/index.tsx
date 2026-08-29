@@ -1,5 +1,5 @@
-import { useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useRef, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 // 导入图标
 import { IoIosArrowBack } from "react-icons/io";
 import {
@@ -45,26 +45,41 @@ import {
   FileTypeBadge,
 } from "./styles";
 // 导入store
-import { useTagStore } from "@/store";
+import { useTagStore, useBabyStore, useTimelineStore } from "@/store";
 // 导入类型
 import type { PickerOptions, PickerValue } from "@nutui/nutui-react";
 import type { IFile } from "@/interface/timeline";
 import type { IVisibleRoles } from "@/types";
 // 导入上传接口
 import { getPresignedUrlApi } from "@/api/upload";
-// 导入store
-import { useBabyStore, useTimelineStore } from "@/store";
 // 导入常量
 import { visibilityOptions, NUMBER, ONN_B } from "@/enums";
 
-function AddTimeLine() {
+// 模块级缓存：编辑时保存表单状态，避免从标签页返回时重新请求覆盖
+let editFormCache: {
+  timelineId: string;
+  content: string;
+  files: IFile[];
+  datetime: Date;
+  isMilestone: boolean;
+  visibleRoles: IVisibleRoles;
+} | null = null;
+
+function TimelineForm() {
   const navigate = useNavigate();
+  const location = useLocation();
+  // 通过 location.state?.id 判断是新增还是编辑模式
+  const timelineId = location.state?.id;
+  const isEditMode = !!timelineId;
+
   const { year, month, day, hour, minute } = getTodayDate();
-  const { babyId } = useBabyStore((state) => state);
+  const { babyId, setBabyId } = useBabyStore((state) => state);
   const imageRef = useRef();
   // 已选择的标签
   const { selectedTags, setSelectedTags } = useTagStore((state) => state);
-  const { addTimeline } = useTimelineStore((state) => state);
+  const { addTimeline, editTimeline, getTimeLineInfo } = useTimelineStore(
+    (state) => state,
+  );
   // 内容
   const [content, setContent] = useState("");
   // 文件列表
@@ -86,6 +101,44 @@ function AddTimeLine() {
   const [previewVisible, setPreviewVisible] = useState(false);
   const [previewIndex, setPreviewIndex] = useState(0);
   const [videoPreviewUrl, setVideoPreviewUrl] = useState<string | null>(null);
+
+  // 编辑模式：获取记录详情
+  useEffect(() => {
+    if (!isEditMode) return;
+    // 从标签页返回：命中缓存则直接恢复，不重新请求
+    if (editFormCache && editFormCache.timelineId === timelineId) {
+      setContent(editFormCache.content);
+      setFiles(editFormCache.files);
+      setDateTime(editFormCache.datetime);
+      setIsMilestone(editFormCache.isMilestone);
+      setVisibilityRoles(editFormCache.visibleRoles);
+      return;
+    }
+    // 首次进入：请求数据
+    getTimeLineInfo(timelineId).then((data) => {
+      setContent(data.content);
+      setIsMilestone(data.isMilestone);
+      setVisibilityRoles(data.visibleRoles as any);
+      setFiles(data.files);
+      setSelectedTags(data.tags);
+      const { year, month, day, hour, minute } = getTodayDate(data.publishTime);
+      setDateTime(new Date(year, month - 1, day, hour, minute));
+      setBabyId(data.babyId);
+    });
+  }, []);
+
+  // 编辑模式：同步表单状态到缓存
+  useEffect(() => {
+    if (!isEditMode) return;
+    editFormCache = {
+      timelineId,
+      content,
+      files,
+      datetime,
+      isMilestone,
+      visibleRoles,
+    };
+  }, [content, files, datetime, isMilestone, visibleRoles]);
 
   // 点击文件预览
   const handlePreview = (index: number) => {
@@ -206,7 +259,7 @@ function AddTimeLine() {
     navigate("/tag");
   };
 
-  // 发布记录
+  // 发布/更新记录
   const handPublishTimeline = async () => {
     if (!content.trim()) {
       Toast.show({
@@ -215,7 +268,15 @@ function AddTimeLine() {
       });
       return;
     }
+    if (selectedTags.length > 3) {
+      Toast.show({
+        title: "最多选择三个标签",
+        icon: "fail",
+      });
+      return;
+    }
     const params = {
+      ...(isEditMode ? { id: timelineId } : {}),
       babyId,
       content,
       files,
@@ -224,20 +285,26 @@ function AddTimeLine() {
       isMilestone,
       visibleRoles,
     };
-    const success = await addTimeline(params);
+    const success = isEditMode
+      ? await editTimeline(params)
+      : await addTimeline(params);
     if (success) {
+      // 编辑模式：清除缓存
+      if (isEditMode) editFormCache = null;
       Toast.show({
-        title: "发布成功",
+        title: isEditMode ? "更新成功" : "发布成功",
         icon: "success",
       });
-      // 进入上一页
       navigate(-1);
     }
   };
 
   return (
     <>
-      <NavHeader title="发布记录" back={<IoIosArrowBack size={22} />} />
+      <NavHeader
+        title={isEditMode ? "编辑记录" : "发布记录"}
+        back={<IoIosArrowBack size={22} />}
+      />
       <AddTimelineContainer>
         {/* 内容输入 */}
         <ContentCard>
@@ -363,7 +430,9 @@ function AddTimeLine() {
         </TimeRow>
 
         {/* 发布按钮 */}
-        <PublishButton onClick={handPublishTimeline}>发布</PublishButton>
+        <PublishButton onClick={handPublishTimeline}>
+          {isEditMode ? "保存" : "发布"}
+        </PublishButton>
       </AddTimelineContainer>
 
       {/* 发布时间 */}
@@ -415,4 +484,4 @@ function AddTimeLine() {
   );
 }
 
-export default AddTimeLine;
+export default TimelineForm;

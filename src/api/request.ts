@@ -4,7 +4,7 @@ import axios, {
   type AxiosResponse,
   type InternalAxiosRequestConfig,
 } from "axios";
-import { useNavigate } from "react-router-dom";
+import { navigateTo } from "@/utils";
 
 /** 统一响应数据结构 */
 export interface ApiResponse<T = unknown> {
@@ -52,10 +52,14 @@ instance.interceptors.response.use(
   (error) => {
     // HTTP 错误
     const status = error.response?.status;
-    const navigate = useNavigate();
     if (status === 401) {
       localStorage.removeItem("token");
-      navigate("/login");
+      localStorage.removeItem("userInfo");
+      Toast.show({
+        title: error.response?.data.message || "登录过期",
+        icon: "fail",
+      });
+      navigateTo("/login");
     } else if (status === 400) {
       // 业务逻辑错误，提示用户
       Toast.show({
