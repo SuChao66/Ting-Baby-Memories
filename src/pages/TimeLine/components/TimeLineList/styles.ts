@@ -9,7 +9,7 @@ export const TimelineWrapper = styled.div`
   gap: ${vw(16)};
   flex: 1;
   overflow: auto;
-  padding: ${vw(24)} ${vw(0)};
+  padding: ${vw(24)} ${vw(0)} ${vw(0)} ${vw(0)};
   box-sizing: border-box;
   border-radius: ${vw(12)};
 `;
@@ -61,4 +61,12 @@ export const DateLabel = styled.div`
     background: #ff6b8a;
     z-index: 1;
   }
+`;
+
+/** 加载更多提示 */
+export const LoadMoreTip = styled.div`
+  text-align: center;
+  font-size: ${vw(12)};
+  color: #00000073;
+  padding: ${vw(8)} 0;
 `;

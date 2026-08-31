@@ -1,6 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 // 导入样式
-import { TimelineWrapper, TimelineGroup, DateLabel } from "./styles";
+import {
+  TimelineWrapper,
+  TimelineGroup,
+  DateLabel,
+  LoadMoreTip,
+} from "./styles";
 // 导入组件
 import Empty from "@/baseUI/empty";
 import TimeLineCard from "../TimeLineCard";
@@ -13,13 +18,18 @@ import { TimeLineContext } from "@/context";
 // 导入工具函数
 import { getTodayDate } from "@/utils";
 
+const PAGE_SIZE = 10;
+// 滚动触底阈值（px）
+const SCROLL_THRESHOLD = 80;
+
 function TimeLineList(props: { id: string }) {
   const { id } = props;
-  const [pagination] = useState({
-    page: 1,
-    pageSize: 10,
-  });
-  const [, setTotal] = useState(0);
+  // 分页状态
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  // 累积所有页的原始数据，分页加载后重新分组
+  const allItemsRef = useRef<ITimelineItem[]>([]);
   // 刷新获取记录列表
   const [refreshKey, setRefreshKey] = useState(0);
   // 今天日期
@@ -29,20 +39,36 @@ function TimeLineList(props: { id: string }) {
     (state) => state,
   );
 
+  // 初始加载 & 刷新
   useEffect(() => {
-    getTimeLineLists();
+    allItemsRef.current = [];
+    setPage(1);
+    setHasMore(true);
+    loadList(1, true);
   }, [refreshKey]);
 
-  // 获取列表
-  const getTimeLineLists = async () => {
-    const params = {
-      babyId: id,
-      page: pagination.page,
-      pageSize: pagination.pageSize,
-    };
-    const res = await getTimeLineList(params);
-    setTotal(res.total);
-    handleData(res.data);
+  // 加载某一页数据
+  // isReset: 是否重新加载
+  const loadList = async (pageNum: number, isReset: boolean) => {
+    if (loading) return;
+    setLoading(true);
+    try {
+      const params = {
+        babyId: id,
+        page: pageNum,
+        pageSize: PAGE_SIZE,
+      };
+      const res = await getTimeLineList(params);
+      const list = res?.data || [];
+      // 累积原始数据（重置时替换，翻页时拼接）
+      allItemsRef.current = isReset ? list : [...allItemsRef.current, ...list];
+      // 已加载数量 >= 总数，说明没有更多了
+      setHasMore(allItemsRef.current.length < res.total);
+      // 基于全量数据重新分组
+      handleData(allItemsRef.current);
+    } finally {
+      setLoading(false);
+    }
   };
 
   // 处理数据 - 按日期分组
@@ -86,10 +112,21 @@ function TimeLineList(props: { id: string }) {
     setTimelineList(result);
   };
 
+  // 滚动触底加载下一页
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
+    const distanceToBottom = scrollHeight - scrollTop - clientHeight;
+    if (distanceToBottom < SCROLL_THRESHOLD && hasMore && !loading) {
+      const nextPage = page + 1;
+      setPage(nextPage);
+      loadList(nextPage, false);
+    }
+  };
+
   return (
     <>
       <TimeLineContext.Provider value={{ refreshKey, setRefreshKey }}>
-        <TimelineWrapper>
+        <TimelineWrapper onScroll={handleScroll}>
           {timeLineList.length > 0 ? (
             (timeLineList as unknown as ITimelineGroup[]).map(
               (group, gIndex) => (
@@ -105,6 +142,11 @@ function TimeLineList(props: { id: string }) {
             )
           ) : (
             <Empty text="暂无记录" />
+          )}
+          {timeLineList.length > 0 && (
+            <LoadMoreTip>
+              {loading ? "加载中..." : hasMore ? "" : "没有更多了"}
+            </LoadMoreTip>
           )}
         </TimelineWrapper>
       </TimeLineContext.Provider>
