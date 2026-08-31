@@ -74,7 +74,7 @@ function TimelineForm() {
 
   const { year, month, day, hour, minute } = getTodayDate();
   const { babyId, setBabyId } = useBabyStore((state) => state);
-  const imageRef = useRef();
+  const imageRef = useRef<HTMLInputElement>(null);
   // 已选择的标签
   const { selectedTags, setSelectedTags } = useTagStore((state) => state);
   const { addTimeline, editTimeline, getTimeLineInfo } = useTimelineStore(

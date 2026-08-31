@@ -19,6 +19,7 @@ function NicknameDialog(props: DialogProps) {
 
   // 确认修改昵称
   const handleNicknameConfirm = async () => {
+    if (!userInfo) return;
     if (!nickname.trim()) {
       Toast.show({ title: "昵称不能为空", icon: "warn" });
       throw new Error("昵称不能为空");

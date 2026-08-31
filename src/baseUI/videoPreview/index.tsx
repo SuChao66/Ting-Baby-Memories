@@ -4,7 +4,7 @@ import { vw } from "@/utils";
 
 interface IProps {
   videoPreviewUrl: string;
-  setVideoPreviewUrl: (url: string) => void;
+  setVideoPreviewUrl: (url: string | null) => void;
 }
 
 function VideoPreview(props: IProps) {

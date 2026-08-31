@@ -59,7 +59,8 @@ function TimeLineList(props: { id: string }) {
         pageSize: PAGE_SIZE,
       };
       const res = await getTimeLineList(params);
-      const list = res?.data || [];
+      if (!res) return;
+      const list = res.data || [];
       // 累积原始数据（重置时替换，翻页时拼接）
       allItemsRef.current = isReset ? list : [...allItemsRef.current, ...list];
       // 已加载数量 >= 总数，说明没有更多了

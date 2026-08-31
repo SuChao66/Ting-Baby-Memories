@@ -44,7 +44,7 @@ function Menu(props: IProps) {
   const { record } = props;
   const navigate = useNavigate();
   // 使用context
-  const { setRefreshKey } = useContext(TimeLineContext);
+  const { setRefreshKey } = useContext(TimeLineContext)!;
 
   const { userInfo } = useUserStore((state) => state);
   const { deleteTimeLine, publishComment } = useTimelineStore((state) => state);
@@ -59,12 +59,12 @@ function Menu(props: IProps) {
     {
       key: "edit",
       icon: AiOutlineEdit,
-      isShow: record.userInfo._id === userInfo._id,
+      isShow: record.userInfo._id === userInfo?._id,
     },
     {
       key: "delete",
       icon: AiOutlineDelete,
-      isShow: record.userInfo._id === userInfo._id,
+      isShow: record.userInfo._id === userInfo?._id,
     },
     {
       key: "comment",

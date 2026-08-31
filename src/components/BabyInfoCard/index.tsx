@@ -28,10 +28,11 @@ function BabyInfoCard(props: IProps) {
   const { id } = props;
   const { getBabyInfo } = useBabyStore((state) => state);
   // baby个人信息
-  const [babeInfo, setBabyInfo] = useState<IBabyItem>(null);
+  const [babeInfo, setBabyInfo] = useState<IBabyItem | null>(null);
 
   useEffect(() => {
-    getBabyInfo({ id }).then((data: IBabyItem) => {
+    getBabyInfo({ id }).then((data) => {
+      if (!data) return;
       setBabyInfo(data);
     });
   }, []);

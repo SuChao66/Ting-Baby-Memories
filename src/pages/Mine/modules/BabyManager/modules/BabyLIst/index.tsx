@@ -45,7 +45,7 @@ function BabyList() {
   useEffect(() => {
     // 获取宝宝列表
     getBabyList().then((data) => {
-      setBabies(data);
+      setBabies(data || []);
     });
   }, []);
 
@@ -100,11 +100,11 @@ function BabyList() {
 
   // 删除宝宝档案
   const handleDelete = async () => {
-    const ok = await deleteBaby({ id: openId });
+    const ok = await deleteBaby({ id: openId! });
     if (ok) {
       // 获取宝宝列表
       getBabyList().then((data) => {
-        setBabies(data);
+        setBabies(data || []);
       });
     }
   };

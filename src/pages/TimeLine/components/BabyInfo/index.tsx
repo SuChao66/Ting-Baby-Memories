@@ -26,10 +26,11 @@ function BabyInfo(props: { id: string }) {
   const { getBabyInfo } = useBabyStore((state) => state);
   const { id } = props;
   const navigate = useNavigate();
-  const [babeInfo, setBabyInfo] = useState<IBabyItem>(null);
+  const [babeInfo, setBabyInfo] = useState<IBabyItem | null>(null);
 
   useEffect(() => {
-    getBabyInfo({ id }).then((data: IBabyItem) => {
+    getBabyInfo({ id }).then((data) => {
+      if (!data) return;
       setBabyInfo(data);
     });
   }, []);

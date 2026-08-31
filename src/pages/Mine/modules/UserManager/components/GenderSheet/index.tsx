@@ -19,8 +19,9 @@ function GenderSheet(props: DialogProps) {
     _item: Record<string, string | boolean>,
     index: number,
   ) => {
+    if (!userInfo) return;
     const success = await updateUserInfo({
-      id: userInfo?._id,
+      id: userInfo._id,
       gender: index === 0 ? 1 : 0,
     });
     if (!success) {

@@ -46,7 +46,7 @@ export interface BabyState {
   hasBaby: () => Promise<boolean>;
   getBabyList: () => Promise<IBabyItem[]>;
   addBaby: (data: IBabyInfo) => Promise<boolean>;
-  getBabyInfo: (data: { id: string }) => Promise<IBabyItem>;
+  getBabyInfo: (data: { id: string }) => Promise<IBabyItem | undefined>;
   updateBabyInfo: (
     data: Partial<IBabyInfo> & { id: string },
   ) => Promise<boolean>;
@@ -71,7 +71,7 @@ export interface TimelineState {
   editTimeline: (params: ITimelineReq) => Promise<boolean>;
   getTimeLineList: (
     params: IPagination & { babyId: string },
-  ) => Promise<ITimelineRes>;
+  ) => Promise<ITimelineRes | undefined>;
   deleteTimeLine: (id: string) => Promise<boolean>;
   getTimeLineInfo: (id: string) => Promise<ITimelineItem>;
   publishComment: (params: ICommentReq) => Promise<boolean>;

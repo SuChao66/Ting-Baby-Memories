@@ -38,8 +38,8 @@ function TimeLineCard(props: IProps) {
   // 预览
   const [previewVisible, setPreviewVisible] = useState(false);
   const [previewIndex, setPreviewIndex] = useState(0);
-  const [videoPreviewUrl, setVideoPreviewUrl] = useState("");
-  const [files, setFiles] = useState([]);
+  const [videoPreviewUrl, setVideoPreviewUrl] = useState<string | null>(null);
+  const [files, setFiles] = useState<IFile[]>([]);
 
   // 点击文件预览
   const handlePreview = (files: IFile[], index: number) => {
@@ -60,7 +60,7 @@ function TimeLineCard(props: IProps) {
   // 用户与宝宝的关系
   const releationName = RELATION_OPTIONS.find(
     (item) => item.value === record.userInfo.relation,
-  ).name;
+  )?.name;
 
   return (
     <>

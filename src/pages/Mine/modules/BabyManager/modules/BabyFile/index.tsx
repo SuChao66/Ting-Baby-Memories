@@ -68,7 +68,7 @@ function BabyFile() {
 
   // 获取宝宝信息
   const getBabyInfos = () => {
-    getBabyInfo({ id }).then((data) => {
+    getBabyInfo({ id: id! }).then((data) => {
       if (!data) return;
       setBabyForm({
         nickname: data.nickname || "",

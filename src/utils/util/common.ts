@@ -24,7 +24,8 @@ export const formatBirthday = (value?: Date | string | null) => {
 };
 
 // 获取宝宝的年龄，不足一周岁按天显示
-export const getBabyAge = (birthday: Date) => {
+export const getBabyAge = (birthday?: Date | string | null) => {
+  if (!birthday) return "";
   const now = new Date();
   const birth = new Date(birthday);
   if (Number.isNaN(birth.getTime())) return "";

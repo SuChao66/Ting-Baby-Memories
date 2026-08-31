@@ -129,7 +129,7 @@ function UserManager() {
           <RowValue>
             {avatarUrl || userInfo?.avatarUrl ? (
               <RowAvatar>
-                <img src={avatarUrl} alt="头像" className="avatar" />
+                <img src={avatarUrl || undefined} alt="头像" className="avatar" />
               </RowAvatar>
             ) : (
               <RowAvatar>

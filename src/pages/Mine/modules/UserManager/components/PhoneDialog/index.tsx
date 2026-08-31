@@ -22,6 +22,7 @@ function PhoneDialog(props: DialogProps) {
   // 注意: NutUI Dialog 在 onConfirm 正常返回后会自动触发 onClose 关闭弹窗，
   // 校验失败或接口失败时需 reject(throw)，弹窗才会保持打开
   const handlePhoneConfirm = async () => {
+    if (!userInfo) return;
     if (!phone.trim()) {
       Toast.show({ title: "手机号不能为空", icon: "warn" });
       throw new Error("手机号不能为空");

@@ -21,7 +21,7 @@ function TimeLine() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    setBabyId(id);
+    setBabyId(id!);
   }, []);
 
   // 进入发布记录页面
@@ -34,10 +34,10 @@ function TimeLine() {
       <NavHeader title="成长轨迹" back={<IoIosArrowBack size={22} />} />
       <TimeLineContainer>
         {/* 宝宝信息横幅 */}
-        <BabyInfo id={id} />
+        <BabyInfo id={id!} />
 
         {/* 时间线 */}
-        <TimeLineList id={id} />
+        <TimeLineList id={id!} />
 
         {/* 悬浮发布按钮 */}
         <FloatButton onClick={handleAddTimeLine}>

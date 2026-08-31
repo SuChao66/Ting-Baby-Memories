@@ -28,11 +28,11 @@ function BabyCenter() {
       <NavHeader title="宝宝个人中心" back={<IoIosArrowBack size={22} />} />
       <BabyCenterContainer>
         {/* 宝宝信息横幅 */}
-        <BabyInfoCard id={id} />
+        <BabyInfoCard id={id!} />
         {/* 亲友邀请区域 */}
         <InviteCard />
         {/* 功能菜单网格 */}
-        <MenuCard id={id} />
+        <MenuCard id={id!} />
         {/* 宝宝档案卡片 */}
         <ArchiveCard>
           <CardRow onClick={handleToBabyFile}>

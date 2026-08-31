@@ -76,7 +76,7 @@ function TagManager() {
   };
 
   // 删除标签
-  const handleDeleteTag = (event, id: string) => {
+  const handleDeleteTag = (event: React.MouseEvent, id: string) => {
     // 防止事件冒泡
     event.stopPropagation();
     if (!id) return;

@@ -160,21 +160,21 @@ export const useUserStore = create<UserState>((set) => ({
         title: "请输入原密码",
         icon: "warn",
       });
-      return;
+      return false;
     }
     if (!newPassword) {
       Toast.show({
         title: "请输入新密码",
         icon: "warn",
       });
-      return;
+      return false;
     }
     if (!confirmPassword) {
       Toast.show({
         title: "请再次输入新密码",
         icon: "warn",
       });
-      return;
+      return false;
     }
     // 校验密码强度
     if (!PASSWORD_REGEX.test(newPassword)) {
@@ -182,7 +182,7 @@ export const useUserStore = create<UserState>((set) => ({
         title: "密码至少6位，需包含大小写字母、数字和特殊字符",
         icon: "warn",
       });
-      return;
+      return false;
     }
     // 判断两次密码是否一致
     if (newPassword !== confirmPassword) {
@@ -190,7 +190,7 @@ export const useUserStore = create<UserState>((set) => ({
         title: "两次输入密码不一致",
         icon: "warn",
       });
-      return;
+      return false;
     }
     const { code } = await changePasswordApi({
       oldPassword,

@@ -31,6 +31,7 @@ export const useBabyStore = create<BabyState>((set, get) => ({
       get().setBabyId(defaultBabyId);
       return data;
     }
+    return [];
   },
   // 新增宝宝信息
   addBaby: async (babyForm: IBabyInfo) => {
