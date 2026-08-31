@@ -76,7 +76,10 @@ function TagManager() {
   };
 
   // 删除标签
-  const handleDeleteTag = (id: string) => {
+  const handleDeleteTag = (event, id: string) => {
+    // 防止事件冒泡
+    event.stopPropagation();
+    if (!id) return;
     deleteTag(id).then((success) => {
       if (success) {
         getTagsList();
@@ -123,7 +126,7 @@ function TagManager() {
                   onClick={() => handleSelectTag(tag.name)}
                 >
                   <span className="tag-name">{tag.name}</span>
-                  <TagDelete onClick={() => handleDeleteTag(tag._id)}>
+                  <TagDelete onClick={(e) => handleDeleteTag(e, tag._id)}>
                     <AiOutlineClose size={vw(12)} />
                   </TagDelete>
                 </TagPill>

@@ -10,6 +10,8 @@ import { useTimelineStore } from "@/store";
 import type { ITimelineItem, ITimelineGroup } from "@/interface/timeline";
 // 导入context
 import { TimeLineContext } from "@/context";
+// 导入工具函数
+import { getTodayDate } from "@/utils";
 
 function TimeLineList(props: { id: string }) {
   const { id } = props;
@@ -20,7 +22,9 @@ function TimeLineList(props: { id: string }) {
   const [, setTotal] = useState(0);
   // 刷新获取记录列表
   const [refreshKey, setRefreshKey] = useState(0);
-
+  // 今天日期
+  const { year, month, day } = getTodayDate();
+  const todayKey = `${year}年${month}月${day}日`;
   const { timeLineList, getTimeLineList, setTimelineList } = useTimelineStore(
     (state) => state,
   );
@@ -90,7 +94,9 @@ function TimeLineList(props: { id: string }) {
             (timeLineList as unknown as ITimelineGroup[]).map(
               (group, gIndex) => (
                 <TimelineGroup key={gIndex}>
-                  <DateLabel>{group.date}</DateLabel>
+                  <DateLabel>
+                    {group.date === todayKey ? "今日" : group.date}
+                  </DateLabel>
                   {group.records.map((record, rIndex) => (
                     <TimeLineCard record={record} key={rIndex} />
                   ))}

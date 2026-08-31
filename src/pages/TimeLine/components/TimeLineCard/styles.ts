@@ -1,5 +1,7 @@
 import styled from "styled-components";
 import { vw } from "@/utils";
+// 导入常量
+import { RELATION_COLORS } from "@/enums";
 
 /** 时间线条目 */
 export const TimelineItem = styled.div`
@@ -32,24 +34,61 @@ export const RecordCard = styled.div`
   box-shadow: 0 ${vw(2)} ${vw(12)} rgba(255, 107, 138, 0.08);
 `;
 
-/** 记录头部 */
-export const RecordHeader = styled.div`
+/** 发布者信息 */
+export const UserInfo = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: ${vw(8)};
+  gap: ${vw(8)};
+  margin-bottom: ${vw(10)};
+`;
+
+/** 发布者头像 */
+export const Avatar = styled.img`
+  width: ${vw(28)};
+  height: ${vw(28)};
+  border-radius: 50%;
+  object-fit: cover;
+  background: #f5f5f5;
+`;
+
+/** 发布者昵称 */
+export const UserName = styled.span`
+  font-size: ${vw(12)};
+  color: #2d2d2d;
+  font-weight: 500;
+`;
+
+export const RelationTag = styled.span<{ $variant?: string }>`
+  font-size: ${vw(10)};
+  color: ${({ $variant }) =>
+    RELATION_COLORS[$variant ?? "other"]?.color ?? RELATION_COLORS.other.color};
+  background: ${({ $variant }) =>
+    RELATION_COLORS[$variant ?? "other"]?.bg ?? RELATION_COLORS.other.bg};
+  padding: ${vw(1)} ${vw(10)};
+  border-radius: ${vw(99)};
+`;
+
+/** 头部右侧（时间 + 大事件） */
+export const HeaderRight = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${vw(6)};
+  margin-left: auto;
 `;
 
 /** 记录时间 */
 export const RecordTime = styled.span`
   font-size: ${vw(12)};
   color: #00000073;
+  font-weight: 500;
 `;
 
 /** 标签容器 */
 export const TagWrap = styled.div`
+  margin-top: ${vw(12)};
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: ${vw(6)};
 `;
 

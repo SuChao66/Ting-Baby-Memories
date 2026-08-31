@@ -6,6 +6,7 @@ import type {
   ITimelineReq,
   IPagination,
   ITimelineRes,
+  ICommentReq,
 } from "@/interface/timeline";
 
 /** 发布记录 */
@@ -37,4 +38,9 @@ export function getTimeLineInfoApi(params: { id: string }) {
 /** 删除记录 */
 export function deleteTimeLineApi(params: { id: string }) {
   return del<string>("/api/v1/timeline/delete", params);
+}
+
+/** 发表评论 */
+export function publishCommentApi(params: ICommentReq) {
+  return post<any>("/api/v1/timeline/comment", params);
 }

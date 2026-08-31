@@ -6,7 +6,11 @@ import type { ITimelineGroupRecord, IFile } from "@/interface/timeline";
 import {
   TimelineItem,
   RecordCard,
-  RecordHeader,
+  UserInfo,
+  Avatar,
+  UserName,
+  RelationTag,
+  HeaderRight,
   RecordTime,
   TagWrap,
   RecordTag,
@@ -17,9 +21,12 @@ import {
 } from "./styles";
 // 导入图标
 import { AiOutlinePlayCircle, AiOutlinePicture } from "react-icons/ai";
+import { MdStars } from "react-icons/md";
 // 导入组件
 import VideoPreview from "@/baseUI/videoPreview";
 import Menu from "../Menu";
+// 导入常量
+import { RELATION_OPTIONS } from "@/enums";
 
 interface IProps {
   record: ITimelineGroupRecord;
@@ -50,18 +57,30 @@ function TimeLineCard(props: IProps) {
     }
   };
 
+  // 用户与宝宝的关系
+  const releationName = RELATION_OPTIONS.find(
+    (item) => item.value === record.userInfo.relation,
+  ).name;
+
   return (
     <>
       <TimelineItem>
         <RecordCard>
-          <RecordHeader>
-            <RecordTime>{record.time}</RecordTime>
-            <TagWrap>
-              {record.tags.map((tag, tIndex) => (
-                <RecordTag key={tIndex}>{tag}</RecordTag>
-              ))}
-            </TagWrap>
-          </RecordHeader>
+          <UserInfo>
+            <Avatar src={record.userInfo.avatarUrl} alt="发布者头像" />
+            <UserName>{record.userInfo.nickname}</UserName>
+            {record.userInfo.relation && (
+              <RelationTag $variant={record.userInfo.relation}>
+                {releationName}
+              </RelationTag>
+            )}
+            <HeaderRight>
+              <RecordTime>{record.time}</RecordTime>
+              {record.isMilestone && (
+                <MdStars size={vw(18)} style={{ color: "#ff6b8a" }} />
+              )}
+            </HeaderRight>
+          </UserInfo>
           <RecordContent>{record.content}</RecordContent>
           {record.files.length > 0 && (
             <ImageGrid>
@@ -95,6 +114,11 @@ function TimeLineCard(props: IProps) {
               ))}
             </ImageGrid>
           )}
+          <TagWrap>
+            {record.tags.map((tag, tIndex) => (
+              <RecordTag key={tIndex}>{tag}</RecordTag>
+            ))}
+          </TagWrap>
           {/* 操作栏 */}
           <Menu record={record} />
         </RecordCard>

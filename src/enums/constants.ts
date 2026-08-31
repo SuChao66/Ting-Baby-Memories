@@ -67,3 +67,11 @@ export const USER_AND_BABY_RELATION = {
   GRAND_PARENT: "grandparent",
   OTHER: "other",
 };
+
+/** 发布者关系标签 */
+export const RELATION_COLORS: Record<string, { color: string; bg: string }> = {
+  mother: { color: "#ff6b8a", bg: "#fff0f3" },
+  father: { color: "#3b82f6", bg: "#e8f1ff" },
+  grandparent: { color: "#f59e0b", bg: "#fff5e6" },
+  other: { color: "#6b7280", bg: "#f3f4f6" },
+};

@@ -47,10 +47,13 @@ function Menu(props: IProps) {
   const { setRefreshKey } = useContext(TimeLineContext);
 
   const { userInfo } = useUserStore((state) => state);
-  const { deleteTimeLine } = useTimelineStore((state) => state);
+  const { deleteTimeLine, publishComment } = useTimelineStore((state) => state);
   // 是否显示评论区
   const [isShowComment, setIsShowComment] = useState(false);
   const [visible, setVisible] = useState(false);
+
+  // 评论内容
+  const [commentContent, setCommentContet] = useState("");
 
   const operationBtns: IBtnOptions[] = [
     {
@@ -99,6 +102,26 @@ function Menu(props: IProps) {
     }
   };
 
+  // 发表评论
+  const handlePublishComment = async () => {
+    const params = {
+      id: record._id,
+      comment: {
+        releation: record.userInfo.relation,
+        content: commentContent,
+      },
+    };
+    const ok = await publishComment(params);
+    if (ok) {
+      Toast.show({
+        title: "发布成功",
+        icon: "success",
+      });
+      setIsShowComment(false);
+      setRefreshKey((prev: number) => prev + 1); // 改变 key 触发刷新
+    }
+  };
+
   return (
     <>
       {/* 评论区 */}
@@ -106,9 +129,12 @@ function Menu(props: IProps) {
         <CommentSection>
           {record.comments.map((comment, cIndex) => (
             <CommentItem key={cIndex}>
-              <CommentAvatar src={comment.avatar} alt="用户头像" />
+              <CommentAvatar
+                src={comment?.userInfo?.avatarUrl}
+                alt="用户头像"
+              />
               <CommentBody>
-                <CommentUser>{comment.userName}</CommentUser>
+                <CommentUser>{comment?.userInfo?.nickname}</CommentUser>
                 <CommentText>{comment.content}</CommentText>
               </CommentBody>
             </CommentItem>
@@ -132,8 +158,16 @@ function Menu(props: IProps) {
       {/* 评论输入区 */}
       {isShowComment && (
         <CommentInputWrap>
-          <CommentInput placeholder="写下你的评论..." />
-          <IoIosSend size={vw(22)} style={{ color: "#ff6b8a" }} />
+          <CommentInput
+            value={commentContent}
+            onChange={(val) => setCommentContet(val.target.value)}
+            placeholder="写下你的评论..."
+          />
+          <IoIosSend
+            size={vw(22)}
+            style={{ color: "#ff6b8a" }}
+            onClick={handlePublishComment}
+          />
         </CommentInputWrap>
       )}
 

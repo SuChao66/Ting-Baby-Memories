@@ -7,6 +7,7 @@ import type {
   ITimelineRes,
   ITimelineGroup,
   ITimelineItem,
+  ICommentReq,
 } from "@/interface/timeline";
 
 // 定义用户状态类型
@@ -73,4 +74,5 @@ export interface TimelineState {
   ) => Promise<ITimelineRes>;
   deleteTimeLine: (id: string) => Promise<boolean>;
   getTimeLineInfo: (id: string) => Promise<ITimelineItem>;
+  publishComment: (params: ICommentReq) => Promise<boolean>;
 }

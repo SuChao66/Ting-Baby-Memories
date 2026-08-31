@@ -74,3 +74,13 @@ export interface ITimelineGroup {
   date: string;
   records: ITimelineGroupRecord[];
 }
+
+export interface IComment {
+  releation: string;
+  content: string;
+}
+
+export interface ICommentReq {
+  id: string;
+  comment: IComment;
+}

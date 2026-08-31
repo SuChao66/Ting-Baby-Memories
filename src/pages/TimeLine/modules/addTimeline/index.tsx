@@ -55,9 +55,9 @@ import { getPresignedUrlApi } from "@/api/upload";
 // 导入常量
 import { visibilityOptions, NUMBER, ONN_B } from "@/enums";
 
-// 模块级缓存：编辑时保存表单状态，避免从标签页返回时重新请求覆盖
-let editFormCache: {
-  timelineId: string;
+// 模块级缓存：保存表单状态，避免从标签页返回时数据丢失
+let formCache: {
+  cacheKey: string;
   content: string;
   files: IFile[];
   datetime: Date;
@@ -102,19 +102,20 @@ function TimelineForm() {
   const [previewIndex, setPreviewIndex] = useState(0);
   const [videoPreviewUrl, setVideoPreviewUrl] = useState<string | null>(null);
 
-  // 编辑模式：获取记录详情
+  // 获取记录详情 / 从缓存恢复
   useEffect(() => {
-    if (!isEditMode) return;
-    // 从标签页返回：命中缓存则直接恢复，不重新请求
-    if (editFormCache && editFormCache.timelineId === timelineId) {
-      setContent(editFormCache.content);
-      setFiles(editFormCache.files);
-      setDateTime(editFormCache.datetime);
-      setIsMilestone(editFormCache.isMilestone);
-      setVisibilityRoles(editFormCache.visibleRoles);
+    const cacheKey = timelineId || "add";
+    // 从标签页返回：命中缓存则直接恢复
+    if (formCache && formCache.cacheKey === cacheKey) {
+      setContent(formCache.content);
+      setFiles(formCache.files);
+      setDateTime(formCache.datetime);
+      setIsMilestone(formCache.isMilestone);
+      setVisibilityRoles(formCache.visibleRoles);
       return;
     }
-    // 首次进入：请求数据
+    // 编辑模式首次进入：请求数据
+    if (!isEditMode) return;
     getTimeLineInfo(timelineId).then((data) => {
       setContent(data.content);
       setIsMilestone(data.isMilestone);
@@ -127,11 +128,10 @@ function TimelineForm() {
     });
   }, []);
 
-  // 编辑模式：同步表单状态到缓存
+  // 同步表单状态到缓存
   useEffect(() => {
-    if (!isEditMode) return;
-    editFormCache = {
-      timelineId,
+    formCache = {
+      cacheKey: timelineId || "add",
       content,
       files,
       datetime,
@@ -289,8 +289,8 @@ function TimelineForm() {
       ? await editTimeline(params)
       : await addTimeline(params);
     if (success) {
-      // 编辑模式：清除缓存
-      if (isEditMode) editFormCache = null;
+      // 清除缓存
+      formCache = null;
       Toast.show({
         title: isEditMode ? "更新成功" : "发布成功",
         icon: "success",
@@ -380,8 +380,8 @@ function TimelineForm() {
                     </TagClose>
                   </TagItem>
                 ))}
-              <TagHeader>
-                <CiShoppingTag onClick={handleToTagManager} />
+              <TagHeader onClick={handleToTagManager}>
+                <CiShoppingTag />
                 <TagTitle>标签</TagTitle>
               </TagHeader>
             </TagSection>

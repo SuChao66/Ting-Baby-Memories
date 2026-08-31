@@ -5,6 +5,7 @@ import type {
   ITimelineReq,
   IPagination,
   ITimelineGroup,
+  ICommentReq,
 } from "@/interface/timeline";
 // 导入接口
 import {
@@ -13,6 +14,7 @@ import {
   getTimeLineListApi,
   deleteTimeLineApi,
   getTimeLineInfoApi,
+  publishCommentApi,
 } from "@/api";
 
 export const useTimelineStore = create<TimelineState>((set) => ({
@@ -48,5 +50,10 @@ export const useTimelineStore = create<TimelineState>((set) => ({
     if (code === 0) {
       return data;
     }
+  },
+  // 发布记录
+  publishComment: async (params: ICommentReq) => {
+    const { code } = await publishCommentApi(params);
+    return code === 0 ? true : false;
   },
 }));
