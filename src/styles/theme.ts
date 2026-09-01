@@ -7,8 +7,8 @@ export const theme = {
     textH: "#08060d",
     textSecondary: "#646566",
     border: "#fff0f3",
-    primaryColor: "#236eff",
-    primaryColorLight: "#236eff1a",
+    primaryColor: "#ff6b8a",
+    primaryColorLight: "#ff6b8a1a",
   },
 } as const;
 

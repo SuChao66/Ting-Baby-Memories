@@ -14,6 +14,7 @@ export const GlobalStyle = createGlobalStyle<{ theme?: Theme }>`
   html, body {
     margin: 0;
     padding: 0;
+    overflow: hidden;
   }
 
   body {
@@ -42,5 +43,15 @@ export const GlobalStyle = createGlobalStyle<{ theme?: Theme }>`
   .nut-navbar-title {
     font-size: ${vw(14)};
     font-weight: 600;
+  }
+
+  /* 修改进度条的主体颜色 */
+  #nprogress .bar {
+    background: ${({ theme }) => theme.colors.primaryColor} !important; /* 替换为你想要的颜色，例如主题色 */
+  }
+
+  /* 修改进度条右侧的光晕效果（保持和主体颜色一致，否则会有色差） */
+  #nprogress .peg {
+    box-shadow: 0 0 10px ${({ theme }) => theme.colors.primaryColor}, 0 0 5px ${({ theme }) => theme.colors.primaryColor} !important;
   }
 `;

@@ -41,3 +41,5 @@ dist-ssr
 
 # 文档
 doc/*
+
+dev-dist/*
