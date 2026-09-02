@@ -15,6 +15,7 @@ import {
   deleteTimeLineApi,
   getTimeLineInfoApi,
   publishCommentApi,
+  getFileListApi,
 } from "@/api";
 
 export const useTimelineStore = create<TimelineState>((set) => ({
@@ -55,5 +56,20 @@ export const useTimelineStore = create<TimelineState>((set) => ({
   publishComment: async (params: ICommentReq) => {
     const { code } = await publishCommentApi(params);
     return code === 0 ? true : false;
+  },
+  // 获取文件列表
+  getFileList: async (
+    babyId: string,
+    type: string,
+    isMonth?: boolean,
+    month?: string,
+  ) => {
+    const { code, data } = await getFileListApi({
+      babyId,
+      type,
+      isMonth: isMonth || false,
+      month,
+    });
+    return code === 0 ? data : {};
   },
 }));

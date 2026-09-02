@@ -77,3 +77,7 @@ export const copyToClipboard = async (text: string) => {
     return false;
   }
 };
+
+/** 获取 YYYY-MM 格式的月份字符串 */
+export const formatMonth = (date: Date) =>
+  `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;

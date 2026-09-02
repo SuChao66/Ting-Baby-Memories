@@ -5,3 +5,6 @@ export type Mode = (typeof LOGIN_MODE)[keyof typeof LOGIN_MODE];
 
 /** 记录可见范围  */
 export type IVisibleRoles = "public" | "family" | "private";
+
+/** 云相册筛选类型 */
+export type TabKey = "all" | "img" | "video";

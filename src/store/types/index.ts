@@ -8,6 +8,7 @@ import type {
   ITimelineGroup,
   ITimelineItem,
   ICommentReq,
+  IFileList,
 } from "@/interface/timeline";
 
 // 定义用户状态类型
@@ -79,6 +80,12 @@ export interface TimelineState {
   deleteTimeLine: (id: string) => Promise<boolean>;
   getTimeLineInfo: (id: string) => Promise<ITimelineItem>;
   publishComment: (params: ICommentReq) => Promise<boolean>;
+  getFileList: (
+    babyId: string,
+    type: string,
+    isMonth?: boolean,
+    month?: string,
+  ) => Promise<IFileList>;
 }
 
 // 定义家庭成员状态类型

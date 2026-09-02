@@ -7,6 +7,7 @@ import type {
   IPagination,
   ITimelineRes,
   ICommentReq,
+  IFileList,
 } from "@/interface/timeline";
 
 /** 发布记录 */
@@ -43,4 +44,15 @@ export function deleteTimeLineApi(params: { id: string }) {
 /** 发表评论 */
 export function publishCommentApi(params: ICommentReq) {
   return post<any>("/api/v1/timeline/comment", params);
+}
+
+/** 获取文件列表 */
+export function getFileListApi(params: {
+  babyId: string;
+  type: string;
+  isMonth?: boolean;
+  /** 按月加载的月份，格式 YYYY-MM */
+  month?: string;
+}) {
+  return post<IFileList>("/api/v1/timeline/fileList", params);
 }

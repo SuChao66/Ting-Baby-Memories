@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 // 导入图标
 import { AiOutlineInfoCircle } from "react-icons/ai";
-import { HiOutlinePlus } from "react-icons/hi";
+// import { HiOutlinePlus } from "react-icons/hi";
 // 导入样式
 import {
   InviteContainer,
@@ -13,9 +13,9 @@ import {
   InviteAvatar,
   InviteName,
   InviteVisit,
-  InviteAddBtn,
-  InviteAddIcon,
-  InviteAddText,
+  // InviteAddBtn,
+  // InviteAddIcon,
+  // InviteAddText,
 } from "./style";
 // 导入工具函数
 import { vw } from "@/utils";
@@ -57,12 +57,12 @@ function InviteCard(props: { id: string }) {
             <InviteVisit>来过{item.visitCount}次</InviteVisit>
           </InviteItem>
         ))}
-        <InviteAddBtn>
+        {/* <InviteAddBtn>
           <InviteAddIcon>
             <HiOutlinePlus size={vw(24)} />
           </InviteAddIcon>
           <InviteAddText>邀请亲友</InviteAddText>
-        </InviteAddBtn>
+        </InviteAddBtn> */}
       </InviteList>
     </InviteContainer>
   );

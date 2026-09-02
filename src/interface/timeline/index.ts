@@ -84,3 +84,7 @@ export interface ICommentReq {
   id: string;
   comment: IComment;
 }
+
+export interface IFileList {
+  [key: string]: IFile[];
+}

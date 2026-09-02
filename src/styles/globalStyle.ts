@@ -9,6 +9,8 @@ import { vw } from "@/utils";
 export const GlobalStyle = createGlobalStyle<{ theme?: Theme }>`
   * {
     box-sizing: border-box;
+    /* 移除移动端点击元素时的默认蓝色高亮 */
+    -webkit-tap-highlight-color: transparent;
   }
 
   html, body {
