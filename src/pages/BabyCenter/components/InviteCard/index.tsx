@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 // 导入图标
 import { AiOutlineInfoCircle } from "react-icons/ai";
 import { HiOutlinePlus } from "react-icons/hi";
@@ -18,14 +19,18 @@ import {
 } from "./style";
 // 导入工具函数
 import { vw } from "@/utils";
+// 导入状态管理
+import { useFamilyStore } from "@/store";
 
-// 亲友数据
-const relatives = [
-  { id: 1, name: "爸爸", visitCount: 37, lastVisit: "刚刚", avatar: "" },
-  { id: 2, name: "妈妈", visitCount: 5, lastVisit: "8-4 09:58", avatar: "" },
-];
+function InviteCard(props: { id: string }) {
+  const { id } = props;
 
-function InviteCard() {
+  const { familyList, getFamilyList } = useFamilyStore((state) => state);
+
+  useEffect(() => {
+    getFamilyList(id);
+  }, []);
+
   return (
     <InviteContainer>
       <InviteHeader>
@@ -37,21 +42,19 @@ function InviteCard() {
         </InviteTitle>
       </InviteHeader>
       <InviteList>
-        {relatives.map((item) => (
-          <InviteItem key={item.id}>
+        {familyList.map((item) => (
+          <InviteItem key={item._id}>
             <InviteAvatar>
-              {item.avatar ? (
-                <img src={item.avatar} alt={item.name} />
+              {item.userId.avatarUrl ? (
+                <img src={item.userId.avatarUrl} alt={item.nickname} />
               ) : (
                 <span style={{ fontSize: vw(18), color: "#ff6b8a" }}>
-                  {item.name.charAt(0)}
+                  {item.nickname}
                 </span>
               )}
             </InviteAvatar>
-            <InviteName>{item.name}</InviteName>
-            <InviteVisit>
-              来过{item.visitCount}次 · {item.lastVisit}
-            </InviteVisit>
+            <InviteName>{item.nickname}</InviteName>
+            <InviteVisit>来过{item.visitCount}次</InviteVisit>
           </InviteItem>
         ))}
         <InviteAddBtn>

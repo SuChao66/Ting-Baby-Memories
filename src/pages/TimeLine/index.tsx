@@ -12,16 +12,18 @@ import TimeLineList from "./components/TimeLineList";
 // 导入样式
 import { TimeLineContainer, FloatButton } from "./styles";
 // 导入store
-import { useBabyStore } from "@/store";
+import { useBabyStore, useFamilyStore } from "@/store";
 
 function TimeLine() {
   const { id } = useParams();
   const { setBabyId } = useBabyStore((state) => state);
+  const { recordVisit } = useFamilyStore((state) => state);
 
   const navigate = useNavigate();
 
   useEffect(() => {
     setBabyId(id!);
+    recordVisit(id!);
   }, []);
 
   // 进入发布记录页面

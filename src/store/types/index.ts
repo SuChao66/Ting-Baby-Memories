@@ -80,3 +80,10 @@ export interface TimelineState {
   getTimeLineInfo: (id: string) => Promise<ITimelineItem>;
   publishComment: (params: ICommentReq) => Promise<boolean>;
 }
+
+// 定义家庭成员状态类型
+export interface FamilyState {
+  familyList: any[];
+  getFamilyList: (babyId: string) => void;
+  recordVisit: (babyId: string) => void;
+}
