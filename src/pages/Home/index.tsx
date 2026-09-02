@@ -42,7 +42,7 @@ export default function Home() {
             title="提示"
             content="请先添加宝宝信息"
             visible={visible}
-            onConfirm={() => navigate("/add-baby")}
+            onConfirm={() => navigate("/baby-manager")}
             onCancel={() => {
               setVisible(false);
             }}

@@ -58,6 +58,8 @@ export const BannerInfo = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${vw(6)};
+  /* 允许子元素省略号截断生效 */
+  min-width: 0;
 `;
 
 /** 横幅昵称行 */
@@ -78,6 +80,28 @@ export const BannerName = styled.span`
 export const BannerBirthday = styled.span`
   font-size: ${vw(12)};
   color: rgba(255, 255, 255, 0.85);
+`;
+
+/** 横幅宝宝号行（过长省略，复制图标不换行） */
+export const BannerBabyNo = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${vw(4)};
+  font-size: ${vw(12)};
+  color: rgba(255, 255, 255, 0.85);
+  min-width: 0;
+
+  .no {
+    /* 宝宝号过长时省略显示 */
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .copy-icon {
+    flex-shrink: 0;
+    cursor: pointer;
+  }
 `;
 
 /** 卡片标题 */

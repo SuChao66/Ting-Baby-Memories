@@ -50,6 +50,9 @@ const BabyManager = React.lazy(
 const AddBaby = React.lazy(
   () => import("@/pages/Mine/modules/BabyManager/modules/AddBaby/index"),
 );
+const BindBaby = React.lazy(
+  () => import("@/pages/Mine/modules/BabyManager/modules/BindBaby/index"),
+);
 const BabyFile = React.lazy(
   () => import("@/pages/Mine/modules/BabyManager/modules/BabyFile/index"),
 );
@@ -99,6 +102,7 @@ export const router = createHashRouter([
           { path: "user-manager", element: React.createElement(UserManager) },
           { path: "baby-manager", element: React.createElement(BabyManager) },
           { path: "add-baby", element: React.createElement(AddBaby) },
+          { path: "bind-baby", element: React.createElement(BindBaby) },
           { path: "baby-file/:id", element: React.createElement(BabyFile) },
           {
             path: "change-password",

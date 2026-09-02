@@ -51,6 +51,10 @@ export interface BabyState {
     data: Partial<IBabyInfo> & { id: string },
   ) => Promise<boolean>;
   deleteBaby: (data: { id: string }) => Promise<boolean>;
+  bindBaby: (data: {
+    baby_no: string;
+    relation: IBabyInfo["relation"];
+  }) => Promise<boolean>;
 }
 
 // 定义标签状态类型

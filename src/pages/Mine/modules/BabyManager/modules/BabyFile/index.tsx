@@ -5,9 +5,15 @@ import { AiOutlineCamera, AiOutlineRight } from "react-icons/ai";
 import { CiEdit } from "react-icons/ci";
 import { PiBabyLight } from "react-icons/pi";
 import { IoFemale, IoMale } from "react-icons/io5";
-import { IoMdClose, IoIosArrowBack } from "react-icons/io";
+import { IoMdClose, IoIosArrowBack, IoMdCopy } from "react-icons/io";
 // 导入 vw 工具函数
-import { vw, getTodayDate, formatBirthday, compressImage } from "@/utils";
+import {
+  vw,
+  getTodayDate,
+  formatBirthday,
+  compressImage,
+  copyToClipboard,
+} from "@/utils";
 // 导入通用样式组件
 import { Card, CardRow, RowLabel, RowValue, RowArrow } from "@/styles/common";
 // 导入页面样式组件
@@ -19,6 +25,7 @@ import {
   BannerNameRow,
   BannerName,
   BannerBirthday,
+  BannerBabyNo,
   CardTitle,
   RemarkContent,
   RemarkText,
@@ -224,6 +231,15 @@ function BabyFile() {
     getBabyInfos();
   };
 
+  // 复制宝宝号（显示省略，复制完整）
+  const handleCopyBabyNo = async () => {
+    const ok = await copyToClipboard(id || "");
+    Toast.show({
+      title: ok ? "复制成功" : "复制失败",
+      icon: ok ? "success" : "fail",
+    });
+  };
+
   return (
     <>
       <NavHeader
@@ -276,6 +292,13 @@ function BabyFile() {
             <BannerBirthday>
               生日：{formatBirthday(babyForm.birthday) || "未设置"}
             </BannerBirthday>
+            <BannerBabyNo>
+              <span className="no">宝宝号：{id}</span>
+              <IoMdCopy
+                className="copy-icon"
+                onClick={() => handleCopyBabyNo()}
+              />
+            </BannerBabyNo>
           </BannerInfo>
           {isEditing && (
             <AiOutlineCamera

@@ -49,3 +49,31 @@ export const getBabyAge = (birthday?: Date | string | null) => {
   }
   return months > 0 ? `${years}岁${months}个月` : `${years}岁`;
 };
+
+// 复制文本到剪贴板，成功返回 true
+export const copyToClipboard = async (text: string) => {
+  // 优先使用 Clipboard API（要求 HTTPS 或 localhost 环境）
+  if (navigator.clipboard && window.isSecureContext) {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+  // 降级方案：execCommand（兼容 HTTP 环境或旧浏览器）
+  try {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    // 固定定位 + 透明，避免复制时页面滚动或闪烁
+    textarea.style.position = "fixed";
+    textarea.style.opacity = "0";
+    document.body.appendChild(textarea);
+    textarea.select();
+    const ok = document.execCommand("copy");
+    document.body.removeChild(textarea);
+    return ok;
+  } catch {
+    return false;
+  }
+};
