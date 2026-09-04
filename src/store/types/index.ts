@@ -75,7 +75,7 @@ export interface TimelineState {
   addTimeline: (params: ITimelineReq) => Promise<boolean>;
   editTimeline: (params: ITimelineReq) => Promise<boolean>;
   getTimeLineList: (
-    params: IPagination & { babyId: string },
+    params: IPagination & { babyId: string; isMilestone?: boolean },
   ) => Promise<ITimelineRes | undefined>;
   deleteTimeLine: (id: string) => Promise<boolean>;
   getTimeLineInfo: (id: string) => Promise<ITimelineItem>;

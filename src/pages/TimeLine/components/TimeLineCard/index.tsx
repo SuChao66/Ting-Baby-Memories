@@ -21,7 +21,6 @@ import {
 } from "./styles";
 // 导入图标
 import { AiOutlinePlayCircle, AiOutlinePicture } from "react-icons/ai";
-import { MdStars } from "react-icons/md";
 // 导入组件
 import VideoPreview from "@/baseUI/videoPreview";
 import Menu from "../Menu";
@@ -76,9 +75,6 @@ function TimeLineCard(props: IProps) {
             )}
             <HeaderRight>
               <RecordTime>{record.time}</RecordTime>
-              {record.isMilestone && (
-                <MdStars size={vw(18)} style={{ color: "#ff6b8a" }} />
-              )}
             </HeaderRight>
           </UserInfo>
           <RecordContent>{record.content}</RecordContent>

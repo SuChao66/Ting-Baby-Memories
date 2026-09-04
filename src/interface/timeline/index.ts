@@ -36,7 +36,7 @@ export interface ITimelineItem {
   isMilestone: boolean;
   publishTime: string;
   visibleRoles: string;
-  comments: any[];
+  comments: IComment[];
   createdAt: string;
   updatedAt: string;
   __v: number;
@@ -76,8 +76,14 @@ export interface ITimelineGroup {
 }
 
 export interface IComment {
-  releation: string;
+  releation?: string;
   content: string;
+  createdAt?: string;
+  userInfo?: {
+    nickname: string;
+    avatarUrl: string;
+    releation: string;
+  };
 }
 
 export interface ICommentReq {

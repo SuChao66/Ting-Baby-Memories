@@ -23,6 +23,10 @@ const CloudAlbum = React.lazy(
 const MileStone = React.lazy(
   () => import("@/pages/BabyCenter/modules/MileStone/index"),
 );
+const MileStoneDetail = React.lazy(
+  () =>
+    import("@/pages/BabyCenter/modules/MileStone/modules/MileStoneDetail/index"),
+);
 const DailyRecord = React.lazy(
   () => import("@/pages/BabyCenter/modules/DailyRecord/index"),
 );
@@ -84,6 +88,10 @@ export const router = createHashRouter([
           { path: "baby-center/:id", element: React.createElement(BabyCenter) },
           { path: "cloud-album/:id", element: React.createElement(CloudAlbum) },
           { path: "mile-stone/:id", element: React.createElement(MileStone) },
+          {
+            path: "mile-stone-detail",
+            element: React.createElement(MileStoneDetail),
+          },
           {
             path: "daily-record/:id",
             element: React.createElement(DailyRecord),

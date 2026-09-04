@@ -34,7 +34,9 @@ export const useTimelineStore = create<TimelineState>((set) => ({
     return code === 0 ? true : false;
   },
   // 获取记录
-  getTimeLineList: async (params: IPagination & { babyId: string }) => {
+  getTimeLineList: async (
+    params: IPagination & { babyId: string; isMilestone?: boolean },
+  ) => {
     const { code, data } = await getTimeLineListApi(params);
     if (code === 0) {
       return data;

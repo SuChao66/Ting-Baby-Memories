@@ -12,6 +12,8 @@ import {
   CommentText,
   CommentInputWrap,
   CommentInput,
+  MilestoneBadge,
+  ActionBtnContainer,
 } from "./styles";
 // 导入类型
 import type { ITimelineGroupRecord } from "@/interface/timeline";
@@ -22,6 +24,7 @@ import {
   AiOutlineMessage,
 } from "react-icons/ai";
 import { IoIosSend } from "react-icons/io";
+import { FaFlag } from "react-icons/fa6";
 import type { IconType } from "react-icons";
 // 导入工具函数
 import { vw } from "@/utils";
@@ -124,6 +127,32 @@ function Menu(props: IProps) {
 
   return (
     <>
+      {/* 操作栏 */}
+      <ActionBar>
+        <MilestoneBadge>
+          {record.isMilestone && (
+            <>
+              <span>大事记</span>
+              <FaFlag size={vw(12)} style={{ color: "#ff6b8a" }} />
+            </>
+          )}
+        </MilestoneBadge>
+        <ActionBtnContainer>
+          {operationBtns.map((item) => {
+            return (
+              item.isShow && (
+                <ActionButton
+                  key={item.key}
+                  onClick={() => handleBtnClick(item)}
+                >
+                  <item.icon size={vw(16)} style={{ color: "#00000073" }} />
+                </ActionButton>
+              )
+            );
+          })}
+        </ActionBtnContainer>
+      </ActionBar>
+
       {/* 评论区 */}
       {record.comments.length > 0 && (
         <CommentSection>
@@ -141,19 +170,6 @@ function Menu(props: IProps) {
           ))}
         </CommentSection>
       )}
-
-      {/* 操作栏 */}
-      <ActionBar>
-        {operationBtns.map((item) => {
-          return (
-            item.isShow && (
-              <ActionButton key={item.key} onClick={() => handleBtnClick(item)}>
-                <item.icon size={vw(16)} style={{ color: "#00000073" }} />
-              </ActionButton>
-            )
-          );
-        })}
-      </ActionBar>
 
       {/* 评论输入区 */}
       {isShowComment && (

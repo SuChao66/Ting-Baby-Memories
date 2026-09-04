@@ -7,6 +7,10 @@ import { vw } from "@/utils";
 
 /** 全局样式 */
 export const GlobalStyle = createGlobalStyle<{ theme?: Theme }>`
+  :root {
+    --nutui-switch-active-background-color: ${({ theme }) => theme.colors.primaryColor};
+  }
+
   * {
     box-sizing: border-box;
     /* 移除移动端点击元素时的默认蓝色高亮 */

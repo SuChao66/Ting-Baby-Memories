@@ -5,9 +5,30 @@ import { vw } from "@/utils";
 export const ActionBar = styled.div`
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: ${vw(4)};
-  margin-top: ${vw(6)};
   padding-top: ${vw(6)};
+`;
+
+/** 大事记 */
+export const MilestoneBadge = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: ${vw(4)};
+  border-radius: ${vw(32)};
+  background: #f5f5f5;
+  color: #00000073;
+  font-size: ${vw(12)};
+  font-weight: 400;
+  padding: ${vw(1)} ${vw(6)};
+`;
+
+/** 操作按钮容器 */
+export const ActionBtnContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${vw(4)};
 `;
 
 /** 操作按钮 */
@@ -19,8 +40,8 @@ export const ActionButton = styled.button`
 
 /** 评论区 */
 export const CommentSection = styled.div`
-  margin-top: ${vw(12)};
-  padding-top: ${vw(10)};
+  margin-top: ${vw(6)};
+  padding-top: ${vw(6)};
   border-top: 1px solid rgba(0, 0, 0, 0.06);
 `;
 
@@ -71,6 +92,7 @@ export const CommentInputWrap = styled.div`
   display: flex;
   align-items: center;
   gap: ${vw(8)};
+  margin-top: ${vw(8)};
 `;
 
 /** 评论输入框 */
@@ -78,7 +100,7 @@ export const CommentInput = styled.input`
   flex: 1;
   border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: ${vw(16)};
-  padding: ${vw(6)} ${vw(12)};
+  padding: ${vw(8)} ${vw(12)};
   font-size: ${vw(12)};
   outline: none;
   background: #fff;

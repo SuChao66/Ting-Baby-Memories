@@ -41,7 +41,6 @@ import {
   OptionLabel,
   OptionRight,
   OptionValue,
-  SwitchWrapper,
   FileTypeBadge,
 } from "./styles";
 // 导入store
@@ -58,6 +57,8 @@ import { visibilityOptions, NUMBER, ONN_B } from "@/enums";
 // 模块级缓存：保存表单状态，避免从标签页返回时数据丢失
 let formCache: {
   cacheKey: string;
+  /** 导航会话标识：仅同一会话（去标签页后返回）才恢复草稿 */
+  locationKey: string;
   content: string;
   files: IFile[];
   datetime: Date;
@@ -71,6 +72,8 @@ function TimelineForm() {
   // 通过 location.state?.id 判断是新增还是编辑模式
   const timelineId = location.state?.id;
   const isEditMode = !!timelineId;
+  // 从 location.state?.isMilestone 判断是否为大事件
+  const isMilestoneValue = location.state?.isMilestone;
 
   const { year, month, day, hour, minute } = getTodayDate();
   const { babyId, setBabyId } = useBabyStore((state) => state);
@@ -89,7 +92,8 @@ function TimelineForm() {
     new Date(year, month - 1, day, hour, minute),
   );
   // 是否标记为大事件
-  const [isMilestone, setIsMilestone] = useState(false);
+  const [isMilestone, setIsMilestone] = useState(!!isMilestoneValue);
+
   // 谁可以看
   const [visibleRoles, setVisibilityRoles] = useState<IVisibleRoles>("public");
 
@@ -105,8 +109,12 @@ function TimelineForm() {
   // 获取记录详情 / 从缓存恢复
   useEffect(() => {
     const cacheKey = timelineId || "add";
-    // 从标签页返回：命中缓存则直接恢复
-    if (formCache && formCache.cacheKey === cacheKey) {
+    // 从标签页返回：命中同一导航会话的缓存则直接恢复
+    if (
+      formCache &&
+      formCache.cacheKey === cacheKey &&
+      formCache.locationKey === location.key
+    ) {
       setContent(formCache.content);
       setFiles(formCache.files);
       setDateTime(formCache.datetime);
@@ -114,6 +122,8 @@ function TimelineForm() {
       setVisibilityRoles(formCache.visibleRoles);
       return;
     }
+    // 全新进入：清空上次遗留的已选标签
+    setSelectedTags([]);
     // 编辑模式首次进入：请求数据
     if (!isEditMode) return;
     getTimeLineInfo(timelineId).then((data) => {
@@ -132,6 +142,7 @@ function TimelineForm() {
   useEffect(() => {
     formCache = {
       cacheKey: timelineId || "add",
+      locationKey: location.key,
       content,
       files,
       datetime,
@@ -398,12 +409,11 @@ function TimelineForm() {
             />
             标记为大事件
           </OptionLabel>
-          <SwitchWrapper
-            $on={isMilestone}
-            onClick={() => setIsMilestone((v) => !v)}
-          >
-            <span />
-          </SwitchWrapper>
+          <Switch
+            disabled={isMilestoneValue}
+            checked={isMilestone}
+            onChange={(v) => setIsMilestone(v)}
+          />
         </OptionRow>
 
         {/* 谁可以看 */}

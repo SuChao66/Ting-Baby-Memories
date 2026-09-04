@@ -24,9 +24,9 @@ export function editTimeLineApi(
   return post<boolean>("/api/v1/timeline/edit", params);
 }
 
-/** 获取记录 */
+/** 获取记录（isMilestone 为 true 时仅返回大事记） */
 export function getTimeLineListApi(
-  params: IPagination,
+  params: IPagination & { babyId: string; isMilestone?: boolean },
 ): Promise<ApiResponse<ITimelineRes>> {
   return post<ITimelineRes>("/api/v1/timeline/list", params);
 }

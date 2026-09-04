@@ -81,3 +81,41 @@ export const copyToClipboard = async (text: string) => {
 /** 获取 YYYY-MM 格式的月份字符串 */
 export const formatMonth = (date: Date) =>
   `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+
+/** 计算大事记发生时宝宝的月龄 */
+export const getAgeAt = (birthday?: string | null, at?: string) => {
+  if (!birthday || !at) return "";
+  const birth = new Date(birthday);
+  const date = new Date(at);
+  let years = date.getFullYear() - birth.getFullYear();
+  let months = date.getMonth() - birth.getMonth();
+  let days = date.getDate() - birth.getDate();
+  if (days < 0) {
+    months -= 1;
+    days += new Date(date.getFullYear(), date.getMonth(), 0).getDate();
+  }
+  if (months < 0) {
+    years -= 1;
+    months += 12;
+  }
+  if (years < 0) return "";
+  // 不足一周岁按天显示
+  if (years < 1) {
+    return months < 1 ? `${days}天` : `${months}个月${days}天`;
+  }
+  return months > 0 ? `${years}岁${months}个月` : `${years}岁`;
+};
+
+/** 格式化日期：2025年3月8日 */
+export const formatDate = (dateStr: string) => {
+  const d = new Date(dateStr);
+  return `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日`;
+};
+
+/** 格式化时间：10:30 */
+export const formatTime = (timeStr: string) => {
+  const t = new Date(timeStr);
+  const hour = t.getHours() < 10 ? "0" + t.getHours() : t.getHours();
+  const minute = t.getMinutes() < 10 ? "0" + t.getMinutes() : t.getMinutes();
+  return `${hour}:${minute}`;
+};
