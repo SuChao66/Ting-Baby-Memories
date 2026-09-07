@@ -119,3 +119,10 @@ export const formatTime = (timeStr: string) => {
   const minute = t.getMinutes() < 10 ? "0" + t.getMinutes() : t.getMinutes();
   return `${hour}:${minute}`;
 };
+
+/** 获取明天的日期 */
+export const getTomorrowDate = (date?: Date) => {
+  const tomorrow = new Date(date || new Date());
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  return tomorrow;
+};

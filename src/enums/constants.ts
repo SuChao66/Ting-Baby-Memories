@@ -3,7 +3,7 @@ import type { IVisibleRoles } from "@/types";
 /** 设计稿宽度(375px) */
 export const DESIGN_WIDTH = 375;
 
-/** 登陆模式 */
+/** 登录模式 */
 export const LOGIN_MODE = {
   /** 登录 */
   LOGIN: "login",
@@ -75,3 +75,6 @@ export const RELATION_COLORS: Record<string, { color: string; bg: string }> = {
   grandparent: { color: "#f59e0b", bg: "#fff5e6" },
   other: { color: "#6b7280", bg: "#f3f4f6" },
 };
+
+/** 分页大小 */
+export const DEFAULT_PAGE_SIZE = 10;

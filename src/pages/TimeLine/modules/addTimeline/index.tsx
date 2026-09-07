@@ -244,7 +244,11 @@ function TimelineForm() {
       if (!res.ok) throw new Error("上传失败");
       setFiles([
         ...files,
-        { type: isImage ? "IMAGE" : "VIDEO", url: data.accessUrl },
+        {
+          type: isImage ? "IMAGE" : "VIDEO",
+          url: data.accessUrl,
+          fileName: file.name,
+        },
       ]);
     } catch {
       Toast.show({ title: "上传失败，请重试", icon: "fail" });

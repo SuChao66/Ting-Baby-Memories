@@ -45,6 +45,10 @@ const Teeth = React.lazy(
 const FutureMessage = React.lazy(
   () => import("@/pages/BabyCenter/modules/FutureMessage/index"),
 );
+const AddFutureMessage = React.lazy(
+  () =>
+    import("@/pages/BabyCenter/modules/FutureMessage/modules/AddFutureMessage/index"),
+);
 const UserManager = React.lazy(
   () => import("@/pages/Mine/modules/UserManager/index"),
 );
@@ -106,6 +110,10 @@ export const router = createHashRouter([
           {
             path: "future-message/:id",
             element: React.createElement(FutureMessage),
+          },
+          {
+            path: "add-future-message",
+            element: React.createElement(AddFutureMessage),
           },
           { path: "user-manager", element: React.createElement(UserManager) },
           { path: "baby-manager", element: React.createElement(BabyManager) },

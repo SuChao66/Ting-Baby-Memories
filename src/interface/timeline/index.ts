@@ -1,8 +1,9 @@
 import type { IVisibleRoles } from "@/types";
 
 export interface IFile {
-  type: "IMAGE" | "VIDEO";
+  type: "IMAGE" | "VIDEO" | "AUDIO";
   url: string;
+  fileName?: string;
 }
 
 export interface ITimelineReq {

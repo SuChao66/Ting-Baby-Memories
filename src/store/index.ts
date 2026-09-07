@@ -4,3 +4,4 @@ export { useUserStore } from "./modules/user";
 export { useTagStore } from "./modules/tags";
 export { useTimelineStore } from "./modules/timeline";
 export { useFamilyStore } from "./modules/family";
+export { useFutureMessageStore } from "./modules/futureMessage";

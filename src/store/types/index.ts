@@ -3,13 +3,17 @@ import type { IBabyInfo, IBabyItem } from "@/interface/baby";
 import type { ITag } from "@/interface/tag";
 import type {
   ITimelineReq,
-  IPagination,
   ITimelineRes,
   ITimelineGroup,
   ITimelineItem,
   ICommentReq,
   IFileList,
 } from "@/interface/timeline";
+import type { IPagination } from "@/interface/common";
+import type {
+  addFutureMessageReq,
+  IFutureMessageList,
+} from "@/interface/futureMessage";
 
 // 定义用户状态类型
 export interface UserState {
@@ -93,4 +97,14 @@ export interface FamilyState {
   familyList: any[];
   getFamilyList: (babyId: string) => void;
   recordVisit: (babyId: string) => void;
+}
+
+// 定义未来寄语状态类型
+export interface FutureMessageState {
+  getFutureMessageList: (
+    params: IPagination & { babyId: string },
+  ) => Promise<IFutureMessageList>;
+  addFutureMessage: (params: addFutureMessageReq) => Promise<boolean>;
+  updateFutureMessage: (params: addFutureMessageReq) => Promise<boolean>;
+  deleteFutureMessage: (id: string) => Promise<boolean>;
 }
