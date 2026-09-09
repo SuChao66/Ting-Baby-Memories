@@ -6,6 +6,7 @@ import { vw } from "@/utils";
 // 导入样式
 import {
   EnvelopeContainer,
+  EnvelopeBadge,
   EnvelopeFlap,
   Seal,
   EnvelopeBody,
@@ -23,6 +24,8 @@ interface IProps {
   senderName?: string;
   /** 寄件人头像地址 */
   avatarUrl?: string;
+  /** 右上角标识（如已读/未读标记） */
+  badge?: React.ReactNode;
   /** 挂载时倒放收起动画（信纸降下 -> 翻盖合上） */
   reverse?: boolean;
   /** 拆信动画结束后回调（父组件切换到完整内容） */
@@ -42,6 +45,7 @@ function Envelope(props: IProps) {
     dateText,
     senderName = "家人",
     avatarUrl,
+    badge,
     reverse = false,
     onOpenComplete,
   } = props;
@@ -79,6 +83,8 @@ function Envelope(props: IProps) {
 
   return (
     <EnvelopeContainer onClick={handleOpen}>
+      {/* 右上角标识（已读/未读等） */}
+      {badge && <EnvelopeBadge>{badge}</EnvelopeBadge>}
       {/* 顶部翻盖 */}
       <EnvelopeFlap $opened={isOpened} />
       {/* 封口蜡封 */}

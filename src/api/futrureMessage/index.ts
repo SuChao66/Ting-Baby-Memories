@@ -32,3 +32,11 @@ export const deleteFutureMessageApi = (id: string) => {
 export const getUnlockCountApi = (params: { babyId: string }) => {
   return get<number>("/api/v1/future-message/unlock-count", params);
 };
+
+// 标记未来寄语为已读
+export const markFutureMessageReadApi = (data: {
+  babyId: string;
+  messageIds: string[];
+}) => {
+  return post<string>("/api/v1/future-message/read", data);
+};

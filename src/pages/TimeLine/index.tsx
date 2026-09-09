@@ -33,14 +33,25 @@ function TimeLine() {
     // 记录访问次数（埋点）
     recordVisit(id!);
     // 获取已解锁的未来寄语数量
-    getUnlockCount({ babyId: id! }).then((count) => {
-      setUnlockCount(count);
-    });
+    getUnlockCounts();
   }, [id]);
+
+  // 获取已解锁的未来寄语数量
+  const getUnlockCounts = async () => {
+    const count = await getUnlockCount({ babyId: id! });
+    setUnlockCount(count);
+  };
 
   // 进入发布记录页面
   const handleAddTimeLine = () => {
     navigate("/add-timeline");
+  };
+
+  // 关闭弹框
+  const handleClose = () => {
+    setIsViewUnlockMessage(false);
+    // 关闭弹框后，刷新已解锁的未来寄语数量
+    getUnlockCounts();
   };
 
   return (
@@ -75,10 +86,7 @@ function TimeLine() {
       </TimeLineContainer>
       {/* 查看已解锁信件弹层 */}
       {isViewUnlockMessage && (
-        <UnlockFutureMessage
-          babyId={id!}
-          onClose={() => setIsViewUnlockMessage(false)}
-        />
+        <UnlockFutureMessage babyId={id!} onClose={handleClose} />
       )}
     </>
   );

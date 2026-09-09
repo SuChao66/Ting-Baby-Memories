@@ -37,6 +37,7 @@ import {
   LetterContent,
   CardActions,
   ActionButton,
+  ReadTag,
 } from "./styles";
 // 导入类型
 import type { IFutureMessage } from "@/interface/futureMessage";
@@ -167,6 +168,16 @@ function MessageCard(props: IProps) {
           dateText={`${formatDate(item.revealDate)} ${unlocked ? "已解锁" : "开启"}`}
           senderName={item.userInfo?.nickname || "家人"}
           avatarUrl={item.userInfo?.avatarUrl}
+          // 已解锁列表在信封右上角展示已读/未读标识
+          badge={
+            unlocked ? (
+              item.isRead ? (
+                <ReadTag>已读</ReadTag>
+              ) : (
+                <ReadTag $unread>未读</ReadTag>
+              )
+            ) : undefined
+          }
           reverse={reverseEnvelope}
           onOpenComplete={() => {
             setReverseEnvelope(false);

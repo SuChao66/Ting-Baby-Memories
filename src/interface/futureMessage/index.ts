@@ -27,6 +27,8 @@ export interface IFutureMessage {
   createdAt: string;
   updatedAt: string;
   __v: number;
+  /** 是否已读（仅已解锁列表返回，用于展示已读/未读标识） */
+  isRead?: boolean;
 }
 
 export interface UserId {

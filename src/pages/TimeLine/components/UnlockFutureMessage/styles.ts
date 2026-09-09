@@ -24,6 +24,17 @@ export const UnlockPopupCount = styled.div`
   color: #999;
 `;
 
+/** 一键已读按钮（位于关闭按钮左侧） */
+export const UnlockMarkReadBtn = styled.div`
+  position: absolute;
+  right: ${vw(44)};
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: ${vw(12)};
+  color: #ff6b8a;
+  cursor: pointer;
+`;
+
 /** 关闭弹层按钮 */
 export const UnlockCloseBtn = styled.div`
   position: absolute;

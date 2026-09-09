@@ -14,6 +14,7 @@ import {
   UnlockPopupHeader,
   UnlockPopupTitle,
   UnlockPopupCount,
+  UnlockMarkReadBtn,
   UnlockCloseBtn,
   UnlockList,
   LoadMore,
@@ -35,6 +36,9 @@ function UnlockFutureMessage(props: IProps) {
   const getFutureMessageList = useFutureMessageStore(
     (state) => state.getFutureMessageList,
   );
+  const markFutureMessageRead = useFutureMessageStore(
+    (state) => state.markFutureMessageRead,
+  );
   const getBabyInfo = useBabyStore((state) => state.getBabyInfo);
 
   // 弹层显示状态（关闭时先播放退场动画，再卸载组件）
@@ -50,9 +54,15 @@ function UnlockFutureMessage(props: IProps) {
   const loadingRef = useRef(false);
   // 宝宝生日（计算解锁那天宝宝的年龄）
   const [birthday, setBirthday] = useState<string | null>(null);
+  // 一键已读请求中
+  const [marking, setMarking] = useState(false);
+  // 是否已全部标记为已读（标记成功后隐藏按钮）
+  const [markedAll, setMarkedAll] = useState(false);
 
   // 关闭弹层：先播放退场动画（0.3s），结束后再由父组件卸载
+  // Popup 在 visible 变为 false 时还会回调一次 onClose，加守卫防止重复触发
   const handleClose = () => {
+    if (!visible) return;
     setVisible(false);
     window.setTimeout(onClose, 300);
   };
@@ -91,6 +101,24 @@ function UnlockFutureMessage(props: IProps) {
     });
   }, [babyId, loadData, getBabyInfo]);
 
+  // 一键已读：将当前已加载的信件标记为已读
+  const handleMarkAllRead = async () => {
+    if (marking || list.length === 0) return;
+    setMarking(true);
+    try {
+      const messageIds = list.map((item) => item._id);
+      const ok = await markFutureMessageRead({ babyId, messageIds });
+      if (ok) {
+        setMarkedAll(true);
+        // 本地同步已读状态，信件标识立即更新
+        setList((prev) => prev.map((item) => ({ ...item, isRead: true })));
+        Toast.show({ title: "已标记为已读", icon: "success" });
+      }
+    } finally {
+      setMarking(false);
+    }
+  };
+
   // 列表滚动到底部附近时加载下一页
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     if (loading || list.length >= total) return;
@@ -103,10 +131,16 @@ function UnlockFutureMessage(props: IProps) {
 
   return (
     <Popup visible={visible} position="bottom" round onClose={handleClose}>
-      {/* 弹层头部：标题 + 总数 + 关闭按钮 */}
+      {/* 弹层头部：标题 + 总数 + 一键已读 + 关闭按钮 */}
       <UnlockPopupHeader>
         <UnlockPopupTitle>已解锁的信</UnlockPopupTitle>
         {total > 0 && <UnlockPopupCount>共 {total} 封</UnlockPopupCount>}
+        {/* 一键已读按钮：标记成功后隐藏 */}
+        {!markedAll && list.length > 0 && (
+          <UnlockMarkReadBtn onClick={handleMarkAllRead}>
+            {marking ? "标记中…" : "一键已读"}
+          </UnlockMarkReadBtn>
+        )}
         <UnlockCloseBtn onClick={handleClose}>
           <AiOutlineClose size={vw(16)} color="#999" />
         </UnlockCloseBtn>

@@ -19,6 +19,14 @@ export const EnvelopeContainer = styled.div`
   }
 `;
 
+/** 信封右上角标识（已读/未读等） */
+export const EnvelopeBadge = styled.div`
+  position: absolute;
+  top: ${vw(6)};
+  right: ${vw(8)};
+  z-index: 4;
+`;
+
 /** 信封顶部翻盖（拆开时向上翻开） */
 export const EnvelopeFlap = styled.div<{ $opened: boolean }>`
   position: absolute;

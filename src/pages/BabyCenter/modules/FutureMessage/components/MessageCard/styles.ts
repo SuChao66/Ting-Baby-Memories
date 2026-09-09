@@ -37,6 +37,18 @@ export const VisibilityTag = styled.span`
   border-radius: ${vw(99)};
 `;
 
+/** 信封右上角已读/未读标识（仅已解锁列表显示） */
+export const ReadTag = styled.span<{ $unread?: boolean }>`
+  display: inline-flex;
+  align-items: center;
+  height: ${vw(16)};
+  padding: 0 ${vw(7)};
+  border-radius: ${vw(99)};
+  font-size: ${vw(10)};
+  color: ${(props) => (props.$unread ? "#fff" : "#999")};
+  background: ${(props) => (props.$unread ? "#ff6b8a" : "#f2f2f2")};
+`;
+
 /** 解锁那天宝宝的年龄 */
 export const AgeHint = styled.div`
   font-size: ${vw(12)};

@@ -10,6 +10,7 @@ import {
   updateFutureMessageApi,
   deleteFutureMessageApi,
   getUnlockCountApi,
+  markFutureMessageReadApi,
 } from "@/api";
 
 export const useFutureMessageStore = create<FutureMessageState>(() => ({
@@ -41,5 +42,13 @@ export const useFutureMessageStore = create<FutureMessageState>(() => ({
   getUnlockCount: async (params: { babyId: string }) => {
     const { code, data } = await getUnlockCountApi(params);
     return code === 0 ? data : 0;
+  },
+  // 标记未来寄语为已读
+  markFutureMessageRead: async (params: {
+    babyId: string;
+    messageIds: string[];
+  }) => {
+    const { code } = await markFutureMessageReadApi(params);
+    return code === 0 ? true : false;
   },
 }));

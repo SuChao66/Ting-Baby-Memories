@@ -108,4 +108,8 @@ export interface FutureMessageState {
   updateFutureMessage: (params: addFutureMessageReq) => Promise<boolean>;
   deleteFutureMessage: (id: string) => Promise<boolean>;
   getUnlockCount: (params: { babyId: string }) => Promise<number>;
+  markFutureMessageRead: (params: {
+    babyId: string;
+    messageIds: string[];
+  }) => Promise<boolean>;
 }
