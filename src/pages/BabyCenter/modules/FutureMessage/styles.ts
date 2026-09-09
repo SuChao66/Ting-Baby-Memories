@@ -32,3 +32,12 @@ export const BtnWraper = styled.div`
     opacity: 0.85;
   }
 `;
+
+/** 加载更多提示 */
+export const LoadMoreTip = styled.p`
+  text-align: center;
+  font-size: ${vw(12)};
+  color: #9c9c9c;
+  padding: ${vw(12)} 0;
+  margin: 0;
+`;

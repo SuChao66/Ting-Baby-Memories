@@ -102,9 +102,10 @@ export interface FamilyState {
 // 定义未来寄语状态类型
 export interface FutureMessageState {
   getFutureMessageList: (
-    params: IPagination & { babyId: string },
+    params: IPagination & { babyId: string; isUnlock?: boolean },
   ) => Promise<IFutureMessageList>;
   addFutureMessage: (params: addFutureMessageReq) => Promise<boolean>;
   updateFutureMessage: (params: addFutureMessageReq) => Promise<boolean>;
   deleteFutureMessage: (id: string) => Promise<boolean>;
+  getUnlockCount: (params: { babyId: string }) => Promise<number>;
 }

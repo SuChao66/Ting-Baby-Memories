@@ -5,7 +5,7 @@ import { vw } from "@/utils";
 /** 未来寄语卡片 */
 export const MessageCardContainer = styled.div`
   padding: ${vw(14)};
-  margin-bottom: ${vw(12)};
+  margin: ${vw(12)} 0;
   background: #fff;
   border: ${vw(1)} solid #ffe9ee;
   border-radius: ${vw(8)};

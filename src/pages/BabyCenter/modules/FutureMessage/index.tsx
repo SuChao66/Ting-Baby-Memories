@@ -7,7 +7,12 @@ import Empty from "./components/Empty";
 // 导入图标
 import { IoIosArrowBack } from "react-icons/io";
 // 导入样式
-import { FutureMessageContainer, FutureMessageList, BtnWraper } from "./styles";
+import {
+  FutureMessageContainer,
+  FutureMessageList,
+  BtnWraper,
+  LoadMoreTip,
+} from "./styles";
 // 导入store
 import { useFutureMessageStore } from "@/store";
 // 导入接口
@@ -16,6 +21,9 @@ import { getBabyInfoApi } from "@/api";
 import { DEFAULT_PAGE_SIZE } from "@/enums/constants";
 // 导入类型
 import type { IFutureMessage } from "@/interface/futureMessage";
+
+// 滚动触底阈值（px）
+const SCROLL_THRESHOLD = 80;
 
 function FutureMessage() {
   const navigate = useNavigate();
@@ -28,11 +36,13 @@ function FutureMessage() {
     [],
   );
   // 当前页码
-  const [page] = useState(1);
-  // 总页数
-  const [, setTotal] = useState(0);
+  const [page, setPage] = useState(1);
   // 宝宝生日（计算解锁那天宝宝的年龄）
   const [birthday, setBirthday] = useState<string | null>(null);
+  // 加载状态
+  const [loading, setLoading] = useState(false);
+  // 是否还有更多数据
+  const [hasMore, setHasMore] = useState(true);
 
   // 初始加载：获取宝宝生日 + 未来寄语列表
   useEffect(() => {
@@ -42,20 +52,30 @@ function FutureMessage() {
       }
     });
     // 获取未来寄语列表(未解锁列表)
-    getFutureMessage();
+    getFutureMessage(page, false);
   }, [id]);
 
-  // 获取未来寄语
-  const getFutureMessage = async () => {
-    const params = {
-      babyId: id,
-      page: page,
-      pageSize: DEFAULT_PAGE_SIZE,
-    };
-    const data = await getFutureMessageList(params);
-    if (data?.list) {
-      setFutureMessageList(data.list);
-      setTotal(data.total);
+  // 获取未来寄语列表(未解锁列表)
+  const getFutureMessage = async (page: number, isMore: boolean = false) => {
+    if (loading) return;
+    setLoading(true);
+    try {
+      const params = {
+        babyId: id,
+        page: page,
+        pageSize: DEFAULT_PAGE_SIZE,
+        isUnlock: false,
+      };
+      const data = await getFutureMessageList(params);
+      if (data?.list) {
+        const newList = isMore
+          ? [...futureMessageList, ...data.list]
+          : data.list;
+        setFutureMessageList(newList);
+        setHasMore(newList.length < data.total);
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -72,7 +92,18 @@ function FutureMessage() {
   const handleDeleteMessage = (msgId: string) => {
     setFutureMessageList((prev) => prev.filter((item) => item._id !== msgId));
     // 获取未来寄语列表(未解锁列表)
-    getFutureMessage();
+    getFutureMessage(page, false);
+  };
+
+  // 滚动触底加载下一页
+  const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+    const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
+    const distanceToBottom = scrollHeight - scrollTop - clientHeight;
+    if (distanceToBottom < SCROLL_THRESHOLD && hasMore && !loading) {
+      const nextPage = page + 1;
+      setPage(nextPage);
+      getFutureMessage(nextPage, true);
+    }
   };
 
   return (
@@ -84,7 +115,7 @@ function FutureMessage() {
       />
       <FutureMessageContainer>
         {futureMessageList.length > 0 ? (
-          <FutureMessageList>
+          <FutureMessageList onScroll={handleScroll}>
             {futureMessageList.map((item) => (
               <MessageCard
                 key={item._id}
@@ -93,6 +124,9 @@ function FutureMessage() {
                 onDelete={() => handleDeleteMessage(item._id)}
               />
             ))}
+            <LoadMoreTip>
+              {loading ? "加载中..." : hasMore ? "" : "没有更多了"}
+            </LoadMoreTip>
           </FutureMessageList>
         ) : (
           <Empty />

@@ -1,4 +1,4 @@
-import { post, del } from "../request";
+import { post, del, get } from "../request";
 // 导入类型
 import type { IPagination } from "@/interface/timeline";
 import type {
@@ -8,7 +8,7 @@ import type {
 
 // 获取未来寄语列表
 export const getFutureMessageListApi = (
-  params: IPagination & { babyId: string },
+  params: IPagination & { babyId: string; isUnlock?: boolean },
 ) => {
   return post<IFutureMessageList>("/api/v1/future-message/list", params);
 };
@@ -26,4 +26,9 @@ export const updateFutureMessageApi = (data: addFutureMessageReq) => {
 // 删除未来寄语
 export const deleteFutureMessageApi = (id: string) => {
   return del<string>("/api/v1/future-message/delete", { id });
+};
+
+// 获取已解锁的信件数量
+export const getUnlockCountApi = (params: { babyId: string }) => {
+  return get<number>("/api/v1/future-message/unlock-count", params);
 };

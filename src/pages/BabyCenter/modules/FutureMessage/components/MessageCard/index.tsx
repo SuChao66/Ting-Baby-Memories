@@ -50,10 +50,12 @@ interface IProps {
   birthday: string | null;
   /** 删除成功后回调（父组件从列表中移除该条） */
   onDelete?: () => void;
+  /** 已解锁的信件（信封文案不同，且不可编辑/删除） */
+  unlocked?: boolean;
 }
 
 function MessageCard(props: IProps) {
-  const { item, birthday, onDelete } = props;
+  const { item, birthday, onDelete, unlocked } = props;
   const navigate = useNavigate();
   const userInfo = useUserStore((state) => state.userInfo);
   const { deleteFutureMessage } = useFutureMessageStore((state) => state);
@@ -162,7 +164,7 @@ function MessageCard(props: IProps) {
     return (
       <>
         <Envelope
-          dateText={`${formatDate(item.revealDate)} 开启`}
+          dateText={`${formatDate(item.revealDate)} ${unlocked ? "已解锁" : "开启"}`}
           senderName={item.userInfo?.nickname || "家人"}
           avatarUrl={item.userInfo?.avatarUrl}
           reverse={reverseEnvelope}
@@ -171,8 +173,8 @@ function MessageCard(props: IProps) {
             setOpened(true);
           }}
         />
-        {/* 作者操作：编辑 / 删除 */}
-        {isAuthor && (
+        {/* 作者操作：编辑 / 删除（已解锁的信件不可操作） */}
+        {isAuthor && !unlocked && (
           <CardActions>
             <ActionButton onClick={handleEdit}>
               <AiOutlineEdit size={vw(13)} />
@@ -263,13 +265,13 @@ function MessageCard(props: IProps) {
       {/* 操作：收起 / 编辑（仅作者） / 删除（仅作者） */}
       <CardActions $closing={closing}>
         <ActionButton onClick={handleCollapse}>收起信件</ActionButton>
-        {isAuthor && (
+        {isAuthor && !unlocked && (
           <ActionButton onClick={handleEdit}>
             <AiOutlineEdit size={vw(13)} />
             编辑
           </ActionButton>
         )}
-        {isAuthor && (
+        {isAuthor && !unlocked && (
           <ActionButton $danger onClick={() => setDeleteVisible(true)}>
             <AiOutlineDelete size={vw(13)} />
             删除

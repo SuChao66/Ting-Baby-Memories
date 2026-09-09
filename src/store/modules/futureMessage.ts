@@ -9,11 +9,14 @@ import {
   getFutureMessageListApi,
   updateFutureMessageApi,
   deleteFutureMessageApi,
+  getUnlockCountApi,
 } from "@/api";
 
 export const useFutureMessageStore = create<FutureMessageState>(() => ({
   // 获取未来寄语列表
-  getFutureMessageList: async (params: IPagination & { babyId: string }) => {
+  getFutureMessageList: async (
+    params: IPagination & { babyId: string; isUnlock?: boolean },
+  ) => {
     const { code, data } = await getFutureMessageListApi(params);
     if (code === 0) {
       return data;
@@ -33,5 +36,10 @@ export const useFutureMessageStore = create<FutureMessageState>(() => ({
   deleteFutureMessage: async (id: string) => {
     const { code } = await deleteFutureMessageApi(id);
     return code === 0 ? true : false;
+  },
+  // 获取已解锁的信件数量
+  getUnlockCount: async (params: { babyId: string }) => {
+    const { code, data } = await getUnlockCountApi(params);
+    return code === 0 ? data : 0;
   },
 }));
