@@ -51,15 +51,19 @@ interface IProps {
   birthday: string | null;
   /** 删除成功后回调（父组件从列表中移除该条） */
   onDelete?: () => void;
+  /** 标记已读成功后回调（父组件同步列表数据中的已读状态，角标随之刷新） */
+  onRead?: () => void;
   /** 已解锁的信件（信封文案不同，且不可编辑/删除） */
   unlocked?: boolean;
 }
 
 function MessageCard(props: IProps) {
-  const { item, birthday, onDelete, unlocked } = props;
+  const { item, birthday, onDelete, onRead, unlocked } = props;
   const navigate = useNavigate();
   const userInfo = useUserStore((state) => state.userInfo);
-  const { deleteFutureMessage } = useFutureMessageStore((state) => state);
+  const { deleteFutureMessage, markFutureMessageRead } = useFutureMessageStore(
+    (state) => state,
+  );
 
   // 是否已展开完整信件内容
   const [opened, setOpened] = useState(false);
@@ -160,6 +164,19 @@ function MessageCard(props: IProps) {
     </Dialog>
   );
 
+  // 处理已读：拆开未读信封时调用接口，成功后通知父组件更新列表数据
+  const handleRead = async () => {
+    if (item.isRead) return;
+    const params = {
+      babyId: item.babyId,
+      messageIds: [item._id],
+    };
+    const ok = await markFutureMessageRead(params);
+    if (ok) {
+      onRead?.();
+    }
+  };
+
   // 信封态：翻盖 + 蜡封 + 简略信息，点击拆开
   if (!opened) {
     return (
@@ -183,6 +200,7 @@ function MessageCard(props: IProps) {
             setReverseEnvelope(false);
             setOpened(true);
           }}
+          onRead={() => handleRead()}
         />
         {/* 作者操作：编辑 / 删除（已解锁的信件不可操作） */}
         {isAuthor && !unlocked && (

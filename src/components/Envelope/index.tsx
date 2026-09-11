@@ -30,6 +30,8 @@ interface IProps {
   reverse?: boolean;
   /** 拆信动画结束后回调（父组件切换到完整内容） */
   onOpenComplete?: () => void;
+  /** 点击信封触发的回调（如打开详情页） */
+  onRead?: () => void;
 }
 
 /**
@@ -48,6 +50,7 @@ function Envelope(props: IProps) {
     badge,
     reverse = false,
     onOpenComplete,
+    onRead,
   } = props;
 
   // 当前阶段（倒放挂载时从信纸降下开始）
@@ -79,6 +82,8 @@ function Envelope(props: IProps) {
     timersRef.current.push(window.setTimeout(() => setPhase("pulling"), 450));
     // 信纸升起（0.4s）结束后，展示完整信件内容
     timersRef.current.push(window.setTimeout(() => onOpenComplete?.(), 980));
+    // 点击信封触发的回调，如果是未读，打开即标记为已读
+    onRead?.();
   };
 
   return (

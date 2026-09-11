@@ -119,6 +119,15 @@ function UnlockFutureMessage(props: IProps) {
     }
   };
 
+  // 单条已读成功后同步列表数据（点开未读信件时角标立即更新）
+  const handleMarkRead = (msgId: string) => {
+    setList((prev) =>
+      prev.map((item) =>
+        item._id === msgId ? { ...item, isRead: true } : item,
+      ),
+    );
+  };
+
   // 列表滚动到底部附近时加载下一页
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     if (loading || list.length >= total) return;
@@ -153,6 +162,7 @@ function UnlockFutureMessage(props: IProps) {
             item={item}
             birthday={birthday}
             unlocked
+            onRead={() => handleMarkRead(item._id)}
           />
         ))}
         {/* 空状态 */}
