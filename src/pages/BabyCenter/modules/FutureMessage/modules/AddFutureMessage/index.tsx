@@ -37,6 +37,10 @@ import {
 import type { PickerOptions, PickerValue } from "@nutui/nutui-react";
 import type { IVisibleRoles } from "@/types";
 import type { IFile } from "@/interface/timeline";
+import type {
+  addFutureMessageReq,
+  IFutureMessage,
+} from "@/interface/futureMessage";
 // 导入上传接口
 import { getPresignedUrlApi } from "@/api/upload";
 // 导入样式
@@ -65,7 +69,11 @@ import {
 function AddFutureMessage() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { babyId, item } = location.state || {};
+  const { babyId, item } =
+    (location.state as {
+      babyId?: string;
+      item?: IFutureMessage;
+    }) || {};
 
   // 是否是编辑模式
   const [isEdit] = useState(item !== undefined ? true : false);
@@ -115,19 +123,24 @@ function AddFutureMessage() {
 
   useEffect(() => {
     // 编辑模式下，初始化表单数据
-    if (isEdit) {
-      console.log(item);
+    if (isEdit && item) {
       setContent(item.content || "");
-      setVisibleRole(item.visibleRoles);
+      setVisibleRole(item.visibleRoles as IVisibleRoles);
       setRevealDate(new Date(item.revealDate));
-      setFiles(item.files || []);
+      setFiles(
+        item.files.map((f) => ({
+          type: f.type as IFile["type"],
+          url: f.url,
+          fileName: f.fileName,
+        })),
+      );
     }
-  }, [isEdit]);
+  }, [isEdit, item]);
 
   // 获取宝宝生日
   useEffect(() => {
     if (!babyId && !item?.babyId) return;
-    getBabyInfo({ id: babyId || item.babyId }).then((data) => {
+    getBabyInfo({ id: babyId || item?.babyId || "" }).then((data) => {
       setNickName(data?.nickname || "");
       setBirthday(formatBirthday(data?.birthday) || null);
     });
@@ -291,15 +304,15 @@ function AddFutureMessage() {
       Toast.show({ title: "请选择解锁日期", icon: "warn" });
       return;
     }
-    const params = {
-      babyId: babyId ? babyId : item.babyId,
+    const params: addFutureMessageReq = {
+      babyId: (babyId ? babyId : item?.babyId) ?? "",
       content,
       revealDate,
       files: files,
       visibleRoles: visibleRole,
     };
-    if (isEdit) {
-      params["id"] = item._id;
+    if (isEdit && item?._id) {
+      params.id = item._id;
     }
     const requestMethod = isEdit ? updateFutureMessage : addFutureMessage;
     const ok = await requestMethod(params);

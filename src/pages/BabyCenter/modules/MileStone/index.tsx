@@ -48,7 +48,7 @@ function MileStone() {
 
   // 加载数据
   const loadList = async (pageNum: number, isReset: boolean) => {
-    if (loading) return;
+    if (loading || !id) return;
     setLoading(true);
     try {
       const params = {

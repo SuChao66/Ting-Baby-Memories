@@ -51,6 +51,7 @@ function CloudAlbum() {
   ];
 
   useEffect(() => {
+    if (!id) return;
     if (monthView) {
       // 按月视图：加载指定月份
       getFileList(id, activeTab, true, month).then((data) => {

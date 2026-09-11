@@ -85,6 +85,7 @@ function FutureMessage() {
     page: number,
     isMore: boolean = false,
   ) => {
+    if (!id) return;
     setLoading(true);
     try {
       const params = {

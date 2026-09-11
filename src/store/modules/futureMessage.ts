@@ -2,7 +2,10 @@ import { create } from "zustand";
 // 导入类型
 import type { FutureMessageState } from "../types";
 import type { IPagination } from "@/interface/common";
-import type { addFutureMessageReq } from "@/interface/futureMessage";
+import type {
+  addFutureMessageReq,
+  IFutureMessageList,
+} from "@/interface/futureMessage";
 // 导入接口
 import {
   addFutureMessageApi,
@@ -17,11 +20,12 @@ export const useFutureMessageStore = create<FutureMessageState>(() => ({
   // 获取未来寄语列表
   getFutureMessageList: async (
     params: IPagination & { babyId: string; isUnlock?: boolean },
-  ) => {
+  ): Promise<IFutureMessageList> => {
     const { code, data } = await getFutureMessageListApi(params);
-    if (code === 0) {
+    if (code === 0 && data) {
       return data;
     }
+    return { total: 0, list: [] };
   },
   // 添加未来寄语
   addFutureMessage: async (params: addFutureMessageReq) => {
