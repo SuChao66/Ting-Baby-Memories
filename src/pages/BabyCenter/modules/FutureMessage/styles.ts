@@ -42,6 +42,8 @@ export const TabBar = styled.div`
 
 /** 页签项 */
 export const TabItem = styled.div<{ $active: boolean }>`
+  flex: 1;
+  text-align: center;
   position: relative;
   padding: ${vw(6)} ${vw(2)};
   font-size: ${vw(15)};
