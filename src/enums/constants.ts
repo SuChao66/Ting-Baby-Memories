@@ -78,3 +78,23 @@ export const RELATION_COLORS: Record<string, { color: string; bg: string }> = {
 
 /** 分页大小 */
 export const DEFAULT_PAGE_SIZE = 10;
+
+/** 吃喝拉撒睡类型 */
+export const DAILY_RECORD_TYPES = {
+  /** 喂奶 */
+  FEED: "feed",
+  /** 睡眠 */
+  SLEEP: "sleep",
+  /** 换尿布 */
+  DIAPER: "diaper",
+  /** 辅食 */
+  FOOD: "food",
+  /** 洗澡 */
+  BATH: "bath",
+  /** 玩耍 */
+  PLAY: "play",
+  /** 游泳 */
+  SWIM: "swim",
+  /** 其他事件 */
+  OTHER: "other",
+};

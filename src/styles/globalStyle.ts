@@ -9,6 +9,7 @@ import { vw } from "@/utils";
 export const GlobalStyle = createGlobalStyle<{ theme?: Theme }>`
   :root {
     --nutui-switch-active-background-color: ${({ theme }) => theme.colors.primaryColor};
+    --nutui-overlay-content-bg-color: #f5f5f5;
   }
 
   * {

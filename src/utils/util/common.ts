@@ -126,3 +126,28 @@ export const getTomorrowDate = (date?: Date) => {
   tomorrow.setDate(tomorrow.getDate() + 1);
   return tomorrow;
 };
+
+/** 格式化日期时间为 YYYY-MM-DD HH:mm */
+export const formatDateTime = (date: Date): string => {
+  const pad = (n: number) => String(n).padStart(2, "0");
+
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(
+    date.getDate(),
+  )} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+};
+
+/** 格式化秒为 mm:ss 或 HH:mm:ss */
+export const formatDuration = (seconds: number): string => {
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = seconds % 60;
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return h > 0 ? `${pad(h)}:${pad(m)}:${pad(s)}` : `${pad(m)}:${pad(s)}`;
+};
+
+/** 秒数格式化为 mm:ss */
+export const formatSeconds = (totalSeconds: number) => {
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+};
