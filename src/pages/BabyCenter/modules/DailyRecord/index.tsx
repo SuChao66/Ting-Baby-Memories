@@ -3,25 +3,16 @@ import { useParams } from "react-router-dom";
 // 导入组件
 import NavHeader from "@/components/navHeader";
 // 导入图标
-import { IoIosArrowBack, IoIosArrowUp } from "react-icons/io";
+import { IoIosArrowBack } from "react-icons/io";
 import { IoFunnelOutline } from "react-icons/io5";
 // 导入样式
-import {
-  DailyRecordContainer,
-  DailyRecordList,
-  BottomActionBar,
-  ActionGrid,
-  ActionItem,
-  ActionIconWrap,
-  ActionLabel,
-  CollapseBtn,
-  FilterEntryBtn,
-} from "./styles";
+import { DailyRecordContainer, DailyRecordList, FilterEntryBtn } from "./styles";
 // 导入组件
 import Empty from "@/baseUI/empty";
 import AddCommonRecord from "./components/AddCommonRecord";
 import AddDiaperRecord from "./components/AddDiaperRecord";
 import AddFeedRecord from "./components/AddFeedRecord";
+import BottomAction from "./components/BottomAction";
 // 导入工具函数
 import { vw, formatDay } from "@/utils";
 // 导入类型
@@ -29,8 +20,8 @@ import type { DailyRecordType } from "@/types";
 import type { IGetDailyRecordItem } from "@/interface/dailyRecord";
 // 导入常量
 import { DAILY_RECORD_TYPES } from "@/enums";
-// 导入操作按钮配置
-import { actionList, COMMON_DAIYL_RECORD_TYPE } from "./actionConfig";
+// 导入配置
+import { COMMON_DAIYL_RECORD_TYPE } from "./actionConfig";
 // 导入store
 import { useDailyRecordStore } from "@/store";
 // 导入组件
@@ -152,29 +143,12 @@ function DailyRecord() {
         </DailyRecordList>
 
         {/* 底部操作按钮 */}
-        <BottomActionBar ref={bottomActionRef}>
-          {!collapsed && (
-            <ActionGrid>
-              {actionList.map((item) => (
-                <ActionItem
-                  key={item.key}
-                  onClick={() => handleActionClick(item.key)}
-                >
-                  <ActionIconWrap $gradient={item.gradient}>
-                    {item.icon}
-                  </ActionIconWrap>
-                  <ActionLabel>{item.label}</ActionLabel>
-                </ActionItem>
-              ))}
-            </ActionGrid>
-          )}
-          <CollapseBtn
-            onClick={() => setCollapsed(!collapsed)}
-            $collapsed={collapsed}
-          >
-            <IoIosArrowUp size={vw(20)} color="#999" className="triggle" />
-          </CollapseBtn>
-        </BottomActionBar>
+        <BottomAction
+          ref={bottomActionRef}
+          collapsed={collapsed}
+          setCollapsed={setCollapsed}
+          onActionClick={handleActionClick}
+        />
       </DailyRecordContainer>
 
       {/* 新增 洗澡、睡眠、玩耍、游泳、辅食、其他事件 5种公共类型记录 */}
