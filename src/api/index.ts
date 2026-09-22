@@ -6,3 +6,4 @@ export * from "./tag";
 export * from "./timeline";
 export * from "./family";
 export * from "./futrureMessage";
+export * from "./dailyRecord";

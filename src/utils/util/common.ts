@@ -127,6 +127,12 @@ export const getTomorrowDate = (date?: Date) => {
   return tomorrow;
 };
 
+/** 格式化日期为 YYYY-MM-DD */
+export const formatDay = (date: Date): string => {
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+};
+
 /** 格式化日期时间为 YYYY-MM-DD HH:mm */
 export const formatDateTime = (date: Date): string => {
   const pad = (n: number) => String(n).padStart(2, "0");
@@ -136,12 +142,18 @@ export const formatDateTime = (date: Date): string => {
   )} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
 };
 
-/** 格式化秒为 mm:ss 或 HH:mm:ss */
-export const formatDuration = (seconds: number): string => {
+/** 
+ * 格式化秒为 mm:ss 或 HH:mm:ss 
+ * outputIsText: 输出是否文字：3小时5分钟18秒
+ * */
+export const formatDuration = (seconds: number, outputIsText = false): string => {
   const h = Math.floor(seconds / 3600);
   const m = Math.floor((seconds % 3600) / 60);
   const s = seconds % 60;
   const pad = (n: number) => String(n).padStart(2, "0");
+  if (outputIsText) {
+    return h > 0 ? `${h}小时${m}分钟${s}秒` : (m > 0 ? `${m}分钟${s}秒` : `${s}秒`);
+  }
   return h > 0 ? `${pad(h)}:${pad(m)}:${pad(s)}` : `${pad(m)}:${pad(s)}`;
 };
 

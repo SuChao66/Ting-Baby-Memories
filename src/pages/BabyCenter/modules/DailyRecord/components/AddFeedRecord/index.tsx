@@ -13,10 +13,11 @@ import {
 } from "../../constants";
 // 导入配置
 import { recordTypeConfig } from "../../actionConfig";
+/// 导入store
+import { useDailyRecordStore } from "@/store";
 // 导入类型
 import type { DailyRecordType } from "@/types";
 import type { PickerOptions, PickerValue } from "@nutui/nutui-react";
-import type { IAddDailyRecordParams } from "@/interface/dailyRecord";
 // 导入样式
 import {
   AddRecordPopup,
@@ -62,20 +63,18 @@ interface AddFeedRecordProps {
   visible: boolean;
   /** 关闭回调 */
   onClose: () => void;
-  /** 保存回调 */
-  onSave?: (data: IAddDailyRecordParams) => void;
 }
 
 function AddFeedRecord(props: AddFeedRecordProps) {
-  const { babyId, type, visible, onClose, onSave } = props;
+  const { babyId, type, visible, onClose } = props;
+  const addDailyRecord = useDailyRecordStore((state) => state.addDailyRecord);
+
   const title = recordTypeConfig[DAILY_RECORD_TYPES.FEED].title;
 
-  // 开始/结束时间
+  // 开始时间
   const [startDateTime, setStartDateTime] = useState(new Date());
-  const [endDateTime, setEndDateTime] = useState<Date | null>(null);
   // 时间选择器显示状态
   const [startPickerVisible, setStartPickerVisible] = useState(false);
-  const [endPickerVisible, setEndPickerVisible] = useState(false);
 
   // 亲喂模式
   const [breastMode, setBreastMode] = useState<string>(BREAST_FEED_MODE.TIMER);
@@ -135,9 +134,7 @@ function AddFeedRecord(props: AddFeedRecordProps) {
   useEffect(() => {
     if (visible) {
       setStartDateTime(new Date());
-      setEndDateTime(null);
       setStartPickerVisible(false);
-      setEndPickerVisible(false);
       setBreastMode(BREAST_FEED_MODE.TIMER);
       setLeftSeconds(0);
       setRightSeconds(0);
@@ -150,6 +147,10 @@ function AddFeedRecord(props: AddFeedRecordProps) {
       setFormulaAmount("");
       setBreastMilkAmount("");
       setRemark("");
+    } else if (timerRef.current) {
+      // 关闭弹窗时停止计时，避免计时器后台空转
+      clearInterval(timerRef.current);
+      timerRef.current = null;
     }
   }, [visible]);
 
@@ -170,25 +171,13 @@ function AddFeedRecord(props: AddFeedRecordProps) {
   ) => {
     const [Y, M, D, h, m] = values.map(Number);
     if ([Y, M, D, h, m].some((v) => Number.isNaN(v))) return;
-    const picked = new Date(Y, M - 1, D, h, m);
-    setStartDateTime(picked);
-    // 已选的结束时间早于新的开始时间时，重置结束时间
-    if (endDateTime && endDateTime < picked) {
-      setEndDateTime(null);
-    }
+    setStartDateTime(new Date(Y, M - 1, D, h, m));
     setStartPickerVisible(false);
   };
 
-  // 选择结束时间（可选范围为开始时间 ~ 当前时间）
-  const handleEndConfirm = (_options: PickerOptions, values: PickerValue[]) => {
-    const [Y, M, D, h, m] = values.map(Number);
-    if ([Y, M, D, h, m].some((v) => Number.isNaN(v))) return;
-    setEndDateTime(new Date(Y, M - 1, D, h, m));
-    setEndPickerVisible(false);
-  };
-
   // 保存
-  const handleSave = () => {
+  const handleSave = async () => {
+    // 计时方式需要转化为分钟
     const leftDur =
       breastMode === BREAST_FEED_MODE.TIMER
         ? Math.round(leftSeconds / 60)
@@ -197,22 +186,37 @@ function AddFeedRecord(props: AddFeedRecordProps) {
       breastMode === BREAST_FEED_MODE.TIMER
         ? Math.round(rightSeconds / 60)
         : Number(rightMinutes) || 0;
-
-    onSave?.({
+    const formula = Number(formulaAmount) || 0;
+    const breastMilk = Number(breastMilkAmount) || 0;
+    // 参数校验：亲喂时长与瓶喂奶量至少填写一项
+    if (!leftDur && !rightDur && !formula && !breastMilk) {
+      Toast.show({
+        title: "请填写亲喂时长或瓶喂奶量！",
+        icon: "warn",
+      });
+      return;
+    }
+    const params = {
       babyId,
       type,
-      startTime: startDateTime,
-      endTime: endDateTime,
+      startTime: startDateTime, // 开始时间
       breastMode,
-      leftDuration: leftDur,
-      rightDuration: rightDur,
-      lastUsedSide,
-      estimatedAmount: Number(estimatedAmount) || 0,
-      formulaAmount: Number(formulaAmount) || 0,
-      breastMilkAmount: Number(breastMilkAmount) || 0,
-      remark,
-    });
-    onClose();
+      leftDuration: leftDur, // 左侧亲喂时长
+      rightDuration: rightDur, // 右侧亲喂时长
+      lastUsedSide, // 上一次使用的左侧还是右侧
+      estimatedAmount: Number(estimatedAmount) || 0, // 预估奶量
+      formulaAmount: formula, // 配方奶奶量
+      breastMilkAmount: breastMilk, // 母乳奶量
+      remark, // 评价
+    };
+    const ok = await addDailyRecord(params);
+    if (ok) {
+      Toast.show({
+        content: `${title}成功`,
+        icon: "success",
+      });
+      onClose();
+    }
   };
 
   return (
@@ -222,6 +226,7 @@ function AddFeedRecord(props: AddFeedRecordProps) {
         position="bottom"
         round
         minHeight="80%"
+        closeOnOverlayClick={false}
         onClose={onClose}
       >
         <AddRecordPopup>
@@ -385,17 +390,6 @@ function AddFeedRecord(props: AddFeedRecordProps) {
             ))}
           </Section>
 
-          {/* 结束时间行 */}
-          <FormRow>
-            <FormRowLabel>结束时间</FormRowLabel>
-            <FormRowValue onClick={() => setEndPickerVisible(true)}>
-              <span>
-                {endDateTime ? formatDateTime(endDateTime) : "选择时间"}
-              </span>
-              <AiOutlineRight size={vw(14)} color="#ccc" />
-            </FormRowValue>
-          </FormRow>
-
           {/* 备注 */}
           <RemarkSection>
             <RemarkLabel>添加备注</RemarkLabel>
@@ -421,20 +415,6 @@ function AddFeedRecord(props: AddFeedRecordProps) {
         onConfirm={handleStartConfirm}
         onCancel={() => setStartPickerVisible(false)}
         onClose={() => setStartPickerVisible(false)}
-      />
-
-      {/* 结束时间选择器（开始时间 ~ 当前时间） */}
-      <DatePicker
-        title="选择结束时间"
-        type="datetime"
-        showChinese
-        visible={endPickerVisible}
-        startDate={startDateTime}
-        endDate={new Date()}
-        value={endDateTime || startDateTime}
-        onConfirm={handleEndConfirm}
-        onCancel={() => setEndPickerVisible(false)}
-        onClose={() => setEndPickerVisible(false)}
       />
     </>
   );

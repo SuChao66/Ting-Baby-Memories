@@ -87,7 +87,7 @@ instance.interceptors.response.use(
 /** GET 请求 */
 export function get<T = unknown>(
   url: string,
-  params?: Record<string, unknown>,
+  params?: object,
   config?: AxiosRequestConfig,
 ): Promise<ApiResponse<T>> {
   return instance.get(url, { params, ...config }).then((res) => res.data);
@@ -114,7 +114,7 @@ export function put<T = unknown>(
 /** DELETE 请求 */
 export function del<T = unknown>(
   url: string,
-  params?: Record<string, unknown>,
+  params?: object,
   config?: AxiosRequestConfig,
 ): Promise<ApiResponse<T>> {
   return instance.delete(url, { params, ...config }).then((res) => res.data);

@@ -14,6 +14,11 @@ import type {
   addFutureMessageReq,
   IFutureMessageList,
 } from "@/interface/futureMessage";
+import type {
+  IAddDailyRecordParams,
+  IEditDailyRecordParams,
+  ISearchDailyRecordParams,
+} from "@/interface/dailyRecord";
 
 // 定义用户状态类型
 export interface UserState {
@@ -112,4 +117,12 @@ export interface FutureMessageState {
     babyId: string;
     messageIds: string[];
   }) => Promise<boolean>;
+}
+
+// 定义吃喝拉撒睡状态类型
+export interface DailyRecordState {
+  addDailyRecord: (params: IAddDailyRecordParams) => Promise<boolean>;
+  editDailyRecord: (params: IEditDailyRecordParams) => Promise<boolean>;
+  deleteDailyRecord: (id: string) => Promise<boolean>;
+  searchDailyRecord: (params: ISearchDailyRecordParams) => Promise<any>;
 }

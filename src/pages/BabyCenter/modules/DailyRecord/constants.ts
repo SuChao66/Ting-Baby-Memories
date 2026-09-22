@@ -97,12 +97,33 @@ export const poopShapeOptions = [
   { value: "powder", label: "粉状" },
 ].map((item) => ({ ...item, image: poopShapeImages[item.value] }));
 
+/** 尿量图片（value 与文件名对应，如 little.png -> little） */
+const peeImageModules = import.meta.glob(
+  "../../../../assets/images/pee/*.png",
+  {
+    eager: true, // 立即加载
+    query: "?url",
+    import: "default",
+  },
+) as Record<string, string>;
+
+/** 尿量图片映射：value -> 图片地址 */
+const peeAmountImages = Object.fromEntries(
+  Object.entries(peeImageModules).map(([path, url]) => {
+    const value = path
+      .split("/")
+      .pop()!
+      .replace(/\.png$/, "");
+    return [value, url];
+  }),
+);
+
 /** 尿量选项 */
 export const peeAmountOptions = [
   { value: "little", label: "少" },
   { value: "medium", label: "一般" },
   { value: "much", label: "多" },
-];
+].map((item) => ({ ...item, image: peeAmountImages[item.value] }));
 
 /** 喂奶方式 */
 export const FEED_METHOD = {
@@ -133,3 +154,19 @@ export const bottleMilkTypeOptions = [
   { value: BOTTLE_MILK_TYPE.FORMULA, label: "配方奶", unit: "ml" },
   { value: BOTTLE_MILK_TYPE.BREAST_MILK, label: "母乳", unit: "ml" },
 ];
+
+/** 选项数组 -> value/label 映射（记录列表摘要展示用，与录入表单文案同源） */
+const toLabelMap = (options: { value: string; label: string }[]) =>
+  Object.fromEntries(options.map(({ value, label }) => [value, label]));
+
+/** 尿布状态中文映射 */
+export const DIAPER_STATUS_MAP = toLabelMap(diaperStatusOptions);
+
+/** 尿量中文映射 */
+export const PEE_AMOUNT_MAP = toLabelMap(peeAmountOptions);
+
+/** 便便颜色中文映射 */
+export const POOP_COLOR_MAP = toLabelMap(poopColorOptions);
+
+/** 便便形状中文映射 */
+export const POOP_SHAPE_MAP = toLabelMap(poopShapeOptions);

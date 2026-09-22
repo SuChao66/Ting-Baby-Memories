@@ -6,11 +6,13 @@ import { vw, formatDateTime, formatDuration } from "@/utils";
 // 导入类型
 import type { DailyRecordType } from "@/types";
 import type { PickerOptions, PickerValue } from "@nutui/nutui-react";
-import type { IAddDailyRecordParams } from "@/interface/dailyRecord";
 // 导入常量
-import { DAILY_RECORD_TYPES } from "@/enums/constants";
+import { DAILY_RECORD_TYPES, NUMBER } from "@/enums";
+import { BREAST_FEED_MODE } from "../../constants";
 // 导入配置
 import { recordTypeConfig } from "../../actionConfig";
+// 导入store
+import { useDailyRecordStore } from "@/store";
 // 导入样式
 import {
   AddRecordPopup,
@@ -45,14 +47,14 @@ interface AddCommonRecordProps {
   visible: boolean;
   /** 关闭回调 */
   onClose: () => void;
-  /** 保存回调 */
-  onSave?: (data: IAddDailyRecordParams) => void;
 }
 
 function AddCommonRecord(props: AddCommonRecordProps) {
-  const { babyId, type, visible, onClose, onSave } = props;
+  const { babyId, type, visible, onClose } = props;
+  const addDailyRecord = useDailyRecordStore((state) => state.addDailyRecord);
+
   // 根据类型获取标题
-  const { title, actionText } = recordTypeConfig[type];
+  const { title, actionText, continueText } = recordTypeConfig[type];
 
   // 输入模式：timer 计时 / manual 手动输入
   const [mode, setMode] = useState<"timer" | "manual">("timer");
@@ -61,7 +63,7 @@ function AddCommonRecord(props: AddCommonRecordProps) {
   // 开始时间选择器显示
   const [startPickerVisible, setStartPickerVisible] = useState(false);
   // 持续时长（秒）
-  const [duration, setDuration] = useState(0);
+  const [duration, setDuration] = useState(NUMBER.ZERO);
   // 手动输入的时长（分钟）
   const [manualMinutes, setManualMinutes] = useState("");
   // 计时中
@@ -130,20 +132,67 @@ function AddCommonRecord(props: AddCommonRecordProps) {
   };
 
   // 保存
-  const handleSave = () => {
+  const handleSave = async () => {
+    // 对持续时间进行转换，手动输入的是分钟，需要进行转换
     const finalDuration =
-      mode === "timer" ? duration : Number(manualMinutes || 0) * 60;
-    onSave?.({
+      mode === BREAST_FEED_MODE.TIMER
+        ? duration
+        : Number(manualMinutes || NUMBER.ZERO) * NUMBER.SIXTY;
+    // 对参数进行校验, 辅食
+    if (type === DAILY_RECORD_TYPES.FOOD) {
+      if (!foodName) {
+        Toast.show({
+          title: "请输入辅食名称",
+          icon: "warn",
+        });
+        return;
+      }
+      if (!foodWeight) {
+        Toast.show({
+          title: "请输入辅食重量",
+          icon: "warn",
+        });
+        return;
+      }
+    } else if (type === DAILY_RECORD_TYPES.OTHER) {
+      if (!eventName) {
+        Toast.show({
+          title: "请输入事件名称",
+          icon: "warn",
+        });
+        return;
+      }
+    } else {
+      // 其他记录类型：睡眠、洗澡、玩耍、游泳
+      if (finalDuration === NUMBER.ZERO) {
+        Toast.show({
+          title: "持续时间不能为0",
+          icon: "warn",
+        });
+        return;
+      }
+    }
+    const params = {
       babyId,
       type,
+      // 公共参数
       startTime: startDateTime,
       duration: type === DAILY_RECORD_TYPES.FOOD ? 0 : finalDuration,
       remark,
+      // 其他事件
       eventName: type === DAILY_RECORD_TYPES.OTHER ? eventName : "",
+      // 辅食
       foodName: type === DAILY_RECORD_TYPES.FOOD ? foodName : "",
       foodWeight: type === DAILY_RECORD_TYPES.FOOD ? foodWeight : "",
-    });
-    onClose();
+    };
+    const ok = await addDailyRecord(params);
+    if (ok) {
+      Toast.show({
+        content: `${title}成功`,
+        icon: "success",
+      });
+      onClose();
+    }
   };
 
   return (
@@ -153,6 +202,7 @@ function AddCommonRecord(props: AddCommonRecordProps) {
         position="bottom"
         round
         minHeight="80%"
+        closeOnOverlayClick={false}
         onClose={onClose}
       >
         <AddRecordPopup>
@@ -233,7 +283,11 @@ function AddCommonRecord(props: AddCommonRecordProps) {
                 <TimerSection>
                   <TimerText>{formatDuration(duration)}</TimerText>
                   <TimerButton $running={running} onClick={toggleTimer}>
-                    {running ? "结束计时" : actionText}
+                    {running
+                      ? "结束计时"
+                      : duration > 0
+                        ? continueText
+                        : actionText}
                   </TimerButton>
                 </TimerSection>
               )}

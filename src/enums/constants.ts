@@ -48,10 +48,10 @@ export const visibilityOptions: {
   value: IVisibleRoles;
   label: string;
 }[] = [
-  { value: "public", label: "公开" },
-  { value: "family", label: "仅家人可见" },
-  { value: "private", label: "仅自己可见" },
-];
+    { value: "public", label: "公开" },
+    { value: "family", label: "仅家人可见" },
+    { value: "private", label: "仅自己可见" },
+  ];
 
 // 记录权限
 export const TIME_LINE_VISIBLE_ROLES = {

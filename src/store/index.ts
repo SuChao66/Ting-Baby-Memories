@@ -5,3 +5,4 @@ export { useTagStore } from "./modules/tags";
 export { useTimelineStore } from "./modules/timeline";
 export { useFamilyStore } from "./modules/family";
 export { useFutureMessageStore } from "./modules/futureMessage";
+export { useDailyRecordStore } from "./modules/dailyRecord";

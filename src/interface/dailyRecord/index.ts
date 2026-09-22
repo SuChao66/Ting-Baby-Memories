@@ -1,5 +1,6 @@
 import type { DailyRecordType } from "@/types";
 
+// 新增日常记录
 export interface IAddDailyRecordParams {
   babyId: string;
   type: DailyRecordType; // 记录类型
@@ -20,7 +21,6 @@ export interface IAddDailyRecordParams {
   peeAmount?: string; // 尿量
   hasRash?: boolean; // 是否红屁股
   /** 喂奶 */
-  endTime?: Date; // 结束时间
   // 亲喂
   breastMode?: string; // 亲喂模式：计时 / 手动输入
   leftDuration?: number; // 左侧喂时间 分钟
@@ -30,4 +30,48 @@ export interface IAddDailyRecordParams {
   // 瓶喂
   formulaAmount?: number; // 配方奶 ml
   breastMilkAmount?: number; // 母乳 ml
+}
+
+// 编辑日常记录
+export type IEditDailyRecordParams = IAddDailyRecordParams & { id: string };
+
+// 查询日常记录（按天全量返回，无分页）
+export type ISearchDailyRecordParams = {
+  babyId: string;
+  date: string; // 按天查询，格式 YYYY-MM-DD
+  type?: DailyRecordType; // 可选：按类型筛选（做统计时有用）
+};
+
+// 获取日常记录
+export interface IGetDailyRecordListResponse {
+  list: IGetDailyRecordItem[]
+  total: number
+}
+
+export interface IGetDailyRecordItem {
+  _id: string
+  userId: string
+  babyId: string
+  type: string
+  startTime: string
+  remark: string
+  breastMode: string
+  leftDuration: number
+  rightDuration: number
+  lastUsedSide: string
+  estimatedAmount: number
+  formulaAmount: number
+  breastMilkAmount: number
+  status?: string
+  poopColor?: string
+  poopShape?: string
+  peeAmount?: string
+  hasRash?: boolean
+  duration?: number
+  eventName?: string
+  foodName?: string
+  foodWeight?: string
+  createdAt: string
+  updatedAt: string
+  __v: number
 }

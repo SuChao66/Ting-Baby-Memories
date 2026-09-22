@@ -14,10 +14,11 @@ import {
 } from "../../constants";
 // 导入配置
 import { recordTypeConfig } from "../../actionConfig";
+// 导入store
+import { useDailyRecordStore } from "@/store";
 // 导入类型
 import type { DailyRecordType } from "@/types";
 import type { PickerOptions, PickerValue } from "@nutui/nutui-react";
-import type { IAddDailyRecordParams } from "@/interface/dailyRecord";
 // 导入样式
 import {
   AddRecordPopup,
@@ -36,12 +37,13 @@ import {
   StatusText,
   OptionSection,
   OptionLabel,
-  TagGroup,
-  TagItem,
+  PeeGrid,
+  PeeItem,
+  PeeLabel,
   ShapeGrid,
   ShapeItem,
-  ShapeImage,
   ShapeLabel,
+  ColorCheckBadge,
   ColorGrid,
   ColorItem,
   ColorDot,
@@ -62,12 +64,12 @@ interface AddDiaperRecordProps {
   visible: boolean;
   /** 关闭回调 */
   onClose: () => void;
-  /** 保存回调 */
-  onSave?: (data: IAddDailyRecordParams) => void;
 }
 
 function AddDiaperRecord(props: AddDiaperRecordProps) {
-  const { babyId, type, visible, onClose, onSave } = props;
+  const { babyId, type, visible, onClose } = props;
+  const addDailyRecord = useDailyRecordStore((state) => state.addDailyRecord);
+
   // 弹窗标题
   const title = recordTypeConfig[DAILY_RECORD_TYPES.DIAPER].title;
 
@@ -120,19 +122,48 @@ function AddDiaperRecord(props: AddDiaperRecordProps) {
   };
 
   // 保存
-  const handleSave = () => {
-    onSave?.({
+  const handleSave = async () => {
+    // 参数校验
+    if (showPoop && !poopColor) {
+      Toast.show({
+        title: "请选择臭臭颜色！",
+        icon: "warn",
+      });
+      return;
+    }
+    if (showPoop && !poopShape) {
+      Toast.show({
+        title: "请选择臭臭形状！",
+        icon: "warn",
+      });
+      return;
+    }
+    if (showPee && !peeAmount) {
+      Toast.show({
+        title: "请选择尿量！",
+        icon: "warn",
+      });
+      return;
+    }
+    const params = {
       babyId,
       type,
       startTime: startDateTime,
       status,
-      poopColor: showPoop ? poopColor : "",
-      poopShape: showPoop ? poopShape : "",
-      peeAmount: showPee ? peeAmount : "",
+      poopColor: showPoop ? poopColor : undefined,
+      poopShape: showPoop ? poopShape : undefined,
+      peeAmount: showPee ? peeAmount : undefined,
       hasRash,
       remark,
-    });
-    onClose();
+    };
+    const ok = await addDailyRecord(params);
+    if (ok) {
+      Toast.show({
+        content: `${title}成功`,
+        icon: "success",
+      });
+      onClose();
+    }
   };
 
   return (
@@ -142,6 +173,7 @@ function AddDiaperRecord(props: AddDiaperRecordProps) {
         position="bottom"
         round
         minHeight="80%"
+        closeOnOverlayClick={false}
         onClose={onClose}
       >
         <AddRecordPopup>
@@ -187,20 +219,20 @@ function AddDiaperRecord(props: AddDiaperRecordProps) {
             <OptionSection>
               <OptionLabel>臭臭颜色</OptionLabel>
               <ColorGrid>
-                {poopColorOptions.map((item) => (
-                  <ColorItem
-                    key={item.value}
-                    onClick={() => setPoopColor(item.value)}
-                  >
-                    <ColorDot
-                      $color={item.color}
-                      $active={poopColor === item.value}
-                    />
-                    <ColorLabel $active={poopColor === item.value}>
-                      {item.label}
-                    </ColorLabel>
-                  </ColorItem>
-                ))}
+                {poopColorOptions.map((item) => {
+                  const active = poopColor === item.value;
+                  return (
+                    <ColorItem
+                      key={item.value}
+                      onClick={() => setPoopColor(item.value)}
+                    >
+                      <ColorDot $color={item.color}>
+                        {active && <ColorCheckBadge />}
+                      </ColorDot>
+                      <ColorLabel $active={active}>{item.label}</ColorLabel>
+                    </ColorItem>
+                  );
+                })}
               </ColorGrid>
             </OptionSection>
           )}
@@ -210,37 +242,47 @@ function AddDiaperRecord(props: AddDiaperRecordProps) {
             <OptionSection>
               <OptionLabel>臭臭形状</OptionLabel>
               <ShapeGrid>
-                {poopShapeOptions.map((item) => (
-                  <ShapeItem
-                    key={item.value}
-                    $active={poopShape === item.value}
-                    onClick={() => setPoopShape(item.value)}
-                  >
-                    <ShapeImage src={item.image} alt={item.label} />
-                    <ShapeLabel $active={poopShape === item.value}>
-                      {item.label}
-                    </ShapeLabel>
-                  </ShapeItem>
-                ))}
+                {poopShapeOptions.map((item) => {
+                  const active = poopShape === item.value;
+                  return (
+                    <ShapeItem
+                      key={item.value}
+                      $active={active}
+                      onClick={() => setPoopShape(item.value)}
+                    >
+                      <StatusIconWrap $active={active}>
+                        <StatusImage src={item.image} alt={item.label} />
+                        {active && <StatusCheckBadge />}
+                      </StatusIconWrap>
+                      <ShapeLabel $active={active}>{item.label}</ShapeLabel>
+                    </ShapeItem>
+                  );
+                })}
               </ShapeGrid>
             </OptionSection>
           )}
 
-          {/* 尿量（状态包含嘘嘘时显示） */}
+          {/* 尿量（状态包含嘘嘘时显示，带图片说明） */}
           {showPee && (
             <OptionSection>
               <OptionLabel>尿量</OptionLabel>
-              <TagGroup>
-                {peeAmountOptions.map((item) => (
-                  <TagItem
-                    key={item.value}
-                    $active={peeAmount === item.value}
-                    onClick={() => setPeeAmount(item.value)}
-                  >
-                    {item.label}
-                  </TagItem>
-                ))}
-              </TagGroup>
+              <PeeGrid>
+                {peeAmountOptions.map((item) => {
+                  const active = peeAmount === item.value;
+                  return (
+                    <PeeItem
+                      key={item.value}
+                      onClick={() => setPeeAmount(item.value)}
+                    >
+                      <StatusIconWrap $active={active}>
+                        <StatusImage src={item.image} alt={item.label} />
+                        {active && <StatusCheckBadge />}
+                      </StatusIconWrap>
+                      <PeeLabel $active={active}>{item.label}</PeeLabel>
+                    </PeeItem>
+                  );
+                })}
+              </PeeGrid>
             </OptionSection>
           )}
 

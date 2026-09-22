@@ -155,29 +155,26 @@ export const OptionLabel = styled.div`
   margin-bottom: ${vw(12)};
 `;
 
-/** 尿量 */
-export const TagGroup = styled.div`
-  display: flex;
-  overflow-x: scroll;
-  flex-wrap: npwrap;
+/** 尿量选择（图片卡片） */
+export const PeeGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: ${vw(12)};
-  &::-webkit-scrollbar {
-    display: none;
-  }
 `;
 
-export const TagItem = styled.div<{ $active: boolean }>`
-  min-width: ${vw(100)};
-  text-align: center;
-  word-wrap: nowrap;
-  height: fit-content;
-  padding: ${vw(8)} ${vw(16)};
-  border-radius: ${vw(24)};
-  font-size: ${vw(12)};
-  color: ${(props) => (props.$active ? "#fff" : "#666")};
-  background: ${(props) => (props.$active ? "#ff8a65" : "#f5f5f5")};
+export const PeeItem = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: ${vw(6)};
   cursor: pointer;
   transition: all 0.2s;
+`;
+
+export const PeeLabel = styled.span<{ $active: boolean }>`
+  font-size: ${vw(12)};
+  color: ${(props) => (props.$active ? "#ff6b8a" : "#666")};
+  text-align: center;
 `;
 
 /** 臭臭形状选择（图片卡片） */
@@ -197,12 +194,6 @@ export const ShapeItem = styled.div<{ $active: boolean }>`
   gap: ${vw(6)};
   cursor: pointer;
   transition: all 0.2s;
-`;
-
-export const ShapeImage = styled.img`
-  width: 44px;
-  aspect-ratio: 1;
-  object-fit: contain;
 `;
 
 export const ShapeLabel = styled.span<{ $active: boolean }>`
@@ -230,11 +221,28 @@ export const ColorItem = styled.div`
   min-width: ${vw(40)};
 `;
 
-export const ColorDot = styled.div<{ $color: string; $active: boolean }>`
+export const ColorDot = styled.div<{ $color: string }>`
+  position: relative;
   width: ${vw(34)};
   height: ${vw(34)};
   border-radius: 50%;
   background: ${(props) => props.$color};
+`;
+
+/** 颜色选中角标（小号，适配色点尺寸） */
+export const ColorCheckBadge = styled(StatusCheckBadge)`
+  width: ${vw(14)};
+  height: ${vw(14)};
+  right: ${vw(-2)};
+  bottom: ${vw(-2)};
+
+  &::before {
+    width: ${vw(7)};
+    height: ${vw(3.5)};
+    border-left: ${vw(1.5)} solid #fff;
+    border-bottom: ${vw(1.5)} solid #fff;
+    transform: rotate(-45deg) translate(${vw(0.5)}, ${vw(-0.5)});
+  }
 `;
 
 export const ColorLabel = styled.span<{ $active: boolean }>`
