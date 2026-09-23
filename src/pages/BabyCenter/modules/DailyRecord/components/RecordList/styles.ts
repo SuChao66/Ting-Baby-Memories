@@ -80,3 +80,28 @@ export const RecordTime = styled.span`
   font-size: ${vw(12)};
   color: #00000073;
 `;
+
+/** 记录右侧区（时间 + 操作按钮） */
+export const RecordRight = styled.div`
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: ${vw(6)};
+`;
+
+/** 操作按钮组 */
+export const RecordActions = styled.div`
+  display: flex;
+  gap: ${vw(8)};
+`;
+
+/** 操作按钮（编辑/删除） */
+export const RecordActionBtn = styled.span`
+  color: #ff6b8a;
+  cursor: pointer;
+
+  &:active {
+    opacity: 0.7;
+  }
+`;

@@ -33,3 +33,6 @@ export const NUMBER = {
 
 // B单位
 export const ONN_B = 1024;
+
+// 24小时
+export const ONE_DAY = 24 * 60 * 60 * 1000;

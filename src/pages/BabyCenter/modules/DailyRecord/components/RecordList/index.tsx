@@ -1,3 +1,4 @@
+import { useState } from "react";
 // 导入类型
 import type { IGetDailyRecordItem } from "@/interface/dailyRecord";
 // 导入常量
@@ -6,8 +7,11 @@ import {
   DIAPER_STATUS_MAP,
   PEE_AMOUNT_MAP,
   POOP_COLOR_MAP,
-  POOP_SHAPE_MAP
-} from '../../constants'
+  POOP_SHAPE_MAP,
+} from "../../constants";
+// 导入图标
+import { CiEdit } from "react-icons/ci";
+import { MdDelete } from "react-icons/md";
 // 导入配置
 import { actionList, filterTypeOptions } from "../../actionConfig";
 // 导入样式
@@ -19,13 +23,22 @@ import {
   RecordTitle,
   RecordSummary,
   RecordRemark,
+  RecordRight,
   RecordTime,
+  RecordActions,
+  RecordActionBtn,
 } from "./styles";
 // 导入工具函数
 import { formatTime, formatDuration } from "@/utils";
+// 导入组件
+import Dialog from "@/baseUI/dialog";
 
 interface IProps {
   list: IGetDailyRecordItem[];
+  /** 点击编辑按钮（逻辑由父组件实现） */
+  onEdit?: (item: IGetDailyRecordItem) => void;
+  /** 点击删除按钮（逻辑由父组件实现） */
+  onDelete?: (item: IGetDailyRecordItem) => void;
 }
 
 /** 获取类型的展示信息（图标、渐变色、中文名称） */
@@ -50,7 +63,8 @@ function getSummary(item: IGetDailyRecordItem): string {
       break;
     // 换尿布：尿布状态、尿量、便便颜色与形状、红屁股
     case DAILY_RECORD_TYPES.DIAPER:
-      if (item.status) parts.push(DIAPER_STATUS_MAP[item.status] ?? item.status);
+      if (item.status)
+        parts.push(DIAPER_STATUS_MAP[item.status] ?? item.status);
       if (item.peeAmount)
         parts.push(`尿量${PEE_AMOUNT_MAP[item.peeAmount] ?? item.peeAmount}`);
       if (item.poopColor)
@@ -73,7 +87,8 @@ function getSummary(item: IGetDailyRecordItem): string {
     case DAILY_RECORD_TYPES.BATH:
     case DAILY_RECORD_TYPES.PLAY:
     case DAILY_RECORD_TYPES.SWIM:
-      if (item.duration) parts.push(`时长: ${formatDuration(item.duration, true)}`);
+      if (item.duration)
+        parts.push(`时长: ${formatDuration(item.duration, true)}`);
       break;
     default:
       break;
@@ -82,28 +97,60 @@ function getSummary(item: IGetDailyRecordItem): string {
 }
 
 function DailyRecordList(props: IProps) {
-  const { list } = props;
+  const { list, onEdit, onDelete } = props;
+  const [delVisible, setDelVisible] = useState(false);
+  const [currentItem, setCurrentItem] = useState<IGetDailyRecordItem | null>(
+    null,
+  );
 
   return (
-    <RecordListWrap>
-      {list.map((item) => {
-        const { icon, gradient, label } = getTypeMeta(item.type);
-        const summary = getSummary(item);
-        return (
-          <RecordItem key={item._id}>
-            <RecordIconWrap $gradient={gradient}>{icon}</RecordIconWrap>
-            <RecordContent>
-              <RecordTitle>{label}</RecordTitle>
-              {summary && <RecordSummary>{summary}</RecordSummary>}
-              {item.remark && <RecordRemark>{item.remark}</RecordRemark>}
-            </RecordContent>
-            <RecordTime>
-              {item.startTime ? formatTime(item.startTime) : "--:--"}
-            </RecordTime>
-          </RecordItem>
-        );
-      })}
-    </RecordListWrap>
+    <>
+      <RecordListWrap>
+        {list.map((item) => {
+          const { icon, gradient, label } = getTypeMeta(item.type);
+          const summary = getSummary(item);
+          return (
+            <RecordItem key={item._id}>
+              <RecordIconWrap $gradient={gradient}>{icon}</RecordIconWrap>
+              <RecordContent>
+                <RecordTitle>{label}</RecordTitle>
+                {summary && <RecordSummary>{summary}</RecordSummary>}
+                {item.remark && <RecordRemark>{item.remark}</RecordRemark>}
+              </RecordContent>
+              <RecordRight>
+                <RecordTime>
+                  {item.startTime ? formatTime(item.startTime) : "--:--"}
+                </RecordTime>
+                <RecordActions>
+                  <RecordActionBtn onClick={() => onEdit?.(item)}>
+                    <CiEdit size={18} />
+                  </RecordActionBtn>
+                  <RecordActionBtn
+                    onClick={() => {
+                      setDelVisible(true);
+                      setCurrentItem(item);
+                    }}
+                  >
+                    <MdDelete size={18} />
+                  </RecordActionBtn>
+                </RecordActions>
+              </RecordRight>
+            </RecordItem>
+          );
+        })}
+      </RecordListWrap>
+
+      {/* 删除确认 */}
+      <Dialog
+        visible={delVisible}
+        content="确认删除该记录？"
+        onConfirm={() => {
+          onDelete(currentItem);
+          setDelVisible(false);
+        }}
+        onCancel={() => setDelVisible(false)}
+      />
+    </>
   );
 }
 

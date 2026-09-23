@@ -6,6 +6,7 @@ import {
   FilterDateRow,
   FilterDateBtn,
   FilterResetBtn,
+  FilterPrevDayBtn,
   FilterTypeScroll,
   FilterChip,
 } from "./styles";
@@ -18,6 +19,8 @@ import type { PickerOptions, PickerValue } from "@nutui/nutui-react";
 import { filterTypeOptions } from "../../actionConfig";
 // 导入工具函数
 import { vw } from "@/utils";
+// 导入常量
+import { ONE_DAY } from "@/enums";
 
 interface IProps {
   // 筛选类型（"" 表示全部类型，状态由父组件持有，避免组件挂载时向父级同步触发重复查询）
@@ -39,6 +42,9 @@ function FilterBar(props: IProps, ref: React.Ref<HTMLDivElement>) {
     filterDate.getMonth() === new Date().getMonth() &&
     filterDate.getDate() === new Date().getDate();
 
+  // 是否显示后一天按钮
+  const isShowNextDayBtn = filterDate.getDate() < new Date().getDate();
+
   // 选择筛选日期（一年前 ~ 今天）
   const handleDateConfirm = (
     _options: PickerOptions,
@@ -48,6 +54,18 @@ function FilterBar(props: IProps, ref: React.Ref<HTMLDivElement>) {
     if ([Y, M, D].some((v) => Number.isNaN(v))) return;
     setFilterDate(new Date(Y, M - 1, D));
     setDatePickerVisible(false);
+  };
+
+  // 设置日期为前一天日期
+  const setPrevFilterDate = () => {
+    const prevDate = new Date(filterDate.getTime() - ONE_DAY);
+    setFilterDate(prevDate);
+  };
+
+  // 设置日期为后一天日期
+  const setNextFilterDate = () => {
+    const nextDate = new Date(filterDate.getTime() + ONE_DAY);
+    setFilterDate(nextDate);
   };
 
   return (
@@ -60,13 +78,22 @@ function FilterBar(props: IProps, ref: React.Ref<HTMLDivElement>) {
             $active={!isToday}
             onClick={() => setDatePickerVisible(true)}
           >
-            <IoIosCalendar size={vw(15)} color="currentColor" />
+            <IoIosCalendar size={vw(14)} color="currentColor" />
             <span>
               {isToday
                 ? "今天"
                 : `${filterDate.getMonth() + 1}月${filterDate.getDate()}日`}
             </span>
           </FilterDateBtn>
+          <FilterPrevDayBtn onClick={setPrevFilterDate}>
+            前一天
+          </FilterPrevDayBtn>
+          {isShowNextDayBtn && (
+            <FilterPrevDayBtn onClick={setNextFilterDate}>
+              后一天
+            </FilterPrevDayBtn>
+          )}
+
           {/* 选中非今天的日期时，显示恢复按钮 */}
           {!isToday && (
             <FilterResetBtn onClick={() => setFilterDate(new Date())}>

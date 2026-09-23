@@ -6,7 +6,11 @@ import NavHeader from "@/components/navHeader";
 import { IoIosArrowBack } from "react-icons/io";
 import { IoFunnelOutline } from "react-icons/io5";
 // 导入样式
-import { DailyRecordContainer, DailyRecordList, FilterEntryBtn } from "./styles";
+import {
+  DailyRecordContainer,
+  DailyRecordList,
+  FilterEntryBtn,
+} from "./styles";
 // 导入组件
 import Empty from "@/baseUI/empty";
 import AddCommonRecord from "./components/AddCommonRecord";
@@ -32,8 +36,8 @@ function DailyRecord() {
   const { id } = useParams();
 
   // 查询列表方法
-  const searchDailyRecord = useDailyRecordStore(
-    (state) => state.searchDailyRecord,
+  const { searchDailyRecord, deleteDailyRecord } = useDailyRecordStore(
+    (state) => state,
   );
 
   // 日期
@@ -72,11 +76,11 @@ function DailyRecord() {
 
   useLayoutEffect(() => {
     if (filterBarRef.current) {
-      setFilterBarHeight(filterBarRef.current.offsetHeight)
+      setFilterBarHeight(filterBarRef.current.offsetHeight);
     } else {
-      setFilterBarHeight(0)
+      setFilterBarHeight(0);
     }
-  }, [filterVisible])
+  }, [filterVisible]);
 
   useEffect(() => {
     // 获取列表
@@ -105,6 +109,16 @@ function DailyRecord() {
       setDiaperVisible(true);
     } else if (key === DAILY_RECORD_TYPES.FEED) {
       setFeedVisible(true);
+    }
+  };
+
+  // 删除当前记录
+  const handleDeleteRecord = async (item: IGetDailyRecordItem) => {
+    if (!item._id) return;
+    const ok = await deleteDailyRecord(item._id);
+    if (ok) {
+      Toast.show({ content: "删除成功" });
+      getData();
     }
   };
 
@@ -137,8 +151,13 @@ function DailyRecord() {
 
         {/* 列表展示 */}
         <DailyRecordList $height={height} $filterBarHeight={filterBarHeight}>
-          {!recordList?.length ? <Empty text="暂无数据" /> : (
-            <RecordList list={recordList} />
+          {!recordList?.length ? (
+            <Empty text="今日暂无新增相关记录" />
+          ) : (
+            <RecordList
+              list={recordList}
+              onDelete={(item) => handleDeleteRecord(item)}
+            />
           )}
         </DailyRecordList>
 

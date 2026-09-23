@@ -8,9 +8,9 @@ export const BottomActionBar = styled.div`
   right: 0;
   bottom: 0;
   background: #fff;
-  border-radius: ${vw(20)} ${vw(20)} 0 0;
+  border-radius: ${vw(12)} ${vw(12)} 0 0;
   box-shadow: 0 -${vw(4)} ${vw(24)} rgba(255, 107, 138, 0.1);
-  padding: ${vw(20)} ${vw(20)} ${vw(24)};
+  padding: ${vw(12)} ${vw(12)} ${vw(16)};
   z-index: 10;
 `;
 

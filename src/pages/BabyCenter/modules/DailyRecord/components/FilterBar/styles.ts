@@ -53,14 +53,30 @@ export const FilterDateBtn = styled.div<{ $active: boolean }>`
 
 /** 恢复今天按钮（选中非今天的日期时显示） */
 export const FilterResetBtn = styled.div`
+  background: #f5f5f5;
   font-size: ${vw(12)};
-  color: #999;
-  padding: ${vw(4)} ${vw(8)};
-  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: ${vw(4)};
+  padding: ${vw(5)} ${vw(14)};
+  font-size: ${vw(12)};
+  border-radius: ${vw(16)};
 
   &:active {
     opacity: 0.7;
   }
+`;
+
+/** 前一天按钮 */
+export const FilterPrevDayBtn = styled.div`
+  background: #f5f5f5;
+  font-size: ${vw(12)};
+  display: inline-flex;
+  align-items: center;
+  gap: ${vw(4)};
+  padding: ${vw(5)} ${vw(14)};
+  font-size: ${vw(12)};
+  border-radius: ${vw(16)};
 `;
 
 /** 类型筛选横向滚动区 */
