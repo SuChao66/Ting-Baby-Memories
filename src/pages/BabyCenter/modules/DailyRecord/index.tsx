@@ -66,6 +66,9 @@ function DailyRecord() {
   const [feedVisible, setFeedVisible] = useState(false);
   // 当前公共类型
   const [type, setType] = useState("");
+  // 当前编辑的记录
+  const [currentRecord, setCurrentRecord] =
+    useState<IGetDailyRecordItem | null>(null);
 
   useLayoutEffect(() => {
     // 获取底部区域高度
@@ -122,6 +125,23 @@ function DailyRecord() {
     }
   };
 
+  // 编辑记录
+  const handleEditRecord = async (item: IGetDailyRecordItem) => {
+    const { type } = item;
+    // 设置当前编辑的记录
+    setCurrentRecord(item);
+    // 设置当前记录类型
+    setType(type);
+    // 根据当前记录类型，打开对应弹框
+    if (COMMON_DAIYL_RECORD_TYPE.includes(type)) {
+      setVisible(true);
+    } else if (type === DAILY_RECORD_TYPES.DIAPER) {
+      setDiaperVisible(true);
+    } else if (type === DAILY_RECORD_TYPES.FEED) {
+      setFeedVisible(true);
+    }
+  };
+
   return (
     <>
       <DailyRecordContainer>
@@ -157,6 +177,7 @@ function DailyRecord() {
             <RecordList
               list={recordList}
               onDelete={(item) => handleDeleteRecord(item)}
+              onEdit={(item) => handleEditRecord(item)}
             />
           )}
         </DailyRecordList>
@@ -176,7 +197,9 @@ function DailyRecord() {
           visible={visible}
           type={type}
           babyId={id}
+          currentRecord={currentRecord}
           onClose={() => setVisible(false)}
+          onGetData={getData}
         />
       )}
 
@@ -186,7 +209,9 @@ function DailyRecord() {
           visible={diaperVisible}
           type={type}
           babyId={id}
+          currentRecord={currentRecord}
           onClose={() => setDiaperVisible(false)}
+          onGetData={getData}
         />
       )}
 
@@ -196,7 +221,9 @@ function DailyRecord() {
           visible={feedVisible}
           type={type}
           babyId={id}
+          currentRecord={currentRecord}
           onClose={() => setFeedVisible(false)}
+          onGetData={getData}
         />
       )}
     </>

@@ -4,7 +4,7 @@ import { AiOutlineRight } from "react-icons/ai";
 // 导入工具函数
 import { vw, formatDateTime, formatSeconds } from "@/utils";
 // 导入常量
-import { DAILY_RECORD_TYPES } from "@/enums/constants";
+import { DAILY_RECORD_TYPES, TIME_UNIT } from "@/enums";
 import {
   BREAST_FEED_MODE,
   BREAST_SIDE,
@@ -18,6 +18,7 @@ import { useDailyRecordStore } from "@/store";
 // 导入类型
 import type { DailyRecordType } from "@/types";
 import type { PickerOptions, PickerValue } from "@nutui/nutui-react";
+import type { IGetDailyRecordItem } from "@/interface/dailyRecord";
 // 导入样式
 import {
   AddRecordPopup,
@@ -61,15 +62,21 @@ interface AddFeedRecordProps {
   type: DailyRecordType;
   /** 是否显示 */
   visible: boolean;
+  /** 编辑记录 */
+  currentRecord: IGetDailyRecordItem | null;
   /** 关闭回调 */
   onClose: () => void;
+  /** 获取数据 */
+  onGetData: () => void;
 }
 
 function AddFeedRecord(props: AddFeedRecordProps) {
-  const { babyId, type, visible, onClose } = props;
-  const addDailyRecord = useDailyRecordStore((state) => state.addDailyRecord);
-
-  const title = recordTypeConfig[DAILY_RECORD_TYPES.FEED].title;
+  const { babyId, type, visible, currentRecord, onClose, onGetData } = props;
+  const { addDailyRecord, editDailyRecord } = useDailyRecordStore(
+    (state) => state,
+  );
+  // 弹窗标题
+  const { title, editTitle } = recordTypeConfig[DAILY_RECORD_TYPES.DIAPER];
 
   // 开始时间
   const [startDateTime, setStartDateTime] = useState(new Date());
@@ -86,17 +93,17 @@ function AddFeedRecord(props: AddFeedRecordProps) {
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // 手动输入
-  const [leftMinutes, setLeftMinutes] = useState("");
-  const [rightMinutes, setRightMinutes] = useState("");
+  const [leftMinutes, setLeftMinutes] = useState<number | string>("");
+  const [rightMinutes, setRightMinutes] = useState<number | string>("");
   const [lastUsedSide, setLastUsedSide] = useState<string>(BREAST_SIDE.LEFT);
 
   // 预估奶量
   const [showEstimate, setShowEstimate] = useState(false);
-  const [estimatedAmount, setEstimatedAmount] = useState("");
+  const [estimatedAmount, setEstimatedAmount] = useState<number | string>("");
 
   // 瓶喂
-  const [formulaAmount, setFormulaAmount] = useState(""); // 配方奶
-  const [breastMilkAmount, setBreastMilkAmount] = useState(""); // 母乳
+  const [formulaAmount, setFormulaAmount] = useState<number | string>(""); // 配方奶
+  const [breastMilkAmount, setBreastMilkAmount] = useState<number | string>(""); // 母乳
 
   // 备注
   const [remark, setRemark] = useState("");
@@ -133,20 +140,46 @@ function AddFeedRecord(props: AddFeedRecordProps) {
   // 弹窗打开重置
   useEffect(() => {
     if (visible) {
-      setStartDateTime(new Date());
+      // 根据currentRecord判断是编辑还是新增
+      const isEdit = currentRecord !== null;
       setStartPickerVisible(false);
-      setBreastMode(BREAST_FEED_MODE.TIMER);
-      setLeftSeconds(0);
-      setRightSeconds(0);
+      setStartDateTime(isEdit ? new Date(currentRecord.startTime) : new Date());
+      setBreastMode(isEdit ? currentRecord.breastMode : BREAST_FEED_MODE.TIMER);
+      setLeftSeconds(
+        isEdit
+          ? currentRecord.breastMode === BREAST_FEED_MODE.TIMER
+            ? currentRecord.leftDuration
+            : 0
+          : 0,
+      );
+      setRightSeconds(
+        isEdit
+          ? currentRecord.breastMode === BREAST_FEED_MODE.TIMER
+            ? currentRecord.rightDuration
+            : 0
+          : 0,
+      );
       setActiveSide(null);
-      setLeftMinutes("");
-      setRightMinutes("");
-      setLastUsedSide(BREAST_SIDE.LEFT);
-      setShowEstimate(false);
-      setEstimatedAmount("");
-      setFormulaAmount("");
-      setBreastMilkAmount("");
-      setRemark("");
+      setLeftMinutes(
+        isEdit
+          ? currentRecord.breastMode === BREAST_FEED_MODE.MANUAL
+            ? Math.round(currentRecord.leftDuration / TIME_UNIT)
+            : ""
+          : "",
+      );
+      setRightMinutes(
+        isEdit
+          ? currentRecord.breastMode === BREAST_FEED_MODE.MANUAL
+            ? Math.round(currentRecord.rightDuration / TIME_UNIT)
+            : ""
+          : "",
+      );
+      setLastUsedSide(isEdit ? currentRecord.lastUsedSide : BREAST_SIDE.LEFT);
+      setShowEstimate(currentRecord?.estimatedAmount ? true : false);
+      setEstimatedAmount(isEdit ? currentRecord.estimatedAmount : "");
+      setFormulaAmount(isEdit ? currentRecord.formulaAmount : "");
+      setBreastMilkAmount(isEdit ? currentRecord.breastMilkAmount : "");
+      setRemark(isEdit ? currentRecord.remark : "");
     } else if (timerRef.current) {
       // 关闭弹窗时停止计时，避免计时器后台空转
       clearInterval(timerRef.current);
@@ -180,12 +213,12 @@ function AddFeedRecord(props: AddFeedRecordProps) {
     // 计时方式需要转化为分钟
     const leftDur =
       breastMode === BREAST_FEED_MODE.TIMER
-        ? Math.round(leftSeconds / 60)
-        : Number(leftMinutes) || 0;
+        ? Math.round(leftSeconds)
+        : Number(leftMinutes) * TIME_UNIT || 0;
     const rightDur =
       breastMode === BREAST_FEED_MODE.TIMER
-        ? Math.round(rightSeconds / 60)
-        : Number(rightMinutes) || 0;
+        ? Math.round(rightSeconds)
+        : Number(rightMinutes) * TIME_UNIT || 0;
     const formula = Number(formulaAmount) || 0;
     const breastMilk = Number(breastMilkAmount) || 0;
     // 参数校验：亲喂时长与瓶喂奶量至少填写一项
@@ -209,13 +242,19 @@ function AddFeedRecord(props: AddFeedRecordProps) {
       breastMilkAmount: breastMilk, // 母乳奶量
       remark, // 评价
     };
-    const ok = await addDailyRecord(params);
+    const isEdit = currentRecord !== null;
+    if (isEdit) {
+      params["id"] = currentRecord._id;
+    }
+    const requestMethod = isEdit ? editDailyRecord : addDailyRecord;
+    const ok = await requestMethod(params);
     if (ok) {
       Toast.show({
-        content: `${title}成功`,
+        content: `${isEdit ? editTitle : title}成功`,
         icon: "success",
       });
       onClose();
+      onGetData();
     }
   };
 
@@ -233,7 +272,9 @@ function AddFeedRecord(props: AddFeedRecordProps) {
           {/* 顶部导航 */}
           <PopupHeader>
             <HeaderCancel onClick={onClose}>取消</HeaderCancel>
-            <HeaderTitle>{title}</HeaderTitle>
+            <HeaderTitle>
+              {currentRecord !== null ? editTitle : title}
+            </HeaderTitle>
             <HeaderSave onClick={handleSave}>保存</HeaderSave>
           </PopupHeader>
 
@@ -409,7 +450,7 @@ function AddFeedRecord(props: AddFeedRecordProps) {
         type="datetime"
         showChinese
         visible={startPickerVisible}
-        startDate={new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)}
+        startDate={new Date(Date.now() - 7 * 24 * TIME_UNIT * TIME_UNIT * 1000)}
         endDate={new Date()}
         value={startDateTime}
         onConfirm={handleStartConfirm}

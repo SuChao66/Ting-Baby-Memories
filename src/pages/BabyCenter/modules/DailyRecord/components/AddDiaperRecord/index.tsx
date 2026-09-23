@@ -19,6 +19,7 @@ import { useDailyRecordStore } from "@/store";
 // 导入类型
 import type { DailyRecordType } from "@/types";
 import type { PickerOptions, PickerValue } from "@nutui/nutui-react";
+import type { IGetDailyRecordItem } from "@/interface/dailyRecord";
 // 导入样式
 import {
   AddRecordPopup,
@@ -62,16 +63,22 @@ interface AddDiaperRecordProps {
   type: DailyRecordType;
   /** 是否显示 */
   visible: boolean;
+  /** 编辑记录 */
+  currentRecord: IGetDailyRecordItem | null;
   /** 关闭回调 */
   onClose: () => void;
+  /** 获取数据 */
+  onGetData: () => void;
 }
 
 function AddDiaperRecord(props: AddDiaperRecordProps) {
-  const { babyId, type, visible, onClose } = props;
-  const addDailyRecord = useDailyRecordStore((state) => state.addDailyRecord);
+  const { babyId, type, visible, currentRecord, onClose, onGetData } = props;
+  const { addDailyRecord, editDailyRecord } = useDailyRecordStore(
+    (state) => state,
+  );
 
   // 弹窗标题
-  const title = recordTypeConfig[DAILY_RECORD_TYPES.DIAPER].title;
+  const { title, editTitle } = recordTypeConfig[DAILY_RECORD_TYPES.DIAPER];
 
   // 开始时间
   const [startDateTime, setStartDateTime] = useState(new Date());
@@ -99,14 +106,16 @@ function AddDiaperRecord(props: AddDiaperRecordProps) {
   // 重置状态（弹窗打开时重置一次）
   useEffect(() => {
     if (visible) {
-      setStartDateTime(new Date());
+      // 根据currentRecord判断是编辑还是新增
+      const isEdit = currentRecord !== null;
+      setStartDateTime(isEdit ? new Date(currentRecord.startTime) : new Date());
       setStartPickerVisible(false);
-      setStatus(DIAPER_STATUS.POOP);
-      setPoopColor("");
-      setPoopShape("");
-      setPeeAmount("");
-      setHasRash(false);
-      setRemark("");
+      setStatus(isEdit ? currentRecord.status : DIAPER_STATUS.POOP);
+      setPoopColor(isEdit ? currentRecord.poopColor : "");
+      setPoopShape(isEdit ? currentRecord.poopShape : "");
+      setPeeAmount(isEdit ? currentRecord.peeAmount : "");
+      setHasRash(isEdit ? currentRecord.hasRash : false);
+      setRemark(isEdit ? currentRecord.remark : "");
     }
   }, [visible]);
 
@@ -156,13 +165,19 @@ function AddDiaperRecord(props: AddDiaperRecordProps) {
       hasRash,
       remark,
     };
-    const ok = await addDailyRecord(params);
+    const isEdit = currentRecord !== null;
+    if (isEdit) {
+      params["id"] = currentRecord._id;
+    }
+    const requestMethod = isEdit ? editDailyRecord : addDailyRecord;
+    const ok = await requestMethod(params);
     if (ok) {
       Toast.show({
-        content: `${title}成功`,
+        content: `${isEdit ? editTitle : title}成功`,
         icon: "success",
       });
       onClose();
+      onGetData();
     }
   };
 
@@ -180,7 +195,9 @@ function AddDiaperRecord(props: AddDiaperRecordProps) {
           {/* 顶部导航 */}
           <PopupHeader>
             <HeaderCancel onClick={onClose}>取消</HeaderCancel>
-            <HeaderTitle>{title}</HeaderTitle>
+            <HeaderTitle>
+              {currentRecord !== null ? editTitle : title}
+            </HeaderTitle>
             <HeaderSave onClick={handleSave}>保存</HeaderSave>
           </PopupHeader>
 

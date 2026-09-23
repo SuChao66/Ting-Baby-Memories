@@ -6,6 +6,7 @@ import { vw, formatDateTime, formatDuration } from "@/utils";
 // 导入类型
 import type { DailyRecordType } from "@/types";
 import type { PickerOptions, PickerValue } from "@nutui/nutui-react";
+import type { IGetDailyRecordItem } from "@/interface/dailyRecord";
 // 导入常量
 import { DAILY_RECORD_TYPES, NUMBER } from "@/enums";
 import { BREAST_FEED_MODE } from "../../constants";
@@ -45,27 +46,33 @@ interface AddCommonRecordProps {
   type: DailyRecordType;
   /** 是否显示 */
   visible: boolean;
+  /** 编辑记录 */
+  currentRecord: IGetDailyRecordItem | null;
   /** 关闭回调 */
   onClose: () => void;
+  /** 获取数据 */
+  onGetData: () => void;
 }
 
 function AddCommonRecord(props: AddCommonRecordProps) {
-  const { babyId, type, visible, onClose } = props;
-  const addDailyRecord = useDailyRecordStore((state) => state.addDailyRecord);
+  const { babyId, type, visible, currentRecord, onClose, onGetData } = props;
+  const { addDailyRecord, editDailyRecord } = useDailyRecordStore(
+    (state) => state,
+  );
 
   // 根据类型获取标题
-  const { title, actionText, continueText } = recordTypeConfig[type];
+  const { title, editTitle, actionText, continueText } = recordTypeConfig[type];
 
   // 输入模式：timer 计时 / manual 手动输入
-  const [mode, setMode] = useState<"timer" | "manual">("timer");
+  const [mode, setMode] = useState<string>(BREAST_FEED_MODE.TIMER);
   // 开始时间
   const [startDateTime, setStartDateTime] = useState(new Date());
   // 开始时间选择器显示
   const [startPickerVisible, setStartPickerVisible] = useState(false);
   // 持续时长（秒）
-  const [duration, setDuration] = useState(NUMBER.ZERO);
+  const [duration, setDuration] = useState<number>(NUMBER.ZERO);
   // 手动输入的时长（分钟）
-  const [manualMinutes, setManualMinutes] = useState("");
+  const [manualMinutes, setManualMinutes] = useState<number | string>("");
   // 计时中
   const [running, setRunning] = useState(false);
   // 备注
@@ -82,16 +89,20 @@ function AddCommonRecord(props: AddCommonRecordProps) {
   // 重置状态（弹窗打开时重置一次）
   useEffect(() => {
     if (visible) {
-      setStartDateTime(new Date());
+      // 根据currentRecord判断是编辑还是新增
+      const isEdit = currentRecord !== null;
+      setStartDateTime(isEdit ? new Date(currentRecord.startTime) : new Date());
       setStartPickerVisible(false);
-      setDuration(0);
-      setManualMinutes("");
+      setDuration(isEdit ? currentRecord.duration : NUMBER.ZERO);
+      setManualMinutes(
+        isEdit ? Math.round(currentRecord.duration / NUMBER.SIXTY) : 0,
+      );
       setRunning(false);
-      setMode("timer");
-      setRemark("");
-      setEventName("");
-      setFoodName("");
-      setFoodWeight("");
+      setMode(BREAST_FEED_MODE.TIMER);
+      setRemark(isEdit ? currentRecord.remark : "");
+      setEventName(isEdit ? currentRecord.eventName : "");
+      setFoodName(isEdit ? currentRecord.foodName : "");
+      setFoodWeight(isEdit ? currentRecord.foodWeight : "");
     }
   }, [visible]);
 
@@ -185,13 +196,19 @@ function AddCommonRecord(props: AddCommonRecordProps) {
       foodName: type === DAILY_RECORD_TYPES.FOOD ? foodName : "",
       foodWeight: type === DAILY_RECORD_TYPES.FOOD ? foodWeight : "",
     };
-    const ok = await addDailyRecord(params);
+    const isEdit = currentRecord !== null;
+    if (isEdit) {
+      params["id"] = currentRecord._id;
+    }
+    const requestMethod = isEdit ? editDailyRecord : addDailyRecord;
+    const ok = await requestMethod(params);
     if (ok) {
       Toast.show({
-        content: `${title}成功`,
+        content: `${isEdit ? editTitle : title}成功`,
         icon: "success",
       });
       onClose();
+      onGetData();
     }
   };
 
@@ -209,7 +226,9 @@ function AddCommonRecord(props: AddCommonRecordProps) {
           {/* 顶部导航 */}
           <PopupHeader>
             <HeaderCancel onClick={onClose}>取消</HeaderCancel>
-            <HeaderTitle>{title}</HeaderTitle>
+            <HeaderTitle>
+              {currentRecord !== null ? editTitle : title}
+            </HeaderTitle>
             <HeaderSave onClick={handleSave}>保存</HeaderSave>
           </PopupHeader>
 

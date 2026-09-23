@@ -142,17 +142,24 @@ export const formatDateTime = (date: Date): string => {
   )} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
 };
 
-/** 
- * 格式化秒为 mm:ss 或 HH:mm:ss 
+/**
+ * 格式化秒为 mm:ss 或 HH:mm:ss
  * outputIsText: 输出是否文字：3小时5分钟18秒
  * */
-export const formatDuration = (seconds: number, outputIsText = false): string => {
+export const formatDuration = (
+  seconds: number,
+  outputIsText = false,
+): string => {
   const h = Math.floor(seconds / 3600);
   const m = Math.floor((seconds % 3600) / 60);
   const s = seconds % 60;
   const pad = (n: number) => String(n).padStart(2, "0");
   if (outputIsText) {
-    return h > 0 ? `${h}小时${m}分钟${s}秒` : (m > 0 ? `${m}分钟${s}秒` : `${s}秒`);
+    return h > 0
+      ? `${h}小时${m}分钟${s}秒`
+      : m > 0
+        ? `${m}分钟${s}秒`
+        : `${s}秒`;
   }
   return h > 0 ? `${pad(h)}:${pad(m)}:${pad(s)}` : `${pad(m)}:${pad(s)}`;
 };
@@ -162,4 +169,16 @@ export const formatSeconds = (totalSeconds: number) => {
   const minutes = Math.floor(totalSeconds / 60);
   const seconds = totalSeconds % 60;
   return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+};
+
+/** 转换秒为分钟 */
+export const convertSecondsToMinutes = (seconds: number) => {
+  if (seconds === 0) return "0分钟";
+  if (seconds < 60) {
+    return `${seconds}秒`;
+  }
+  if (seconds % 60 === 0) {
+    return `${Math.floor(seconds / 60)}分钟`;
+  }
+  return `${Math.floor(seconds / 60)}分${seconds % 60}秒`;
 };

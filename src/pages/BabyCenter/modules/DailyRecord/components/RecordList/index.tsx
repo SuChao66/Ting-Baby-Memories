@@ -4,6 +4,7 @@ import type { IGetDailyRecordItem } from "@/interface/dailyRecord";
 // 导入常量
 import { DAILY_RECORD_TYPES } from "@/enums";
 import {
+  DIAPER_STATUS,
   DIAPER_STATUS_MAP,
   PEE_AMOUNT_MAP,
   POOP_COLOR_MAP,
@@ -29,7 +30,7 @@ import {
   RecordActionBtn,
 } from "./styles";
 // 导入工具函数
-import { formatTime, formatDuration } from "@/utils";
+import { formatTime, formatDuration, convertSecondsToMinutes } from "@/utils";
 // 导入组件
 import Dialog from "@/baseUI/dialog";
 
@@ -55,8 +56,10 @@ function getSummary(item: IGetDailyRecordItem): string {
   switch (item.type) {
     // 喂奶：亲喂显示左右侧时长与预估奶量，瓶喂显示配方奶/母乳量
     case DAILY_RECORD_TYPES.FEED:
-      if (item.leftDuration) parts.push(`左侧${item.leftDuration}分钟`);
-      if (item.rightDuration) parts.push(`右侧${item.rightDuration}分钟`);
+      if (item.leftDuration)
+        parts.push(`左侧${convertSecondsToMinutes(item.leftDuration)}`);
+      if (item.rightDuration)
+        parts.push(`右侧${convertSecondsToMinutes(item.rightDuration)}`);
       if (item.estimatedAmount) parts.push(`预估${item.estimatedAmount}ml`);
       if (item.formulaAmount) parts.push(`配方奶${item.formulaAmount}ml`);
       if (item.breastMilkAmount) parts.push(`母乳${item.breastMilkAmount}ml`);
@@ -65,12 +68,19 @@ function getSummary(item: IGetDailyRecordItem): string {
     case DAILY_RECORD_TYPES.DIAPER:
       if (item.status)
         parts.push(DIAPER_STATUS_MAP[item.status] ?? item.status);
-      if (item.peeAmount)
-        parts.push(`尿量${PEE_AMOUNT_MAP[item.peeAmount] ?? item.peeAmount}`);
-      if (item.poopColor)
-        parts.push(POOP_COLOR_MAP[item.poopColor] ?? item.poopColor);
-      if (item.poopShape)
-        parts.push(POOP_SHAPE_MAP[item.poopShape] ?? item.poopShape);
+      // 嘘嘘
+      if (item.status === DIAPER_STATUS.PEE) {
+        if (item.peeAmount)
+          parts.push(`尿量${PEE_AMOUNT_MAP[item.peeAmount] ?? item.peeAmount}`);
+      }
+      // 便便
+      if (item.status === DIAPER_STATUS.POOP) {
+        if (item.poopColor)
+          parts.push(POOP_COLOR_MAP[item.poopColor] ?? item.poopColor);
+        if (item.poopShape)
+          parts.push(POOP_SHAPE_MAP[item.poopShape] ?? item.poopShape);
+      }
+      // 是否红屁股
       if (item.hasRash) parts.push("红屁股");
       break;
     // 辅食：食物名称与重量

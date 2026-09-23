@@ -78,45 +78,53 @@ export const actionList: {
 /** 各记录类型对应的添加文案配置 */
 export const recordTypeConfig: Record<
   DailyRecordType,
-  { title: string; actionText: string; continueText: string }
+  { title: string; editTitle: string; actionText: string; continueText: string }
 > = {
   [DAILY_RECORD_TYPES.FEED]: {
     title: "添加喂奶记录",
+    editTitle: "编辑喂奶记录",
     actionText: "开始喂奶",
     continueText: "继续喂奶",
   },
   [DAILY_RECORD_TYPES.DIAPER]: {
     title: "添加换尿布记录",
+    editTitle: "编辑换尿布记录",
     actionText: "记录换尿布",
     continueText: "继续换尿布",
   },
   [DAILY_RECORD_TYPES.SLEEP]: {
     title: "添加睡眠记录",
+    editTitle: "编辑睡眠记录",
     actionText: "开始睡觉",
     continueText: "继续睡觉",
   },
   [DAILY_RECORD_TYPES.FOOD]: {
     title: "添加辅食记录",
+    editTitle: "编辑辅食记录",
     actionText: "开始吃辅食",
     continueText: "继续吃辅食",
   },
   [DAILY_RECORD_TYPES.BATH]: {
     title: "添加洗澡记录",
+    editTitle: "编辑洗澡记录",
     actionText: "开始洗澡",
     continueText: "继续洗澡",
   },
   [DAILY_RECORD_TYPES.PLAY]: {
     title: "添加玩耍记录",
+    editTitle: "编辑玩耍记录",
     actionText: "开始玩耍",
     continueText: "继续玩耍",
   },
   [DAILY_RECORD_TYPES.SWIM]: {
     title: "添加游泳记录",
+    editTitle: "编辑游泳记录",
     actionText: "开始游泳",
     continueText: "继续游泳",
   },
   [DAILY_RECORD_TYPES.OTHER]: {
     title: "添加其他事件",
+    editTitle: "编辑其他事件",
     actionText: "记录事件",
     continueText: "继续记录",
   },

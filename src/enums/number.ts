@@ -36,3 +36,9 @@ export const ONN_B = 1024;
 
 // 24小时
 export const ONE_DAY = 24 * 60 * 60 * 1000;
+
+// 时间单位
+export const TIME_UNIT = 60;
+
+// 秒单位
+export const SECOND_UNIT = 1000;
