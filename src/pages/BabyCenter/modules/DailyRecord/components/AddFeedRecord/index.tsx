@@ -18,7 +18,10 @@ import { useDailyRecordStore } from "@/store";
 // 导入类型
 import type { DailyRecordType } from "@/types";
 import type { PickerOptions, PickerValue } from "@nutui/nutui-react";
-import type { IGetDailyRecordItem } from "@/interface/dailyRecord";
+import type {
+  IAddDailyRecordParams,
+  IGetDailyRecordItem,
+} from "@/interface/dailyRecord";
 // 导入样式
 import {
   AddRecordPopup,
@@ -229,7 +232,7 @@ function AddFeedRecord(props: AddFeedRecordProps) {
       });
       return;
     }
-    const params = {
+    const params: IAddDailyRecordParams = {
       babyId,
       type,
       startTime: startDateTime, // 开始时间
@@ -243,11 +246,9 @@ function AddFeedRecord(props: AddFeedRecordProps) {
       remark, // 评价
     };
     const isEdit = currentRecord !== null;
-    if (isEdit) {
-      params["id"] = currentRecord._id;
-    }
-    const requestMethod = isEdit ? editDailyRecord : addDailyRecord;
-    const ok = await requestMethod(params);
+    const ok = await (isEdit
+      ? editDailyRecord({ ...params, id: currentRecord._id })
+      : addDailyRecord(params));
     if (ok) {
       Toast.show({
         content: `${isEdit ? editTitle : title}成功`,

@@ -53,7 +53,7 @@ function DailyRecord() {
   // 底部操作栏ref
   const bottomActionRef = useRef<HTMLDivElement>(null);
   // 搜索区ref
-  const filterBarRef = useRef(null);
+  const filterBarRef = useRef<HTMLDivElement>(null);
   // 底部操作栏的高度
   const [height, setHeight] = useState(0);
   // 顶部搜索区域的高度
@@ -92,11 +92,14 @@ function DailyRecord() {
 
   // 获取日常记录内容
   const getData = async () => {
+    // 路由参数 id 理论上必传，兜底为空字符串
+    const babyId = id ?? "";
     const params = {
-      babyId: id,
+      babyId,
       // 格式化为 YYYY-MM-DD 本地日期字符串，避免 Date 序列化为 UTC 后差一天
       date: formatDay(filterDate),
-      type: filterType,
+      // "" 表示全部类型，转为 undefined 不筛选
+      type: filterType || undefined,
     };
     const data = await searchDailyRecord(params);
     setRecordList(data?.list ?? []);
@@ -196,7 +199,7 @@ function DailyRecord() {
         <AddCommonRecord
           visible={visible}
           type={type}
-          babyId={id}
+          babyId={id ?? ""}
           currentRecord={currentRecord}
           onClose={() => setVisible(false)}
           onGetData={getData}
@@ -208,7 +211,7 @@ function DailyRecord() {
         <AddDiaperRecord
           visible={diaperVisible}
           type={type}
-          babyId={id}
+          babyId={id ?? ""}
           currentRecord={currentRecord}
           onClose={() => setDiaperVisible(false)}
           onGetData={getData}
@@ -220,7 +223,7 @@ function DailyRecord() {
         <AddFeedRecord
           visible={feedVisible}
           type={type}
-          babyId={id}
+          babyId={id ?? ""}
           currentRecord={currentRecord}
           onClose={() => setFeedVisible(false)}
           onGetData={getData}

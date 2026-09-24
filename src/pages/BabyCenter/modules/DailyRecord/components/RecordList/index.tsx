@@ -119,7 +119,7 @@ function DailyRecordList(props: IProps) {
 
   /** 是否显示操作按钮 */
   const isShowActions = (item: IGetDailyRecordItem): boolean => {
-    return item.userId === userInfo._id;
+    return item.userId === userInfo?._id;
   };
 
   return (
@@ -166,7 +166,9 @@ function DailyRecordList(props: IProps) {
         visible={delVisible}
         content="确认删除该记录？"
         onConfirm={() => {
-          onDelete(currentItem);
+          if (currentItem) {
+            onDelete?.(currentItem);
+          }
           setDelVisible(false);
         }}
         onCancel={() => setDelVisible(false)}

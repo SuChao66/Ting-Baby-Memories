@@ -6,7 +6,10 @@ import { vw, formatDateTime, formatDuration } from "@/utils";
 // 导入类型
 import type { DailyRecordType } from "@/types";
 import type { PickerOptions, PickerValue } from "@nutui/nutui-react";
-import type { IGetDailyRecordItem } from "@/interface/dailyRecord";
+import type {
+  IAddDailyRecordParams,
+  IGetDailyRecordItem,
+} from "@/interface/dailyRecord";
 // 导入常量
 import { DAILY_RECORD_TYPES, NUMBER } from "@/enums";
 import { BREAST_FEED_MODE } from "../../constants";
@@ -93,16 +96,16 @@ function AddCommonRecord(props: AddCommonRecordProps) {
       const isEdit = currentRecord !== null;
       setStartDateTime(isEdit ? new Date(currentRecord.startTime) : new Date());
       setStartPickerVisible(false);
-      setDuration(isEdit ? currentRecord.duration : NUMBER.ZERO);
+      setDuration(isEdit ? (currentRecord.duration ?? 0) : NUMBER.ZERO);
       setManualMinutes(
-        isEdit ? Math.round(currentRecord.duration / NUMBER.SIXTY) : 0,
+        isEdit ? Math.round((currentRecord.duration ?? 0) / NUMBER.SIXTY) : 0,
       );
       setRunning(false);
       setMode(BREAST_FEED_MODE.TIMER);
       setRemark(isEdit ? currentRecord.remark : "");
-      setEventName(isEdit ? currentRecord.eventName : "");
-      setFoodName(isEdit ? currentRecord.foodName : "");
-      setFoodWeight(isEdit ? currentRecord.foodWeight : "");
+      setEventName(isEdit ? (currentRecord.eventName ?? "") : "");
+      setFoodName(isEdit ? (currentRecord.foodName ?? "") : "");
+      setFoodWeight(isEdit ? (currentRecord.foodWeight ?? "") : "");
     }
   }, [visible]);
 
@@ -183,7 +186,7 @@ function AddCommonRecord(props: AddCommonRecordProps) {
         return;
       }
     }
-    const params = {
+    const params: IAddDailyRecordParams = {
       babyId,
       type,
       // 公共参数
@@ -197,11 +200,9 @@ function AddCommonRecord(props: AddCommonRecordProps) {
       foodWeight: type === DAILY_RECORD_TYPES.FOOD ? foodWeight : "",
     };
     const isEdit = currentRecord !== null;
-    if (isEdit) {
-      params["id"] = currentRecord._id;
-    }
-    const requestMethod = isEdit ? editDailyRecord : addDailyRecord;
-    const ok = await requestMethod(params);
+    const ok = await (isEdit
+      ? editDailyRecord({ ...params, id: currentRecord._id })
+      : addDailyRecord(params));
     if (ok) {
       Toast.show({
         content: `${isEdit ? editTitle : title}成功`,

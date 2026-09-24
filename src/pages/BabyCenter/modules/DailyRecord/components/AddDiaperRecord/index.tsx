@@ -19,7 +19,10 @@ import { useDailyRecordStore } from "@/store";
 // 导入类型
 import type { DailyRecordType } from "@/types";
 import type { PickerOptions, PickerValue } from "@nutui/nutui-react";
-import type { IGetDailyRecordItem } from "@/interface/dailyRecord";
+import type {
+  IAddDailyRecordParams,
+  IGetDailyRecordItem,
+} from "@/interface/dailyRecord";
 // 导入样式
 import {
   AddRecordPopup,
@@ -111,11 +114,11 @@ function AddDiaperRecord(props: AddDiaperRecordProps) {
       const isEdit = currentRecord !== null;
       setStartDateTime(isEdit ? new Date(currentRecord.startTime) : new Date());
       setStartPickerVisible(false);
-      setStatus(isEdit ? currentRecord.status : DIAPER_STATUS.POOP);
-      setPoopColor(isEdit ? currentRecord.poopColor : "");
-      setPoopShape(isEdit ? currentRecord.poopShape : "");
-      setPeeAmount(isEdit ? currentRecord.peeAmount : "");
-      setHasRash(isEdit ? currentRecord.hasRash : false);
+      setStatus(isEdit ? (currentRecord.status ?? DIAPER_STATUS.POOP) : DIAPER_STATUS.POOP);
+      setPoopColor(isEdit ? (currentRecord.poopColor ?? "") : "");
+      setPoopShape(isEdit ? (currentRecord.poopShape ?? "") : "");
+      setPeeAmount(isEdit ? (currentRecord.peeAmount ?? "") : "");
+      setHasRash(isEdit ? (currentRecord.hasRash ?? false) : false);
       setRemark(isEdit ? currentRecord.remark : "");
     }
   }, [visible]);
@@ -155,7 +158,7 @@ function AddDiaperRecord(props: AddDiaperRecordProps) {
       });
       return;
     }
-    const params = {
+    const params: IAddDailyRecordParams = {
       babyId,
       type,
       startTime: startDateTime,
@@ -167,11 +170,9 @@ function AddDiaperRecord(props: AddDiaperRecordProps) {
       remark,
     };
     const isEdit = currentRecord !== null;
-    if (isEdit) {
-      params["id"] = currentRecord._id;
-    }
-    const requestMethod = isEdit ? editDailyRecord : addDailyRecord;
-    const ok = await requestMethod(params);
+    const ok = await (isEdit
+      ? editDailyRecord({ ...params, id: currentRecord._id })
+      : addDailyRecord(params));
     if (ok) {
       Toast.show({
         content: `${isEdit ? editTitle : title}成功`,
