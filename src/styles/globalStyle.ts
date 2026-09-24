@@ -61,4 +61,12 @@ export const GlobalStyle = createGlobalStyle<{ theme?: Theme }>`
   #nprogress .peg {
     box-shadow: 0 0 10px ${({ theme }) => theme.colors.primaryColor}, 0 0 5px ${({ theme }) => theme.colors.primaryColor} !important;
   }
+
+  /** 修改popup样式 */
+  .nut-popup {
+    max-height: 90%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
 `;

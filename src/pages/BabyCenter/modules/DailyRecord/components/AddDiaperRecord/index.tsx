@@ -23,6 +23,7 @@ import type { IGetDailyRecordItem } from "@/interface/dailyRecord";
 // 导入样式
 import {
   AddRecordPopup,
+  AddRecordForm,
   PopupHeader,
   HeaderCancel,
   HeaderTitle,
@@ -201,124 +202,126 @@ function AddDiaperRecord(props: AddDiaperRecordProps) {
             <HeaderSave onClick={handleSave}>保存</HeaderSave>
           </PopupHeader>
 
-          {/* 开始时间行 */}
-          <FormRow>
-            <FormRowLabel>时间</FormRowLabel>
-            <FormRowValue onClick={() => setStartPickerVisible(true)}>
-              <span>{formatDateTime(startDateTime)}</span>
-              <AiOutlineRight size={vw(14)} color="#ccc" />
-            </FormRowValue>
-          </FormRow>
+          <AddRecordForm>
+            {/* 开始时间行 */}
+            <FormRow>
+              <FormRowLabel>时间</FormRowLabel>
+              <FormRowValue onClick={() => setStartPickerVisible(true)}>
+                <span>{formatDateTime(startDateTime)}</span>
+                <AiOutlineRight size={vw(14)} color="#ccc" />
+              </FormRowValue>
+            </FormRow>
 
-          {/* 尿布状态选择 */}
-          <StatusSection>
-            {diaperStatusOptions.map((item) => {
-              const active = status === item.value;
-              return (
-                <StatusOption
-                  key={item.value}
-                  onClick={() => setStatus(item.value)}
-                >
-                  <StatusIconWrap $active={active}>
-                    <StatusImage src={item.image} alt={item.label} />
-                    {active && <StatusCheckBadge />}
-                  </StatusIconWrap>
-                  <StatusText $active={active} $color="#ffb3ba">
-                    {item.label}
-                  </StatusText>
-                </StatusOption>
-              );
-            })}
-          </StatusSection>
+            {/* 尿布状态选择 */}
+            <StatusSection>
+              {diaperStatusOptions.map((item) => {
+                const active = status === item.value;
+                return (
+                  <StatusOption
+                    key={item.value}
+                    onClick={() => setStatus(item.value)}
+                  >
+                    <StatusIconWrap $active={active}>
+                      <StatusImage src={item.image} alt={item.label} />
+                      {active && <StatusCheckBadge />}
+                    </StatusIconWrap>
+                    <StatusText $active={active} $color="#ffb3ba">
+                      {item.label}
+                    </StatusText>
+                  </StatusOption>
+                );
+              })}
+            </StatusSection>
 
-          {/* 臭臭颜色（状态包含臭臭时显示） */}
-          {showPoop && (
-            <OptionSection>
-              <OptionLabel>臭臭颜色</OptionLabel>
-              <ColorGrid>
-                {poopColorOptions.map((item) => {
-                  const active = poopColor === item.value;
-                  return (
-                    <ColorItem
-                      key={item.value}
-                      onClick={() => setPoopColor(item.value)}
-                    >
-                      <ColorDot $color={item.color}>
-                        {active && <ColorCheckBadge />}
-                      </ColorDot>
-                      <ColorLabel $active={active}>{item.label}</ColorLabel>
-                    </ColorItem>
-                  );
-                })}
-              </ColorGrid>
-            </OptionSection>
-          )}
+            {/* 臭臭颜色（状态包含臭臭时显示） */}
+            {showPoop && (
+              <OptionSection>
+                <OptionLabel>臭臭颜色</OptionLabel>
+                <ColorGrid>
+                  {poopColorOptions.map((item) => {
+                    const active = poopColor === item.value;
+                    return (
+                      <ColorItem
+                        key={item.value}
+                        onClick={() => setPoopColor(item.value)}
+                      >
+                        <ColorDot $color={item.color}>
+                          {active && <ColorCheckBadge />}
+                        </ColorDot>
+                        <ColorLabel $active={active}>{item.label}</ColorLabel>
+                      </ColorItem>
+                    );
+                  })}
+                </ColorGrid>
+              </OptionSection>
+            )}
 
-          {/* 臭臭形状（状态包含臭臭时显示，带图片说明） */}
-          {showPoop && (
-            <OptionSection>
-              <OptionLabel>臭臭形状</OptionLabel>
-              <ShapeGrid>
-                {poopShapeOptions.map((item) => {
-                  const active = poopShape === item.value;
-                  return (
-                    <ShapeItem
-                      key={item.value}
-                      $active={active}
-                      onClick={() => setPoopShape(item.value)}
-                    >
-                      <StatusIconWrap $active={active}>
-                        <StatusImage src={item.image} alt={item.label} />
-                        {active && <StatusCheckBadge />}
-                      </StatusIconWrap>
-                      <ShapeLabel $active={active}>{item.label}</ShapeLabel>
-                    </ShapeItem>
-                  );
-                })}
-              </ShapeGrid>
-            </OptionSection>
-          )}
+            {/* 臭臭形状（状态包含臭臭时显示，带图片说明） */}
+            {showPoop && (
+              <OptionSection>
+                <OptionLabel>臭臭形状</OptionLabel>
+                <ShapeGrid>
+                  {poopShapeOptions.map((item) => {
+                    const active = poopShape === item.value;
+                    return (
+                      <ShapeItem
+                        key={item.value}
+                        $active={active}
+                        onClick={() => setPoopShape(item.value)}
+                      >
+                        <StatusIconWrap $active={active}>
+                          <StatusImage src={item.image} alt={item.label} />
+                          {active && <StatusCheckBadge />}
+                        </StatusIconWrap>
+                        <ShapeLabel $active={active}>{item.label}</ShapeLabel>
+                      </ShapeItem>
+                    );
+                  })}
+                </ShapeGrid>
+              </OptionSection>
+            )}
 
-          {/* 尿量（状态包含嘘嘘时显示，带图片说明） */}
-          {showPee && (
-            <OptionSection>
-              <OptionLabel>尿量</OptionLabel>
-              <PeeGrid>
-                {peeAmountOptions.map((item) => {
-                  const active = peeAmount === item.value;
-                  return (
-                    <PeeItem
-                      key={item.value}
-                      onClick={() => setPeeAmount(item.value)}
-                    >
-                      <StatusIconWrap $active={active}>
-                        <StatusImage src={item.image} alt={item.label} />
-                        {active && <StatusCheckBadge />}
-                      </StatusIconWrap>
-                      <PeeLabel $active={active}>{item.label}</PeeLabel>
-                    </PeeItem>
-                  );
-                })}
-              </PeeGrid>
-            </OptionSection>
-          )}
+            {/* 尿量（状态包含嘘嘘时显示，带图片说明） */}
+            {showPee && (
+              <OptionSection>
+                <OptionLabel>尿量</OptionLabel>
+                <PeeGrid>
+                  {peeAmountOptions.map((item) => {
+                    const active = peeAmount === item.value;
+                    return (
+                      <PeeItem
+                        key={item.value}
+                        onClick={() => setPeeAmount(item.value)}
+                      >
+                        <StatusIconWrap $active={active}>
+                          <StatusImage src={item.image} alt={item.label} />
+                          {active && <StatusCheckBadge />}
+                        </StatusIconWrap>
+                        <PeeLabel $active={active}>{item.label}</PeeLabel>
+                      </PeeItem>
+                    );
+                  })}
+                </PeeGrid>
+              </OptionSection>
+            )}
 
-          {/* 是否红屁股 */}
-          <RashRow>
-            <RashLabel>是否有红屁股</RashLabel>
-            <Switch checked={hasRash} onChange={(v) => setHasRash(v)} />
-          </RashRow>
+            {/* 是否红屁股 */}
+            <RashRow>
+              <RashLabel>是否有红屁股</RashLabel>
+              <Switch checked={hasRash} onChange={(v) => setHasRash(v)} />
+            </RashRow>
 
-          {/* 备注 */}
-          <RemarkSection>
-            <RemarkLabel>添加备注</RemarkLabel>
-            <RemarkTextarea
-              placeholder="输入备注内容"
-              maxLength={200}
-              value={remark}
-              onChange={(e) => setRemark(e.target.value)}
-            />
-          </RemarkSection>
+            {/* 备注 */}
+            <RemarkSection>
+              <RemarkLabel>添加备注</RemarkLabel>
+              <RemarkTextarea
+                placeholder="输入备注内容"
+                maxLength={200}
+                value={remark}
+                onChange={(e) => setRemark(e.target.value)}
+              />
+            </RemarkSection>
+          </AddRecordForm>
         </AddRecordPopup>
       </Popup>
 

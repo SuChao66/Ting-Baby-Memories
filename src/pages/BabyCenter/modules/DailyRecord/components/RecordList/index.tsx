@@ -33,6 +33,8 @@ import {
 import { formatTime, formatDuration, convertSecondsToMinutes } from "@/utils";
 // 导入组件
 import Dialog from "@/baseUI/dialog";
+// 导入store
+import { useUserStore } from "@/store";
 
 interface IProps {
   list: IGetDailyRecordItem[];
@@ -108,10 +110,17 @@ function getSummary(item: IGetDailyRecordItem): string {
 
 function DailyRecordList(props: IProps) {
   const { list, onEdit, onDelete } = props;
+  const { userInfo } = useUserStore((state) => state);
+
   const [delVisible, setDelVisible] = useState(false);
   const [currentItem, setCurrentItem] = useState<IGetDailyRecordItem | null>(
     null,
   );
+
+  /** 是否显示操作按钮 */
+  const isShowActions = (item: IGetDailyRecordItem): boolean => {
+    return item.userId === userInfo._id;
+  };
 
   return (
     <>
@@ -131,19 +140,21 @@ function DailyRecordList(props: IProps) {
                 <RecordTime>
                   {item.startTime ? formatTime(item.startTime) : "--:--"}
                 </RecordTime>
-                <RecordActions>
-                  <RecordActionBtn onClick={() => onEdit?.(item)}>
-                    <CiEdit size={18} />
-                  </RecordActionBtn>
-                  <RecordActionBtn
-                    onClick={() => {
-                      setDelVisible(true);
-                      setCurrentItem(item);
-                    }}
-                  >
-                    <MdDelete size={18} />
-                  </RecordActionBtn>
-                </RecordActions>
+                {isShowActions(item) && (
+                  <RecordActions>
+                    <RecordActionBtn onClick={() => onEdit?.(item)}>
+                      <CiEdit size={18} />
+                    </RecordActionBtn>
+                    <RecordActionBtn
+                      onClick={() => {
+                        setDelVisible(true);
+                        setCurrentItem(item);
+                      }}
+                    >
+                      <MdDelete size={18} />
+                    </RecordActionBtn>
+                  </RecordActions>
+                )}
               </RecordRight>
             </RecordItem>
           );

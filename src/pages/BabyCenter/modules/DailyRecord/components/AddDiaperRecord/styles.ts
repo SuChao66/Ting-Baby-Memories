@@ -5,6 +5,10 @@ import { vw } from "@/utils";
 export const AddRecordPopup = styled.div`
   background: #f7f7f7;
   border-radius: ${vw(12)} ${vw(12)} 0 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 `;
 
 /** 顶部导航栏 */
@@ -35,6 +39,15 @@ export const HeaderSave = styled.span`
   color: #ff6b8a;
   font-size: ${vw(14)};
   cursor: pointer;
+`;
+
+/** 表单区域 */
+export const AddRecordForm = styled.div`
+  flex: 1;
+  overflow: auto;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 /** 表单项行 */
