@@ -69,4 +69,10 @@ export const GlobalStyle = createGlobalStyle<{ theme?: Theme }>`
     display: flex;
     flex-direction: column;
   }
+
+  /** 修改button样式 */
+  .submit-button {
+    height: ${vw(36)};
+    border-radius: ${vw(18)};
+  }
 `;

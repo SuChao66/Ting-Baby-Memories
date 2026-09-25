@@ -19,6 +19,11 @@ import type {
   IEditDailyRecordParams,
   ISearchDailyRecordParams,
 } from "@/interface/dailyRecord";
+import type {
+  IAddHeightWeightParams,
+  IEditHeightWeightParams,
+  ISearchHeightWeightParams,
+} from "@/interface/heightWeight";
 
 // 定义用户状态类型
 export interface UserState {
@@ -125,4 +130,12 @@ export interface DailyRecordState {
   editDailyRecord: (params: IEditDailyRecordParams) => Promise<boolean>;
   deleteDailyRecord: (id: string) => Promise<boolean>;
   searchDailyRecord: (params: ISearchDailyRecordParams) => Promise<any>;
+}
+
+// 定义体重身高状态类型
+export interface heightWeightState {
+  addHeightWeight: (params: IAddHeightWeightParams) => Promise<boolean>;
+  editHeightWeight: (params: IEditHeightWeightParams) => Promise<boolean>;
+  deleteHeightWeight: (id: string) => Promise<boolean>;
+  searchHeightWeight: (params: ISearchHeightWeightParams) => Promise<any>;
 }
