@@ -69,3 +69,15 @@ export const RecordList = styled.div`
     display: none;
   }
 `;
+
+/** 图表容器 */
+export const ChartWrap = styled.div`
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  justify-content: center;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+`;
