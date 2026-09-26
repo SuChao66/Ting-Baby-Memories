@@ -127,6 +127,7 @@ function HeightWeight() {
 
   // 获取记录数据
   const getData = async () => {
+    if (!id) return;
     const res = await searchHeightWeight({ babyId: id });
     setRecordList(res?.list);
   };
@@ -277,7 +278,7 @@ function HeightWeight() {
       {/* 新增/编辑身高体重弹窗 */}
       <AddHeightWeight
         visible={addVisible}
-        babyId={id}
+        babyId={id ?? ""}
         currentRecord={editRecord}
         onClose={handleClose}
         onGetData={getData}
