@@ -8,3 +8,4 @@ export * from "./family";
 export * from "./futrureMessage";
 export * from "./dailyRecord";
 export * from "./heightWeight";
+export * from "./symptom";

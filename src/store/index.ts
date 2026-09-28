@@ -7,3 +7,4 @@ export { useFamilyStore } from "./modules/family";
 export { useFutureMessageStore } from "./modules/futureMessage";
 export { useDailyRecordStore } from "./modules/dailyRecord";
 export { useHeightWeightStore } from "./modules/heightWeight";
+export { useSymptomStore } from "./modules/symptom";

@@ -20,6 +20,11 @@ import type {
   ISearchDailyRecordParams,
 } from "@/interface/dailyRecord";
 import type {
+  IAddSymptomRecordParams,
+  IEditSymptomRecordParams,
+  ISearchSymptomRecordParams,
+} from "@/interface/symptom";
+import type {
   IAddHeightWeightParams,
   IEditHeightWeightParams,
   ISearchHeightWeightParams,
@@ -130,6 +135,14 @@ export interface DailyRecordState {
   editDailyRecord: (params: IEditDailyRecordParams) => Promise<boolean>;
   deleteDailyRecord: (id: string) => Promise<boolean>;
   searchDailyRecord: (params: ISearchDailyRecordParams) => Promise<any>;
+}
+
+// 定义症状护理状态类型
+export interface SymptomState {
+  addSymptomRecord: (params: IAddSymptomRecordParams) => Promise<boolean>;
+  editSymptomRecord: (params: IEditSymptomRecordParams) => Promise<boolean>;
+  deleteSymptomRecord: (id: string) => Promise<boolean>;
+  searchSymptomRecord: (params: ISearchSymptomRecordParams) => Promise<any>;
 }
 
 // 定义体重身高状态类型
