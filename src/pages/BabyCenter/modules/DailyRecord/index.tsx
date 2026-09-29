@@ -47,7 +47,7 @@ function DailyRecord() {
   // 列表内容
   const [recordList, setRecordList] = useState<IGetDailyRecordItem[]>([]);
   // 是否收起操作按钮
-  const [collapsed, setCollapsed] = useState(true);
+  const [collapsed, setCollapsed] = useState(recordList.length !== 0);
   // 是否显示筛选区（默认隐藏，点击导航栏筛选入口展开）
   const [filterVisible, setFilterVisible] = useState(false);
   // 底部操作栏ref
@@ -175,7 +175,7 @@ function DailyRecord() {
         {/* 列表展示 */}
         <DailyRecordList $height={height} $filterBarHeight={filterBarHeight}>
           {!recordList?.length ? (
-            <Empty text="今日暂无新增相关记录" />
+            <Empty text="今日暂无相关记录,请添加～" />
           ) : (
             <RecordList
               list={recordList}

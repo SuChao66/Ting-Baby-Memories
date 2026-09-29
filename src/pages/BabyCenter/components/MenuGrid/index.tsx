@@ -21,18 +21,11 @@ import { vw } from "@/utils";
 // 功能菜单数据
 const menuList = [
   {
-    key: "cloudAlbum",
-    label: "云相册",
-    icon: <AiOutlineCloud color="#4fc3f7" size={vw(22)} />,
+    key: "vaccine",
+    label: "疫苗接种",
+    icon: <AiOutlineMedicineBox color="#4fc3f7" size={vw(22)} />,
     bg: "#e3f2fd",
-    path: "/cloud-album",
-  },
-  {
-    key: "milestone",
-    label: "大事记",
-    icon: <AiOutlineFlag color="#f06292" size={vw(22)} />,
-    bg: "#fce4ec",
-    path: "/mile-stone",
+    path: "/vaccine",
   },
   {
     key: "dailyRecord",
@@ -49,13 +42,6 @@ const menuList = [
     path: "/height-weight",
   },
   {
-    key: "vaccine",
-    label: "疫苗接种",
-    icon: <AiOutlineMedicineBox color="#4fc3f7" size={vw(22)} />,
-    bg: "#e3f2fd",
-    path: "/vaccine",
-  },
-  {
     key: "symptom",
     label: "症状护理",
     icon: <AiOutlineHeart color="#81d4fa" size={vw(22)} />,
@@ -63,12 +49,26 @@ const menuList = [
     path: "/symptom",
   },
   {
-    key: "teeth",
-    label: "长牙换牙",
-    icon: <AiOutlineHeart color="#ffcc5c" size={vw(22)} />,
-    bg: "#fffde7",
-    path: "/teeth",
+    key: "cloudAlbum",
+    label: "云相册",
+    icon: <AiOutlineCloud color="#4fc3f7" size={vw(22)} />,
+    bg: "#e3f2fd",
+    path: "/cloud-album",
   },
+  {
+    key: "milestone",
+    label: "大事记",
+    icon: <AiOutlineFlag color="#f06292" size={vw(22)} />,
+    bg: "#fce4ec",
+    path: "/mile-stone",
+  },
+  // {
+  //   key: "teeth",
+  //   label: "长牙换牙",
+  //   icon: <AiOutlineHeart color="#ffcc5c" size={vw(22)} />,
+  //   bg: "#fffde7",
+  //   path: "/teeth",
+  // },
   {
     key: "futureMessage",
     label: "未来寄语",

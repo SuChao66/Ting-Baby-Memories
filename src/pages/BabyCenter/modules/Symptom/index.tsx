@@ -6,11 +6,7 @@ import NavHeader from "@/components/navHeader";
 import { IoIosArrowBack } from "react-icons/io";
 import { IoFunnelOutline } from "react-icons/io5";
 // 导入样式
-import {
-  SymptomContainer,
-  SymptomList,
-  FilterEntryBtn,
-} from "./styles";
+import { SymptomContainer, SymptomList, FilterEntryBtn } from "./styles";
 // 导入组件
 import Empty from "@/baseUI/empty";
 import BottomAction from "./components/BottomAction";
@@ -42,7 +38,7 @@ function Symptom() {
   // 列表内容
   const [recordList, setRecordList] = useState<IGetSymptomRecordItem[]>([]);
   // 是否收起操作按钮
-  const [collapsed, setCollapsed] = useState(true);
+  const [collapsed, setCollapsed] = useState(recordList.length !== 0);
   // 底部操作栏ref
   const bottomActionRef = useRef<HTMLDivElement>(null);
   // 底部操作栏的高度
@@ -151,7 +147,7 @@ function Symptom() {
         {/* 列表展示 */}
         <SymptomList $height={height} $filterBarHeight={filterBarHeight}>
           {!recordList?.length ? (
-            <Empty text="暂无数据" />
+            <Empty text="今日暂无相关记录，请添加～" />
           ) : (
             <RecordList
               list={recordList}
