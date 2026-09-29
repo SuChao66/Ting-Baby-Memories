@@ -14,7 +14,7 @@ export const DialogMask = styled.div`
 
 /** 弹框卡片 */
 export const DialogCard = styled.div`
-  width: calc(100% - ${vw(24)});
+  width: calc(100% - ${vw(72)});
   background: #fff;
   border-radius: ${vw(12)};
   padding: ${vw(16)} ${vw(24)};
@@ -54,7 +54,7 @@ export const DialogBtnCancel = styled.div`
   background: #f5f5f5;
   border-radius: ${vw(12)};
   font-size: ${vw(14)};
-  padding: ${vw(12)} ${vw(48)};
+  padding: ${vw(12)} ${vw(36)};
   color: #333;
   cursor: pointer;
 
@@ -73,7 +73,7 @@ export const DialogBtnConfirm = styled.div`
   font-size: ${vw(14)};
   color: #fff;
   font-weight: 500;
-  padding: ${vw(12)} ${vw(48)};
+  padding: ${vw(12)} ${vw(36)};
   cursor: pointer;
 
   &:active {

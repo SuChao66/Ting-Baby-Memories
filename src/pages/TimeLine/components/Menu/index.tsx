@@ -32,6 +32,8 @@ import { vw } from "@/utils";
 import { useUserStore, useTimelineStore } from "@/store";
 // 导入context
 import { TimeLineContext } from "@/context";
+// 导入弹窗组件
+import Dialog from "@/baseUI/dialog";
 
 interface IProps {
   record: ITimelineGroupRecord;
@@ -189,14 +191,12 @@ function Menu(props: IProps) {
 
       {/* 删除记录弹窗提示 */}
       <Dialog
-        className="test-dialog"
         title="提示"
         visible={visible}
+        content="确认删除该记录?"
         onConfirm={handleDeleteTimeLine}
         onCancel={() => setVisible(false)}
-      >
-        确认删除该记录?
-      </Dialog>
+      />
     </>
   );
 }

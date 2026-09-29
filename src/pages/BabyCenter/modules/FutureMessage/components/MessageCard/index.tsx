@@ -43,6 +43,8 @@ import {
 import type { IFutureMessage } from "@/interface/futureMessage";
 // 导入store
 import { useUserStore, useFutureMessageStore } from "@/store";
+// 导入弹窗组件
+import Dialog from "@/baseUI/dialog";
 
 interface IProps {
   /** 未来寄语记录 */
@@ -157,11 +159,10 @@ function MessageCard(props: IProps) {
     <Dialog
       title="提示"
       visible={deleteVisible}
+      content="确认删除该寄语?"
       onConfirm={handleDelete}
       onCancel={() => setDeleteVisible(false)}
-    >
-      确认删除该寄语?
-    </Dialog>
+    />
   );
 
   // 处理已读：拆开未读信封时调用接口，成功后通知父组件更新列表数据

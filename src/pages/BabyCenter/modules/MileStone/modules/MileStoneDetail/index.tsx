@@ -3,6 +3,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 // 导入组件
 import NavHeader from "@/components/navHeader";
 import VideoPreview from "@/baseUI/videoPreview";
+// 导入弹窗组件
+import Dialog from "@/baseUI/dialog";
 // 导入图标
 import { IoIosArrowBack, IoIosSend } from "react-icons/io";
 import {
@@ -302,11 +304,10 @@ function MileStoneDetail() {
           <Dialog
             title="提示"
             visible={deleteVisible}
+            content="确认删除该大事记?"
             onConfirm={handleDelete}
             onCancel={() => setDeleteVisible(false)}
-          >
-            确认删除该大事记?
-          </Dialog>
+          />
         </RecordCard>
       </DetailContainer>
 

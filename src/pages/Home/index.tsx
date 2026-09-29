@@ -7,6 +7,8 @@ import RecordList from "./modules/RecordLIst";
 import NavHeader from "@/components/navHeader";
 // 导入store
 import { useBabyStore } from "@/store";
+// 导入弹窗组件
+import Dialog from "@/baseUI/dialog";
 
 export default function Home() {
   const location = useLocation();
@@ -46,7 +48,7 @@ export default function Home() {
             onCancel={() => {
               setVisible(false);
             }}
-          ></Dialog>
+          />
         )}
       </HomeContainer>
     </>
