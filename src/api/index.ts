@@ -9,3 +9,4 @@ export * from "./futrureMessage";
 export * from "./dailyRecord";
 export * from "./heightWeight";
 export * from "./symptom";
+export * from "./vaccine";

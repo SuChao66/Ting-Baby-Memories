@@ -29,6 +29,15 @@ import type {
   IEditHeightWeightParams,
   ISearchHeightWeightParams,
 } from "@/interface/heightWeight";
+import type {
+  IAddVaccineRecordParams,
+  IEditVaccineRecordParams,
+  ISearchVaccineRecordParams,
+  IGetVaccineRecordListResponse,
+  ISearchVaccinePlanParams,
+  ISaveVaccinePlanParams,
+  IGetVaccinePlanResponse,
+} from "@/interface/vaccine";
 
 // 定义用户状态类型
 export interface UserState {
@@ -151,4 +160,18 @@ export interface heightWeightState {
   editHeightWeight: (params: IEditHeightWeightParams) => Promise<boolean>;
   deleteHeightWeight: (id: string) => Promise<boolean>;
   searchHeightWeight: (params: ISearchHeightWeightParams) => Promise<any>;
+}
+
+// 定义疫苗接种状态类型
+export interface VaccineState {
+  addVaccineRecord: (params: IAddVaccineRecordParams) => Promise<boolean>;
+  editVaccineRecord: (params: IEditVaccineRecordParams) => Promise<boolean>;
+  deleteVaccineRecord: (id: string) => Promise<boolean>;
+  searchVaccineRecord: (
+    params: ISearchVaccineRecordParams,
+  ) => Promise<IGetVaccineRecordListResponse>;
+  getVaccinePlan: (
+    params: ISearchVaccinePlanParams,
+  ) => Promise<IGetVaccinePlanResponse>;
+  saveVaccinePlan: (params: ISaveVaccinePlanParams) => Promise<boolean>;
 }
