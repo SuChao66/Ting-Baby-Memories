@@ -8,6 +8,7 @@ import type {
   ITimelineRes,
   ICommentReq,
   IFileList,
+  ILikeRes,
 } from "@/interface/timeline";
 
 /** 发布记录 */
@@ -44,6 +45,11 @@ export function deleteTimeLineApi(params: { id: string }) {
 /** 发表评论 */
 export function publishCommentApi(params: ICommentReq) {
   return post<any>("/api/v1/timeline/comment", params);
+}
+
+/** 点赞/取消点赞 */
+export function toggleLikeApi(params: { id: string }) {
+  return post<ILikeRes>("/api/v1/timeline/like", params);
 }
 
 /** 获取文件列表 */

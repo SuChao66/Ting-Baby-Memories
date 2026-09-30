@@ -8,6 +8,7 @@ import type {
   ITimelineItem,
   ICommentReq,
   IFileList,
+  ILikeRes,
 } from "@/interface/timeline";
 import type { IPagination } from "@/interface/common";
 import type {
@@ -108,6 +109,7 @@ export interface TimelineState {
   deleteTimeLine: (id: string) => Promise<boolean>;
   getTimeLineInfo: (id: string) => Promise<ITimelineItem>;
   publishComment: (params: ICommentReq) => Promise<boolean>;
+  toggleLike: (id: string) => Promise<ILikeRes | null>;
   getFileList: (
     babyId: string,
     type: string,

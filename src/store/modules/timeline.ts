@@ -16,6 +16,7 @@ import {
   getTimeLineInfoApi,
   publishCommentApi,
   getFileListApi,
+  toggleLikeApi,
 } from "@/api";
 
 export const useTimelineStore = create<TimelineState>((set) => ({
@@ -58,6 +59,20 @@ export const useTimelineStore = create<TimelineState>((set) => ({
   publishComment: async (params: ICommentReq) => {
     const { code } = await publishCommentApi(params);
     return code === 0 ? true : false;
+  },
+  // 点赞/取消点赞（用接口返回的最新点赞列表本地同步更新，避免整页刷新）
+  toggleLike: async (id: string) => {
+    const { code, data } = await toggleLikeApi({ id });
+    if (code !== 0) return null;
+    set((state) => ({
+      timeLineList: state.timeLineList.map((group) => ({
+        ...group,
+        records: group.records.map((record) =>
+          record._id === id ? { ...record, likes: data.likes || [] } : record,
+        ),
+      })),
+    }));
+    return data;
   },
   // 获取文件列表
   getFileList: async (

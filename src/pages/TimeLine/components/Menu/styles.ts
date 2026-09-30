@@ -38,6 +38,50 @@ export const ActionButton = styled.button`
   cursor: pointer;
 `;
 
+/** 点赞按钮 */
+export const LikeButton = styled.button`
+  display: flex;
+  align-items: center;
+  gap: ${vw(3)};
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  &:disabled {
+    cursor: default;
+    opacity: 0.6;
+  }
+`;
+
+/** 点赞列表 */
+export const LikeSection = styled.div`
+  display: flex;
+  gap: ${vw(8)};
+  align-items: center;
+  margin-top: ${vw(6)};
+  padding-top: ${vw(6)};
+`;
+
+/** 点赞项 */
+export const LikeItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${vw(4)};
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+`;
+
+/** 点赞头像 */
+export const LikeAvatar = styled.img`
+  width: ${vw(24)};
+  height: ${vw(24)};
+  border-radius: 50%;
+  object-fit: cover;
+  background: #f5f5f5;
+`;
+
 /** 评论区 */
 export const CommentSection = styled.div`
   margin-top: ${vw(6)};

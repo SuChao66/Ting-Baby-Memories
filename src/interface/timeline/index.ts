@@ -38,6 +38,7 @@ export interface ITimelineItem {
   publishTime: string;
   visibleRoles: string;
   comments: IComment[];
+  likes: ILikeItem[];
   createdAt: string;
   updatedAt: string;
   __v: number;
@@ -67,6 +68,7 @@ export interface ITimelineGroupRecord {
   isMilestone: boolean;
   visibleRoles: string;
   comments: any[];
+  likes: ILikeItem[];
   userInfo: IUserInfo;
   userId: UserId;
 }
@@ -85,6 +87,24 @@ export interface IComment {
     avatarUrl: string;
     releation: string;
   };
+}
+
+// 点赞项
+export interface ILikeItem {
+  userId: string;
+  createdAt?: string;
+  userInfo?: {
+    nickname: string;
+    avatarUrl: string;
+    releation: string;
+  };
+}
+
+// 点赞接口响应
+export interface ILikeRes {
+  liked: boolean;
+  likeCount: number;
+  likes: ILikeItem[];
 }
 
 export interface ICommentReq {
