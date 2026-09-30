@@ -26,7 +26,7 @@ import { RELATION_OPTIONS, EXPIRE_OPTIONS } from "@/enums";
 // 导入store
 import { useBabyInviteStore } from "@/store";
 // 导入类型
-import type { IInviteLinkParams } from "@/interface/inviteRecord";
+import type { IInviteLinkParams } from "@/interface/babyInvite";
 
 interface IProps {
   /** babyId */

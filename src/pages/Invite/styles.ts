@@ -11,6 +11,7 @@ export const InviteContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: ${vw(24)};
   background: linear-gradient(180deg, #ffe3ec 0%, #fff0f3 40%, #fff 100%);
   padding: ${vw(24)} ${vw(24)};
@@ -63,59 +64,12 @@ export const InviteSubtitle = styled.p`
   margin-top: ${vw(4)};
 `;
 
-/** 宝宝信息卡片 */
-export const BabyCard = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background: #fff;
-  border-radius: ${vw(20)};
-  padding: ${vw(12)};
-  box-shadow: 0 ${vw(4)} ${vw(24)} rgba(255, 107, 138, 0.1);
-`;
-
-/** 宝宝头像 */
-export const BabyAvatar = styled.div`
-  width: ${vw(80)};
-  height: ${vw(80)};
-  border-radius: 50%;
-  background: #fff0f3;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: hidden;
-  border: ${vw(2)} solid #ffe3ec;
-`;
-
-/** 宝宝昵称 */
-export const BabyName = styled.h3`
-  font-size: ${vw(18)};
-  font-weight: 600;
-  color: #2d2d2d;
-  margin-top: ${vw(12)};
-`;
-
-/** 宝宝月龄 */
-export const BabyAge = styled.p`
-  font-size: ${vw(14)};
-  color: #ff6b8a;
-  margin-top: ${vw(4)};
-`;
-
-/** 家人关注提示 */
-export const FamilyPreview = styled.span`
-  font-size: ${vw(12)};
-  color: #bbb;
-  margin-top: ${vw(8)};
-`;
-
 /** 信息填写卡片 */
 export const FormCard = styled.div`
   width: 100%;
   background: #fff;
-  border-radius: ${vw(20)};
-  padding: ${vw(12)};
+  border-radius: ${vw(12)};
+  padding: ${vw(24)};
   box-shadow: 0 ${vw(4)} ${vw(24)} rgba(255, 107, 138, 0.1);
 `;
 
@@ -131,7 +85,7 @@ export const FormLabel = styled.p`
 export const NicknameInputWrapper = styled.div`
   display: flex;
   align-items: center;
-  height: ${vw(48)};
+  height: ${vw(42)};
   border: ${vw(1)} solid #f0f0f0;
   border-radius: ${vw(12)};
   padding: 0 ${vw(14)};
@@ -165,7 +119,7 @@ export const RelationGrid = styled.div`
 
 /** 关系选项 */
 export const RelationOption = styled.div`
-  height: ${vw(44)};
+  height: ${vw(36)};
   display: flex;
   align-items: center;
   justify-content: center;
