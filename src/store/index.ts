@@ -9,3 +9,4 @@ export { useDailyRecordStore } from "./modules/dailyRecord";
 export { useHeightWeightStore } from "./modules/heightWeight";
 export { useSymptomStore } from "./modules/symptom";
 export { useVaccineStore } from "./modules/vaccine";
+export { useBabyInviteStore } from "./modules/babyInvite";

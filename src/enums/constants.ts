@@ -182,3 +182,9 @@ export const MEDICATION_USAGE_TYPES = {
 
 /** 体温值范围（℃） */
 export const TEMPERATURE_RANGE = { MIN: 34, MAX: 43 } as const;
+
+/** 邀请链接有效期选项（天） */
+export const EXPIRE_OPTIONS = [
+  { value: 7, label: "7 天" },
+  { value: 30, label: "30 天" },
+];

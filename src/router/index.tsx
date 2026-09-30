@@ -7,6 +7,7 @@ import { AuthRoute } from "./AuthRoute";
 const Layout = React.lazy(() => import("@/Layout/index"));
 // 懒加载页面组件
 const Login = React.lazy(() => import("@/pages/Login/index"));
+const Invite = React.lazy(() => import("@/pages/Invite/index"));
 const Home = React.lazy(() => import("@/pages/Home/index"));
 const Mine = React.lazy(() => import("@/pages/Mine/index"));
 const TimeLine = React.lazy(() => import("@/pages/TimeLine/index"));
@@ -132,6 +133,11 @@ export const router = createHashRouter([
   {
     path: "login",
     element: React.createElement(Login),
+  },
+  // 邀请页（公开路由，亲友通过邀请链接访问）
+  {
+    path: "invite/:token",
+    element: React.createElement(Invite),
   },
   // 404 页面
   {

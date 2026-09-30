@@ -1,7 +1,7 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 // 导入图标
 import { AiOutlineInfoCircle } from "react-icons/ai";
-// import { HiOutlinePlus } from "react-icons/hi";
+import { HiOutlinePlus } from "react-icons/hi";
 // 导入样式
 import {
   InviteContainer,
@@ -13,10 +13,12 @@ import {
   InviteAvatar,
   InviteName,
   InviteVisit,
-  // InviteAddBtn,
-  // InviteAddIcon,
-  // InviteAddText,
+  InviteAddBtn,
+  InviteAddIcon,
+  InviteAddText,
 } from "./style";
+// 导入组件
+import InviteModal from "../InviteModal";
 // 导入工具函数
 import { vw } from "@/utils";
 // 导入状态管理
@@ -25,7 +27,11 @@ import { useFamilyStore } from "@/store";
 function InviteCard(props: { id: string }) {
   const { id } = props;
 
+  // 获取家庭列表
   const { familyList, getFamilyList } = useFamilyStore((state) => state);
+
+  // 邀请亲友弹层显示状态
+  const [inviteVisible, setInviteVisible] = useState(false);
 
   useEffect(() => {
     getFamilyList(id);
@@ -35,7 +41,7 @@ function InviteCard(props: { id: string }) {
     <InviteContainer>
       <InviteHeader>
         <InviteTitle>
-          2位亲友可见
+          {familyList.length}位亲友可见
           <InviteInfo>
             <AiOutlineInfoCircle size={vw(12)} />
           </InviteInfo>
@@ -57,13 +63,20 @@ function InviteCard(props: { id: string }) {
             <InviteVisit>来过{item.visitCount}次</InviteVisit>
           </InviteItem>
         ))}
-        {/* <InviteAddBtn>
+        <InviteAddBtn onClick={() => setInviteVisible(true)}>
           <InviteAddIcon>
             <HiOutlinePlus size={vw(24)} />
           </InviteAddIcon>
           <InviteAddText>邀请亲友</InviteAddText>
-        </InviteAddBtn> */}
+        </InviteAddBtn>
       </InviteList>
+
+      {/* 邀请亲友弹层 */}
+      <InviteModal
+        visible={inviteVisible}
+        babyId={id}
+        onClose={() => setInviteVisible(false)}
+      />
     </InviteContainer>
   );
 }
