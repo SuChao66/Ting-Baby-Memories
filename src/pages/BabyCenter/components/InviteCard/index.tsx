@@ -1,13 +1,11 @@
 import { useEffect, useState } from "react";
 // 导入图标
-import { AiOutlineInfoCircle } from "react-icons/ai";
 import { HiOutlinePlus } from "react-icons/hi";
 // 导入样式
 import {
   InviteContainer,
   InviteHeader,
   InviteTitle,
-  InviteInfo,
   InviteList,
   InviteItem,
   InviteAvatar,
@@ -40,12 +38,7 @@ function InviteCard(props: { id: string }) {
   return (
     <InviteContainer>
       <InviteHeader>
-        <InviteTitle>
-          {familyList.length}位亲友可见
-          <InviteInfo>
-            <AiOutlineInfoCircle size={vw(12)} />
-          </InviteInfo>
-        </InviteTitle>
+        <InviteTitle>{familyList.length}位亲友可见</InviteTitle>
       </InviteHeader>
       <InviteList>
         {familyList.map((item) => (

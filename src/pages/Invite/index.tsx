@@ -102,6 +102,9 @@ export default function Invite() {
       const ok = await acceptInvite(params);
       if (ok) {
         Toast.show({ title: "加入成功", icon: "success" });
+        setTimeout(() => {
+          navigate("/", { replace: true });
+        }, 500);
       }
     } else {
       // 跳转至登录页面进行登录，登录成功后再重定向回来
@@ -179,14 +182,13 @@ export default function Invite() {
           </FormCard>
 
           {/* 接受邀请按钮 */}
-          <AcceptButtonWrapper>
+          <AcceptButtonWrapper onClick={handleSubmit}>
             <Button
               type="primary"
               shape="round"
               block
               disabled={true}
               className="accept-button"
-              onClick={handleSubmit}
             >
               {isLogin ? "接受邀请，加入成长圈" : "登录并加入成长圈"}
             </Button>
