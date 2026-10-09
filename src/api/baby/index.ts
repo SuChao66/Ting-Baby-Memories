@@ -38,3 +38,11 @@ export function updateBabyInfoApi(
 export function deleteBabyApi(params: { id: string }): Promise<ApiResponse> {
   return del("/api/v1/baby/delete", params);
 }
+
+/** 关联宝宝 */
+export function bindBabyApi(data: {
+  baby_no: string;
+  relation: IBabyInfo["relation"];
+}): Promise<ApiResponse> {
+  return post("/api/v1/baby/bind", data);
+}

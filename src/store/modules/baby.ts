@@ -10,6 +10,7 @@ import {
   getBabyInfoApi,
   updateBabyInfoApi,
   deleteBabyApi,
+  bindBabyApi,
 } from "@/api";
 
 export const useBabyStore = create<BabyState>((set, get) => ({
@@ -53,6 +54,14 @@ export const useBabyStore = create<BabyState>((set, get) => ({
   // 删除宝宝档案
   deleteBaby: async (params: { id: string }) => {
     const { code } = await deleteBabyApi(params);
+    return code === 0 ? true : false;
+  },
+  // 关联宝宝
+  bindBaby: async (data: {
+    baby_no: string;
+    relation: IBabyInfo["relation"];
+  }) => {
+    const { code } = await bindBabyApi(data);
     return code === 0 ? true : false;
   },
 }));

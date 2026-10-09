@@ -7,6 +7,8 @@ import type {
   IPagination,
   ITimelineRes,
   ICommentReq,
+  IFileList,
+  ILikeRes,
 } from "@/interface/timeline";
 
 /** 发布记录 */
@@ -23,9 +25,9 @@ export function editTimeLineApi(
   return post<boolean>("/api/v1/timeline/edit", params);
 }
 
-/** 获取记录 */
+/** 获取记录（isMilestone 为 true 时仅返回大事记） */
 export function getTimeLineListApi(
-  params: IPagination,
+  params: IPagination & { babyId: string; isMilestone?: boolean },
 ): Promise<ApiResponse<ITimelineRes>> {
   return post<ITimelineRes>("/api/v1/timeline/list", params);
 }
@@ -43,4 +45,20 @@ export function deleteTimeLineApi(params: { id: string }) {
 /** 发表评论 */
 export function publishCommentApi(params: ICommentReq) {
   return post<any>("/api/v1/timeline/comment", params);
+}
+
+/** 点赞/取消点赞 */
+export function toggleLikeApi(params: { id: string }) {
+  return post<ILikeRes>("/api/v1/timeline/like", params);
+}
+
+/** 获取文件列表 */
+export function getFileListApi(params: {
+  babyId: string;
+  type: string;
+  isMonth?: boolean;
+  /** 按月加载的月份，格式 YYYY-MM */
+  month?: string;
+}) {
+  return post<IFileList>("/api/v1/timeline/fileList", params);
 }

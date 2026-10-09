@@ -14,7 +14,7 @@ export const LayoutContainer = styled.div`
     background: #fff;
     border-radius: ${vw(8)} ${vw(8)} 0 0;
     box-shadow: 0 ${vw(-4)} ${vw(16)} rgba(0, 0, 0, 0.06);
-    padding: ${vw(8)};
+    padding: ${vw(8)} ${vw(8)} calc(${vw(8)} + env(safe-area-inset-bottom));
     box-sizing: border-box;
   }
 `;

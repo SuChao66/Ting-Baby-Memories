@@ -7,13 +7,21 @@ import { vw } from "@/utils";
 
 /** 全局样式 */
 export const GlobalStyle = createGlobalStyle<{ theme?: Theme }>`
+  :root {
+    --nutui-switch-active-background-color: ${({ theme }) => theme.colors.primaryColor};
+    --nutui-overlay-content-bg-color: #f5f5f5;
+  }
+
   * {
     box-sizing: border-box;
+    /* 移除移动端点击元素时的默认蓝色高亮 */
+    -webkit-tap-highlight-color: transparent;
   }
 
   html, body {
     margin: 0;
     padding: 0;
+    overflow: hidden;
   }
 
   body {
@@ -42,5 +50,29 @@ export const GlobalStyle = createGlobalStyle<{ theme?: Theme }>`
   .nut-navbar-title {
     font-size: ${vw(14)};
     font-weight: 600;
+  }
+
+  /* 修改进度条的主体颜色 */
+  #nprogress .bar {
+    background: ${({ theme }) => theme.colors.primaryColor} !important; /* 替换为你想要的颜色，例如主题色 */
+  }
+
+  /* 修改进度条右侧的光晕效果（保持和主体颜色一致，否则会有色差） */
+  #nprogress .peg {
+    box-shadow: 0 0 10px ${({ theme }) => theme.colors.primaryColor}, 0 0 5px ${({ theme }) => theme.colors.primaryColor} !important;
+  }
+
+  /** 修改popup样式 */
+  .nut-popup {
+    max-height: 90%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /** 修改button样式 */
+  .submit-button {
+    height: ${vw(36)};
+    border-radius: ${vw(18)};
   }
 `;

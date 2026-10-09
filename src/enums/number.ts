@@ -1,4 +1,5 @@
 export const NUMBER = {
+  ZERO: 0,
   ONE: 1,
   TWO: 2,
   THREE: 3,
@@ -32,3 +33,12 @@ export const NUMBER = {
 
 // B单位
 export const ONN_B = 1024;
+
+// 24小时
+export const ONE_DAY = 24 * 60 * 60 * 1000;
+
+// 时间单位
+export const TIME_UNIT = 60;
+
+// 秒单位
+export const SECOND_UNIT = 1000;

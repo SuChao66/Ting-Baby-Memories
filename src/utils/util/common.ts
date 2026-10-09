@@ -49,3 +49,136 @@ export const getBabyAge = (birthday?: Date | string | null) => {
   }
   return months > 0 ? `${years}岁${months}个月` : `${years}岁`;
 };
+
+// 复制文本到剪贴板，成功返回 true
+export const copyToClipboard = async (text: string) => {
+  // 优先使用 Clipboard API（要求 HTTPS 或 localhost 环境）
+  if (navigator.clipboard && window.isSecureContext) {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+  // 降级方案：execCommand（兼容 HTTP 环境或旧浏览器）
+  try {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    // 固定定位 + 透明，避免复制时页面滚动或闪烁
+    textarea.style.position = "fixed";
+    textarea.style.opacity = "0";
+    document.body.appendChild(textarea);
+    textarea.select();
+    const ok = document.execCommand("copy");
+    document.body.removeChild(textarea);
+    return ok;
+  } catch {
+    return false;
+  }
+};
+
+/** 获取 YYYY-MM 格式的月份字符串 */
+export const formatMonth = (date: Date) =>
+  `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+
+/** 计算大事记发生时宝宝的月龄 */
+export const getAgeAt = (birthday?: string | null, at?: string) => {
+  if (!birthday || !at) return "";
+  const birth = new Date(birthday);
+  const date = new Date(at);
+  let years = date.getFullYear() - birth.getFullYear();
+  let months = date.getMonth() - birth.getMonth();
+  let days = date.getDate() - birth.getDate();
+  if (days < 0) {
+    months -= 1;
+    days += new Date(date.getFullYear(), date.getMonth(), 0).getDate();
+  }
+  if (months < 0) {
+    years -= 1;
+    months += 12;
+  }
+  if (years < 0) return "";
+  // 不足一周岁按天显示
+  if (years < 1) {
+    return months < 1 ? `${days}天` : `${months}个月${days}天`;
+  }
+  return months > 0 ? `${years}岁${months}个月` : `${years}岁`;
+};
+
+/** 格式化日期：2025年3月8日 */
+export const formatDate = (dateStr: string) => {
+  const d = new Date(dateStr);
+  return `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日`;
+};
+
+/** 格式化时间：10:30 */
+export const formatTime = (timeStr: string) => {
+  const t = new Date(timeStr);
+  const hour = t.getHours() < 10 ? "0" + t.getHours() : t.getHours();
+  const minute = t.getMinutes() < 10 ? "0" + t.getMinutes() : t.getMinutes();
+  return `${hour}:${minute}`;
+};
+
+/** 获取明天的日期 */
+export const getTomorrowDate = (date?: Date) => {
+  const tomorrow = new Date(date || new Date());
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  return tomorrow;
+};
+
+/** 格式化日期为 YYYY-MM-DD */
+export const formatDay = (date: Date): string => {
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+};
+
+/** 格式化日期时间为 YYYY-MM-DD HH:mm */
+export const formatDateTime = (date: Date): string => {
+  const pad = (n: number) => String(n).padStart(2, "0");
+
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(
+    date.getDate(),
+  )} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+};
+
+/**
+ * 格式化秒为 mm:ss 或 HH:mm:ss
+ * outputIsText: 输出是否文字：3小时5分钟18秒
+ * */
+export const formatDuration = (
+  seconds: number,
+  outputIsText = false,
+): string => {
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = seconds % 60;
+  const pad = (n: number) => String(n).padStart(2, "0");
+  if (outputIsText) {
+    return h > 0
+      ? `${h}小时${m}分钟${s}秒`
+      : m > 0
+        ? `${m}分钟${s}秒`
+        : `${s}秒`;
+  }
+  return h > 0 ? `${pad(h)}:${pad(m)}:${pad(s)}` : `${pad(m)}:${pad(s)}`;
+};
+
+/** 秒数格式化为 mm:ss */
+export const formatSeconds = (totalSeconds: number) => {
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+};
+
+/** 转换秒为分钟 */
+export const convertSecondsToMinutes = (seconds: number) => {
+  if (seconds === 0) return "0分钟";
+  if (seconds < 60) {
+    return `${seconds}秒`;
+  }
+  if (seconds % 60 === 0) {
+    return `${Math.floor(seconds / 60)}分钟`;
+  }
+  return `${Math.floor(seconds / 60)}分${seconds % 60}秒`;
+};

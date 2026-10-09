@@ -9,6 +9,8 @@ import { LayoutContainer, Content } from "./styles";
 import { useUserStore } from "@/store";
 // 导入工具函数
 import { initRouter } from "@/utils";
+// 导入进度条hooks
+import { useNProgress } from "@/hooks";
 
 /** 底部导航栏配置 */
 const tabs = [
@@ -44,6 +46,9 @@ export default function Layout() {
       getUserInfo();
     }
   }, [getUserInfo, userInfo?._id]);
+
+  // 启用进度条hooks
+  useNProgress();
 
   return (
     <LayoutContainer>

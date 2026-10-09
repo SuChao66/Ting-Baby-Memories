@@ -1,8 +1,9 @@
 import type { IVisibleRoles } from "@/types";
 
 export interface IFile {
-  type: "IMAGE" | "VIDEO";
+  type: "IMAGE" | "VIDEO" | "AUDIO";
   url: string;
+  fileName?: string;
 }
 
 export interface ITimelineReq {
@@ -36,7 +37,8 @@ export interface ITimelineItem {
   isMilestone: boolean;
   publishTime: string;
   visibleRoles: string;
-  comments: any[];
+  comments: IComment[];
+  likes: ILikeItem[];
   createdAt: string;
   updatedAt: string;
   __v: number;
@@ -66,6 +68,7 @@ export interface ITimelineGroupRecord {
   isMilestone: boolean;
   visibleRoles: string;
   comments: any[];
+  likes: ILikeItem[];
   userInfo: IUserInfo;
   userId: UserId;
 }
@@ -76,11 +79,39 @@ export interface ITimelineGroup {
 }
 
 export interface IComment {
-  releation: string;
+  releation?: string;
   content: string;
+  createdAt?: string;
+  userInfo?: {
+    nickname: string;
+    avatarUrl: string;
+    releation: string;
+  };
+}
+
+// 点赞项
+export interface ILikeItem {
+  userId: string;
+  createdAt?: string;
+  userInfo?: {
+    nickname: string;
+    avatarUrl: string;
+    releation: string;
+  };
+}
+
+// 点赞接口响应
+export interface ILikeRes {
+  liked: boolean;
+  likeCount: number;
+  likes: ILikeItem[];
 }
 
 export interface ICommentReq {
   id: string;
   comment: IComment;
+}
+
+export interface IFileList {
+  [key: string]: IFile[];
 }

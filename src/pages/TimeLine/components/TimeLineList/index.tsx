@@ -104,6 +104,7 @@ function TimeLineList(props: { id: string }) {
               isMilestone: item.isMilestone,
               visibleRoles: item.visibleRoles,
               comments: item.comments || [],
+              likes: item.likes || [],
               userInfo: item.userInfo,
             };
           }),

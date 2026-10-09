@@ -7,6 +7,7 @@ import { AuthRoute } from "./AuthRoute";
 const Layout = React.lazy(() => import("@/Layout/index"));
 // 懒加载页面组件
 const Login = React.lazy(() => import("@/pages/Login/index"));
+const Invite = React.lazy(() => import("@/pages/Invite/index"));
 const Home = React.lazy(() => import("@/pages/Home/index"));
 const Mine = React.lazy(() => import("@/pages/Mine/index"));
 const TimeLine = React.lazy(() => import("@/pages/TimeLine/index"));
@@ -22,6 +23,10 @@ const CloudAlbum = React.lazy(
 );
 const MileStone = React.lazy(
   () => import("@/pages/BabyCenter/modules/MileStone/index"),
+);
+const MileStoneDetail = React.lazy(
+  () =>
+    import("@/pages/BabyCenter/modules/MileStone/modules/MileStoneDetail/index"),
 );
 const DailyRecord = React.lazy(
   () => import("@/pages/BabyCenter/modules/DailyRecord/index"),
@@ -41,6 +46,10 @@ const Teeth = React.lazy(
 const FutureMessage = React.lazy(
   () => import("@/pages/BabyCenter/modules/FutureMessage/index"),
 );
+const AddFutureMessage = React.lazy(
+  () =>
+    import("@/pages/BabyCenter/modules/FutureMessage/modules/AddFutureMessage/index"),
+);
 const UserManager = React.lazy(
   () => import("@/pages/Mine/modules/UserManager/index"),
 );
@@ -49,6 +58,9 @@ const BabyManager = React.lazy(
 );
 const AddBaby = React.lazy(
   () => import("@/pages/Mine/modules/BabyManager/modules/AddBaby/index"),
+);
+const BindBaby = React.lazy(
+  () => import("@/pages/Mine/modules/BabyManager/modules/BindBaby/index"),
 );
 const BabyFile = React.lazy(
   () => import("@/pages/Mine/modules/BabyManager/modules/BabyFile/index"),
@@ -82,6 +94,10 @@ export const router = createHashRouter([
           { path: "cloud-album/:id", element: React.createElement(CloudAlbum) },
           { path: "mile-stone/:id", element: React.createElement(MileStone) },
           {
+            path: "mile-stone-detail",
+            element: React.createElement(MileStoneDetail),
+          },
+          {
             path: "daily-record/:id",
             element: React.createElement(DailyRecord),
           },
@@ -96,9 +112,14 @@ export const router = createHashRouter([
             path: "future-message/:id",
             element: React.createElement(FutureMessage),
           },
+          {
+            path: "add-future-message",
+            element: React.createElement(AddFutureMessage),
+          },
           { path: "user-manager", element: React.createElement(UserManager) },
           { path: "baby-manager", element: React.createElement(BabyManager) },
           { path: "add-baby", element: React.createElement(AddBaby) },
+          { path: "bind-baby", element: React.createElement(BindBaby) },
           { path: "baby-file/:id", element: React.createElement(BabyFile) },
           {
             path: "change-password",
@@ -112,6 +133,11 @@ export const router = createHashRouter([
   {
     path: "login",
     element: React.createElement(Login),
+  },
+  // 邀请页（公开路由，亲友通过邀请链接访问）
+  {
+    path: "invite/:token",
+    element: React.createElement(Invite),
   },
   // 404 页面
   {

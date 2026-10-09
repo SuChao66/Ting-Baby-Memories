@@ -12,6 +12,12 @@ import {
   CommentText,
   CommentInputWrap,
   CommentInput,
+  MilestoneBadge,
+  ActionBtnContainer,
+  LikeButton,
+  LikeSection,
+  LikeItem,
+  LikeAvatar,
 } from "./styles";
 // 导入类型
 import type { ITimelineGroupRecord } from "@/interface/timeline";
@@ -20,8 +26,11 @@ import {
   AiOutlineEdit,
   AiOutlineDelete,
   AiOutlineMessage,
+  AiOutlineHeart,
+  AiFillHeart,
 } from "react-icons/ai";
 import { IoIosSend } from "react-icons/io";
+import { FaFlag } from "react-icons/fa6";
 import type { IconType } from "react-icons";
 // 导入工具函数
 import { vw } from "@/utils";
@@ -29,6 +38,8 @@ import { vw } from "@/utils";
 import { useUserStore, useTimelineStore } from "@/store";
 // 导入context
 import { TimeLineContext } from "@/context";
+// 导入弹窗组件
+import Dialog from "@/baseUI/dialog";
 
 interface IProps {
   record: ITimelineGroupRecord;
@@ -47,13 +58,36 @@ function Menu(props: IProps) {
   const { setRefreshKey } = useContext(TimeLineContext)!;
 
   const { userInfo } = useUserStore((state) => state);
-  const { deleteTimeLine, publishComment } = useTimelineStore((state) => state);
+  const { deleteTimeLine, publishComment, toggleLike } = useTimelineStore(
+    (state) => state,
+  );
   // 是否显示评论区
   const [isShowComment, setIsShowComment] = useState(false);
   const [visible, setVisible] = useState(false);
 
   // 评论内容
   const [commentContent, setCommentContet] = useState("");
+
+  // 点赞状态与数量
+  const likes = record.likes || [];
+  const liked = likes.some((item) => item.userId === userInfo?._id);
+  const likeCount = likes.length;
+  // 防止重复点击
+  const [likePending, setLikePending] = useState(false);
+
+  // 点赞/取消点赞
+  const handleToggleLike = async () => {
+    if (likePending) return;
+    setLikePending(true);
+    try {
+      const res = await toggleLike(record._id);
+      if (res) {
+        Toast.show({ title: res.liked ? "已点赞" : "已取消点赞" });
+      }
+    } finally {
+      setLikePending(false);
+    }
+  };
 
   const operationBtns: IBtnOptions[] = [
     {
@@ -124,6 +158,53 @@ function Menu(props: IProps) {
 
   return (
     <>
+      {/* 操作栏 */}
+      <ActionBar>
+        <MilestoneBadge>
+          {record.isMilestone && (
+            <>
+              <span>大事记</span>
+              <FaFlag size={vw(12)} style={{ color: "#ff6b8a" }} />
+            </>
+          )}
+        </MilestoneBadge>
+        <ActionBtnContainer>
+          {/* 点赞按钮 */}
+          <LikeButton onClick={handleToggleLike} disabled={likePending}>
+            {liked ? (
+              <AiFillHeart size={vw(16)} style={{ color: "#ff6b8a" }} />
+            ) : (
+              <AiOutlineHeart size={vw(16)} style={{ color: "#00000073" }} />
+            )}
+          </LikeButton>
+          {operationBtns.map((item) => {
+            return (
+              item.isShow && (
+                <ActionButton
+                  key={item.key}
+                  onClick={() => handleBtnClick(item)}
+                >
+                  <item.icon size={vw(16)} style={{ color: "#00000073" }} />
+                </ActionButton>
+              )
+            );
+          })}
+        </ActionBtnContainer>
+      </ActionBar>
+
+      {/* 点赞列表 */}
+      {likeCount > 0 && (
+        <>
+          <LikeSection>
+            {likes.map((item, lIndex) => (
+              <LikeItem key={lIndex}>
+                <LikeAvatar src={item.userInfo?.avatarUrl} alt="点赞用户头像" />
+              </LikeItem>
+            ))}
+          </LikeSection>
+        </>
+      )}
+
       {/* 评论区 */}
       {record.comments.length > 0 && (
         <CommentSection>
@@ -141,19 +222,6 @@ function Menu(props: IProps) {
           ))}
         </CommentSection>
       )}
-
-      {/* 操作栏 */}
-      <ActionBar>
-        {operationBtns.map((item) => {
-          return (
-            item.isShow && (
-              <ActionButton key={item.key} onClick={() => handleBtnClick(item)}>
-                <item.icon size={vw(16)} style={{ color: "#00000073" }} />
-              </ActionButton>
-            )
-          );
-        })}
-      </ActionBar>
 
       {/* 评论输入区 */}
       {isShowComment && (
@@ -173,14 +241,12 @@ function Menu(props: IProps) {
 
       {/* 删除记录弹窗提示 */}
       <Dialog
-        className="test-dialog"
         title="提示"
         visible={visible}
+        content="确认删除该记录?"
         onConfirm={handleDeleteTimeLine}
         onCancel={() => setVisible(false)}
-      >
-        确认删除该记录?
-      </Dialog>
+      />
     </>
   );
 }

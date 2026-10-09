@@ -1,12 +1,11 @@
+import { useEffect, useState } from "react";
 // 导入图标
-import { AiOutlineInfoCircle } from "react-icons/ai";
 import { HiOutlinePlus } from "react-icons/hi";
 // 导入样式
 import {
   InviteContainer,
   InviteHeader,
   InviteTitle,
-  InviteInfo,
   InviteList,
   InviteItem,
   InviteAvatar,
@@ -16,51 +15,61 @@ import {
   InviteAddIcon,
   InviteAddText,
 } from "./style";
+// 导入组件
+import InviteModal from "../InviteModal";
 // 导入工具函数
 import { vw } from "@/utils";
+// 导入状态管理
+import { useFamilyStore } from "@/store";
 
-// 亲友数据
-const relatives = [
-  { id: 1, name: "爸爸", visitCount: 37, lastVisit: "刚刚", avatar: "" },
-  { id: 2, name: "妈妈", visitCount: 5, lastVisit: "8-4 09:58", avatar: "" },
-];
+function InviteCard(props: { id: string }) {
+  const { id } = props;
 
-function InviteCard() {
+  // 获取家庭列表
+  const { familyList, getFamilyList } = useFamilyStore((state) => state);
+
+  // 邀请亲友弹层显示状态
+  const [inviteVisible, setInviteVisible] = useState(false);
+
+  useEffect(() => {
+    getFamilyList(id);
+  }, []);
+
   return (
     <InviteContainer>
       <InviteHeader>
-        <InviteTitle>
-          2位亲友可见
-          <InviteInfo>
-            <AiOutlineInfoCircle size={vw(12)} />
-          </InviteInfo>
-        </InviteTitle>
+        <InviteTitle>{familyList.length}位亲友可见</InviteTitle>
       </InviteHeader>
       <InviteList>
-        {relatives.map((item) => (
-          <InviteItem key={item.id}>
+        {familyList.map((item) => (
+          <InviteItem key={item._id}>
             <InviteAvatar>
-              {item.avatar ? (
-                <img src={item.avatar} alt={item.name} />
+              {item.userId.avatarUrl ? (
+                <img src={item.userId.avatarUrl} alt={item.nickname} />
               ) : (
                 <span style={{ fontSize: vw(18), color: "#ff6b8a" }}>
-                  {item.name.charAt(0)}
+                  {item.nickname}
                 </span>
               )}
             </InviteAvatar>
-            <InviteName>{item.name}</InviteName>
-            <InviteVisit>
-              来过{item.visitCount}次 · {item.lastVisit}
-            </InviteVisit>
+            <InviteName>{item.nickname}</InviteName>
+            <InviteVisit>来过{item.visitCount}次</InviteVisit>
           </InviteItem>
         ))}
-        <InviteAddBtn>
+        <InviteAddBtn onClick={() => setInviteVisible(true)}>
           <InviteAddIcon>
             <HiOutlinePlus size={vw(24)} />
           </InviteAddIcon>
           <InviteAddText>邀请亲友</InviteAddText>
         </InviteAddBtn>
       </InviteList>
+
+      {/* 邀请亲友弹层 */}
+      <InviteModal
+        visible={inviteVisible}
+        babyId={id}
+        onClose={() => setInviteVisible(false)}
+      />
     </InviteContainer>
   );
 }

@@ -1,6 +1,10 @@
 import { useState } from "react";
 // 导入store
 import { useUserStore } from "@/store";
+// 导入工具函数
+import { vw } from "@/utils";
+// 导入弹窗组件
+import Dialog from "@/baseUI/dialog";
 
 // 昵称编辑props
 interface DialogProps {
@@ -18,11 +22,13 @@ function NicknameDialog(props: DialogProps) {
   const [nickname, setNickname] = useState(nicknameInput);
 
   // 确认修改昵称
+  // 注意: 自封装 Dialog 不会自动关闭，校验失败或接口失败时弹窗保持打开，
+  // 成功后需手动调用 setNicknameVisible(false) 关闭弹窗
   const handleNicknameConfirm = async () => {
     if (!userInfo) return;
     if (!nickname.trim()) {
       Toast.show({ title: "昵称不能为空", icon: "warn" });
-      throw new Error("昵称不能为空");
+      return;
     }
     const params = {
       id: userInfo._id,
@@ -31,7 +37,7 @@ function NicknameDialog(props: DialogProps) {
     const success = await updateUserInfo(params);
     if (!success) {
       Toast.show({ title: "昵称更新失败", icon: "error" });
-      throw new Error("昵称更新失败");
+      return;
     }
     Toast.show({ title: "昵称更新成功", icon: "success" });
     setNicknameVisible(false);
@@ -54,17 +60,18 @@ function NicknameDialog(props: DialogProps) {
       title="修改昵称"
       visible={nicknameVisible}
       confirmText="保存"
-      onConfirm={() => handleNicknameConfirm()}
-      onCancel={() => handleNicknameClose()}
-      onClose={() => handleNicknameClose()}
+      onConfirm={handleNicknameConfirm}
+      onCancel={handleNicknameClose}
     >
-      <Input
-        value={nickname}
-        placeholder="请输入昵称"
-        maxLength={20}
-        clearable
-        onChange={(val) => handleSetNickname(val)}
-      />
+      <div style={{ marginTop: vw(12) }}>
+        <Input
+          value={nickname}
+          placeholder="请输入昵称"
+          maxLength={20}
+          clearable
+          onChange={(val) => handleSetNickname(val)}
+        />
+      </div>
     </Dialog>
   );
 }

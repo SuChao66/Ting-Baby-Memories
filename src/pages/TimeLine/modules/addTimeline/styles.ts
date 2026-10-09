@@ -217,28 +217,6 @@ export const OptionValue = styled.span<{ $active?: boolean }>`
   color: ${(p) => (p.$active ? "#ff6b8a" : "#999")};
 `;
 
-/* ========== 开关 ========== */
-export const SwitchWrapper = styled.div<{ $on?: boolean }>`
-  width: ${vw(44)};
-  height: ${vw(24)};
-  border-radius: ${vw(12)};
-  background: ${(p) => (p.$on ? "#ff6b8a" : "#e0e0e0")};
-  display: flex;
-  align-items: center;
-  padding: 0 ${vw(3)};
-  transition: background 0.2s;
-  cursor: pointer;
-
-  > span {
-    width: ${vw(18)};
-    height: ${vw(18)};
-    border-radius: 50%;
-    background: #fff;
-    transition: transform 0.2s;
-    transform: translateX(${(p) => (p.$on ? vw(20) : "0")});
-  }
-`;
-
 /* ========== 发布按钮 ========== */
 export const PublishButton = styled.div`
   display: flex;

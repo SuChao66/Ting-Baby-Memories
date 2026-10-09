@@ -25,19 +25,6 @@ export const InviteTitle = styled.div`
   color: #2d2d2d;
 `;
 
-export const InviteInfo = styled.span`
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  width: ${vw(16)};
-  height: ${vw(16)};
-  border-radius: 50%;
-  background: #fff0f3;
-  color: #ff6b8a;
-  font-size: ${vw(11)};
-  cursor: pointer;
-`;
-
 export const InviteList = styled.div`
   display: flex;
   align-items: flex-start;

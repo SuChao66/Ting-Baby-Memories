@@ -30,7 +30,7 @@ function BabyCenter() {
         {/* 宝宝信息横幅 */}
         <BabyInfoCard id={id!} />
         {/* 亲友邀请区域 */}
-        <InviteCard />
+        <InviteCard id={id!} />
         {/* 功能菜单网格 */}
         <MenuCard id={id!} />
         {/* 宝宝档案卡片 */}

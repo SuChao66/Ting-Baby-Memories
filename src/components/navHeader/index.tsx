@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 
 interface NavBarProps {
-  title: string;
+  title: React.ReactNode;
   back?: React.ReactNode;
   right?: React.ReactNode;
 }
