@@ -187,6 +187,6 @@ export interface BabyInviteState {
   generateInviteLink: (
     params: IInviteLinkParams,
   ) => Promise<string | undefined>;
-  getInviteLinkInfo: (token: string) => Promise<IInviteLinkPreviewInfo>;
+  getInviteLinkInfo: (token: string) => Promise<IInviteLinkPreviewInfo | undefined>;
   acceptInvite: (params: any) => Promise<boolean>;
 }

@@ -79,7 +79,7 @@ export default function Invite() {
         if (!data) {
           setInvalid(true);
         } else {
-          setPreviewInfo(data);
+          setPreviewInfo(data!);
         }
       })
       .catch(() => {
@@ -96,7 +96,7 @@ export default function Invite() {
       const params = {
         nickname,
         relation,
-        babyId: previewInfo.babyId,
+        babyId: previewInfo?.babyId,
         token,
       };
       const ok = await acceptInvite(params);
@@ -129,17 +129,17 @@ export default function Invite() {
           {/* 顶部邀请信息 */}
           <HeaderSection>
             <InviterAvatar>
-              {previewInfo.inviterAvatarUrl ? (
-                <InviterAvatarImg src={previewInfo.inviterAvatarUrl} />
+              {previewInfo?.inviterAvatarUrl ? (
+                <InviterAvatarImg src={previewInfo?.inviterAvatarUrl} />
               ) : (
                 <AiOutlineUser color="#fff" size={vw(32)} />
               )}
             </InviterAvatar>
             <InviteTitle>
-              【{previewInfo.babyNickname}
+              【{previewInfo?.babyNickname}
               {
                 RELATION_OPTIONS.find(
-                  (item) => item.value === previewInfo.relation,
+                  (item) => item.value === previewInfo?.relation,
                 )?.name
               }
               】邀请你加入
@@ -195,9 +195,9 @@ export default function Invite() {
           </AcceptButtonWrapper>
 
           {/* 底部提示（数据返回后再渲染，避免 Invalid Date 闪现） */}
-          {previewInfo.expiresAt && (
+          {previewInfo?.expiresAt && (
             <FooterTip>
-              邀请链接将于 {formatDateTime(new Date(previewInfo.expiresAt))}{" "}
+              邀请链接将于 {formatDateTime(new Date(previewInfo?.expiresAt))}{" "}
               过期
             </FooterTip>
           )}
