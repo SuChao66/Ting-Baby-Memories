@@ -1,6 +1,6 @@
 // 导入 React hooks
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 // 导入图标
 import { AiOutlineUser } from "react-icons/ai";
 // 导入样式组件
@@ -18,11 +18,12 @@ import {
   RelationOption,
   AcceptButtonWrapper,
   FooterTip,
+  LoadingWrapper,
 } from "./styles";
 // 导入工具函数
 import { vw, formatDateTime } from "@/utils";
 // 导入store
-import { useBabyInviteStore } from "@/store";
+import { useBabyInviteStore, useUserStore } from "@/store";
 // 导入常量
 import { RELATION_OPTIONS } from "@/enums";
 // 导入类型
@@ -30,10 +31,15 @@ import type { IInviteLinkPreviewInfo } from "@/interface/babyInvite";
 
 export default function Invite() {
   const { token } = useParams();
+  const navigate = useNavigate();
   // 引入 store
-  const { getInviteLinkInfo } = useBabyInviteStore((state) => state);
+  const { getInviteLinkInfo, acceptInvite } = useBabyInviteStore(
+    (state) => state,
+  );
+  const { isLogin } = useUserStore((state) => state);
 
   const [previewInfo, setPreviewInfo] = useState<IInviteLinkPreviewInfo>({
+    babyId: "",
     inviterAvatarUrl: "",
     babyNickname: "",
     relation: "",
@@ -45,26 +51,72 @@ export default function Invite() {
   const [relation, setRelation] = useState("");
   // 链接是否已失效（过期/已被使用/已作废）
   const [invalid, setInvalid] = useState(false);
+  // 链接信息是否加载中（返回前不渲染业务页面，避免闪现）
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // 获取session存储中的昵称和关系
+    const nickname = sessionStorage.getItem("nickname");
+    const relation = sessionStorage.getItem("relation");
+    if (nickname) {
+      setNickname(nickname);
+    }
+    if (relation) {
+      setRelation(relation);
+    }
+  }, []);
 
   useEffect(() => {
     // 路由上没有 token：直接视为失效链接
     if (!token) {
       setInvalid(true);
+      setLoading(false);
       return;
     }
-    getInviteLinkInfo(token).then((data) => {
-      // 链接已失效或查询失败：切换失效态，避免空数据渲染崩溃
-      if (!data) {
+    getInviteLinkInfo(token)
+      .then((data) => {
+        // 链接已失效或查询失败：切换失效态，避免空数据渲染崩溃
+        if (!data) {
+          setInvalid(true);
+        } else {
+          setPreviewInfo(data);
+        }
+      })
+      .catch(() => {
         setInvalid(true);
-        return;
-      }
-      setPreviewInfo(data);
-    });
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }, [token]);
+
+  // 提交，加入成长圈
+  const handleSubmit = async () => {
+    if (isLogin) {
+      const params = {
+        nickname,
+        relation,
+        babyId: previewInfo.babyId,
+        token,
+      };
+      const ok = await acceptInvite(params);
+      if (ok) {
+        Toast.show({ title: "加入成功", icon: "success" });
+      }
+    } else {
+      // 跳转至登录页面进行登录，登录成功后再重定向回来
+      navigate(`/login?redirect=/invite/${token}`);
+    }
+  };
 
   return (
     <InviteContainer>
-      {invalid ? (
+      {loading ? (
+        // 接口返回前展示加载中
+        <LoadingWrapper>
+          <Loading>加载中...</Loading>
+        </LoadingWrapper>
+      ) : invalid ? (
         <HeaderSection>
           <InviteTitle>邀请链接已失效</InviteTitle>
           <InviteSubtitle>请联系邀请人重新发送邀请链接</InviteSubtitle>
@@ -100,7 +152,10 @@ export default function Invite() {
               <Input
                 placeholder="请输入你的昵称"
                 value={nickname}
-                onChange={(val: string) => setNickname(val)}
+                onChange={(val: string) => {
+                  setNickname(val);
+                  sessionStorage.setItem("nickname", val);
+                }}
                 clearable
               />
             </NicknameInputWrapper>
@@ -112,7 +167,10 @@ export default function Invite() {
                 <RelationOption
                   key={option.value}
                   className={relation === option.value ? "active" : ""}
-                  onClick={() => setRelation(option.value)}
+                  onClick={() => {
+                    setRelation(option.value);
+                    sessionStorage.setItem("relation", option.value);
+                  }}
                 >
                   {option.name}
                 </RelationOption>
@@ -126,17 +184,19 @@ export default function Invite() {
               type="primary"
               shape="round"
               block
+              disabled={true}
               className="accept-button"
+              onClick={handleSubmit}
             >
-              接受邀请，加入成长圈
+              {isLogin ? "接受邀请，加入成长圈" : "登录并加入成长圈"}
             </Button>
           </AcceptButtonWrapper>
 
           {/* 底部提示（数据返回后再渲染，避免 Invalid Date 闪现） */}
           {previewInfo.expiresAt && (
             <FooterTip>
-              邀请链接将于{" "}
-              {formatDateTime(new Date(previewInfo.expiresAt))} 过期
+              邀请链接将于 {formatDateTime(new Date(previewInfo.expiresAt))}{" "}
+              过期
             </FooterTip>
           )}
         </>

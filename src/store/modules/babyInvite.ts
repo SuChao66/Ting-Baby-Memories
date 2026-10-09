@@ -1,9 +1,16 @@
 import { create } from "zustand";
 // 导入类型
 import type { BabyInviteState } from "../types";
-import type { IInviteLinkParams } from "@/interface/babyInvite";
+import type {
+  IInviteLinkParams,
+  IAcceptInviteParams,
+} from "@/interface/babyInvite";
 // 导入接口
-import { generateInviteLinkApi, getInviteLinkInfoApi } from "@/api";
+import {
+  generateInviteLinkApi,
+  getInviteLinkInfoApi,
+  acceptInviteApi,
+} from "@/api";
 
 export const useBabyInviteStore = create<BabyInviteState>(() => ({
   // 生成邀请链接
@@ -19,5 +26,10 @@ export const useBabyInviteStore = create<BabyInviteState>(() => ({
     if (code === 0) {
       return data;
     }
+  },
+  // 接受邀请
+  acceptInvite: async (params: IAcceptInviteParams) => {
+    const { code } = await acceptInviteApi(params);
+    return code === 0 ? true : false;
   },
 }));

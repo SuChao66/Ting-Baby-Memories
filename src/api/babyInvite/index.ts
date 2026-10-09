@@ -6,6 +6,7 @@ import type { ApiResponse } from "@/api/request";
 import type {
   IInviteLinkParams,
   IInviteLinkPreviewInfo,
+  IAcceptInviteParams,
 } from "@/interface/babyInvite";
 
 /** 生成邀请链接 */
@@ -22,4 +23,11 @@ export function getInviteLinkInfoApi(
   return get<IInviteLinkPreviewInfo>("/api/v1/invite/get_preview_info", {
     token,
   });
+}
+
+/** 接受邀请 */
+export function acceptInviteApi(
+  params: IAcceptInviteParams,
+): Promise<ApiResponse<null>> {
+  return post<null>("/api/v1/invite/accept_invite", params);
 }

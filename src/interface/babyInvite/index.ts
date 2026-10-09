@@ -8,7 +8,16 @@ export interface IInviteLinkParams {
 // 邀请页预览信息
 export interface IInviteLinkPreviewInfo {
   inviterAvatarUrl: string;
+  babyId: string;
   babyNickname: string;
   relation: string;
   expiresAt: string;
+}
+
+// 接受邀请入参
+export interface IAcceptInviteParams {
+  nickname: string;
+  relation: string;
+  babyId: string;
+  token: string;
 }

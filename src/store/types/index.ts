@@ -39,7 +39,10 @@ import type {
   ISaveVaccinePlanParams,
   IGetVaccinePlanResponse,
 } from "@/interface/vaccine";
-import type { IInviteLinkParams } from "@/interface/babyInvite";
+import type {
+  IInviteLinkParams,
+  IInviteLinkPreviewInfo,
+} from "@/interface/babyInvite";
 
 // 定义用户状态类型
 export interface UserState {
@@ -184,5 +187,6 @@ export interface BabyInviteState {
   generateInviteLink: (
     params: IInviteLinkParams,
   ) => Promise<string | undefined>;
-  getInviteLinkInfo: (token: string) => Promise<any>;
+  getInviteLinkInfo: (token: string) => Promise<IInviteLinkPreviewInfo>;
+  acceptInvite: (params: any) => Promise<boolean>;
 }

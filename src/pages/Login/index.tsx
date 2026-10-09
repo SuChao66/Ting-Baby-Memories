@@ -1,6 +1,6 @@
 // 导入 React hooks
 import { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
 // 导入 React Icons 图标
 import {
   AiOutlineUser,
@@ -49,6 +49,10 @@ export default function Login() {
 
   const location = useLocation();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  // 获取邀请页面重定向地址
+  const redirect = searchParams.get("redirect");
+
   // 登录方法
   const login = useUserStore((state) => state.login);
   // 注册方法
@@ -60,9 +64,13 @@ export default function Login() {
   const handleLogin = async () => {
     const success = await login(username, password);
     if (success) {
-      navigate("/home", {
-        state: { from: location.pathname },
-      });
+      if (!redirect) {
+        navigate("/home", {
+          state: { from: location.pathname },
+        });
+      } else {
+        navigate(redirect as string);
+      }
     }
   };
 

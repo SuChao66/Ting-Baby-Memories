@@ -160,3 +160,11 @@ export const FooterTip = styled.p`
   color: #bbb;
   padding: 0;
 `;
+
+/** 加载中容器 */
+export const LoadingWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+`;
