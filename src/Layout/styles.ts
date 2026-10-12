@@ -2,6 +2,10 @@
 import styled from "styled-components";
 // 导入 vw 工具函数
 import { vw } from "@/utils";
+// 导入类型
+import type { TimelineViewType } from "@/types";
+// 导入常量
+import { TIME_LIME_VIEW_MODE } from "@/enums";
 
 /** 布局容器 */
 export const LayoutContainer = styled.div`
@@ -20,10 +24,10 @@ export const LayoutContainer = styled.div`
 `;
 
 /** 内容区域 */
-export const Content = styled.main`
+export const Content = styled.main<{ mode: TimelineViewType }>`
   flex: 1;
   overflow: hidden;
-  padding: ${vw(16)} ${vw(16)};
+  padding: ${(props) => (props.mode === TIME_LIME_VIEW_MODE.LIST ? vw(16) : 0)};
   box-sizing: border-box;
   display: flex;
   flex-direction: column;

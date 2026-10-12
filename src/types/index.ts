@@ -1,4 +1,8 @@
-import { LOGIN_MODE, DAILY_RECORD_TYPES, SYMPTOM_RECORD_TYPES } from "@/enums/constants";
+import {
+  LOGIN_MODE,
+  DAILY_RECORD_TYPES,
+  SYMPTOM_RECORD_TYPES,
+} from "@/enums/constants";
 
 /** 表单模式 */
 export type Mode = (typeof LOGIN_MODE)[keyof typeof LOGIN_MODE];
@@ -19,3 +23,6 @@ export type DailyRecordType =
 /** 症状护理类型 */
 export type SymptomRecordType =
   (typeof SYMPTOM_RECORD_TYPES)[keyof typeof SYMPTOM_RECORD_TYPES];
+
+/** 成长轨迹查看类型 */
+export type TimelineViewType = "list" | "3d";

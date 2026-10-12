@@ -188,3 +188,9 @@ export const EXPIRE_OPTIONS = [
   { value: 7, label: "7 天" },
   { value: 30, label: "30 天" },
 ];
+
+/** 成长轨迹查看方式 */
+export const TIME_LIME_VIEW_MODE = {
+  LIST: "list",
+  THREE_D: "3d",
+} as const;

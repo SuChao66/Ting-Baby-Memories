@@ -43,6 +43,7 @@ import type {
   IInviteLinkParams,
   IInviteLinkPreviewInfo,
 } from "@/interface/babyInvite";
+import type { TimelineViewType } from "@/types";
 
 // 定义用户状态类型
 export interface UserState {
@@ -103,8 +104,10 @@ export interface TagsState {
 
 // 定义记录状态类型
 export interface TimelineState {
+  viewMode: TimelineViewType;
   timeLineList: ITimelineGroup[];
   setTimelineList: (item: ITimelineGroup[]) => void;
+  setViewMode: (mode: TimelineViewType) => void;
   addTimeline: (params: ITimelineReq) => Promise<boolean>;
   editTimeline: (params: ITimelineReq) => Promise<boolean>;
   getTimeLineList: (
@@ -120,6 +123,7 @@ export interface TimelineState {
     isMonth?: boolean,
     month?: string,
   ) => Promise<IFileList>;
+  getAllTimeLineList: (params: { babyId: string }) => Promise<any>;
 }
 
 // 定义家庭成员状态类型
@@ -187,6 +191,8 @@ export interface BabyInviteState {
   generateInviteLink: (
     params: IInviteLinkParams,
   ) => Promise<string | undefined>;
-  getInviteLinkInfo: (token: string) => Promise<IInviteLinkPreviewInfo | undefined>;
+  getInviteLinkInfo: (
+    token: string,
+  ) => Promise<IInviteLinkPreviewInfo | undefined>;
   acceptInvite: (params: any) => Promise<boolean>;
 }

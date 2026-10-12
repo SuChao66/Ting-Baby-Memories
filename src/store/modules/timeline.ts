@@ -1,6 +1,7 @@
 import { create } from "zustand";
 // 导入类型
 import type { TimelineState } from "../types";
+import type { TimelineViewType } from "@/types";
 import type {
   ITimelineReq,
   IPagination,
@@ -17,10 +18,19 @@ import {
   publishCommentApi,
   getFileListApi,
   toggleLikeApi,
+  getAllTimeLineListApi,
 } from "@/api";
+// 导入常量
+import { TIME_LIME_VIEW_MODE } from "@/enums";
 
 export const useTimelineStore = create<TimelineState>((set) => ({
+  viewMode: TIME_LIME_VIEW_MODE.LIST,
   timeLineList: [],
+  // 设置视图模式
+  setViewMode: (mode: TimelineViewType) => {
+    set({ viewMode: mode });
+  },
+  // 设置记录列表
   setTimelineList: (list: ITimelineGroup[]) => {
     set({ timeLineList: list });
   },
@@ -88,5 +98,10 @@ export const useTimelineStore = create<TimelineState>((set) => ({
       month,
     });
     return code === 0 ? data : {};
+  },
+  // 获取全部记录
+  getAllTimeLineList: async (params: { babyId: string }) => {
+    const { code, data } = await getAllTimeLineListApi(params);
+    return code === 0 ? data : null;
   },
 }));

@@ -115,3 +115,19 @@ export interface ICommentReq {
 export interface IFileList {
   [key: string]: IFile[];
 }
+
+/** 3D 胶囊视图精简记录（/timeline/all 全量接口仅投影这些字段） */
+export interface ICapsuleTimelineItem {
+  _id: string;
+  content: string;
+  files: IFile[];
+  tags: string[];
+  isMilestone: boolean;
+  publishTime: string;
+}
+
+/** /timeline/all 全量接口响应 */
+export interface ITimelineAllRes {
+  total: number;
+  data: ICapsuleTimelineItem[];
+}

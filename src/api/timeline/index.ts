@@ -2,6 +2,7 @@
 import { post, get, del } from "@/api/request";
 // 导入通用响应类型
 import type { ApiResponse } from "@/api/request";
+import type { AxiosRequestConfig } from "axios";
 import type {
   ITimelineReq,
   IPagination,
@@ -9,6 +10,7 @@ import type {
   ICommentReq,
   IFileList,
   ILikeRes,
+  ITimelineAllRes,
 } from "@/interface/timeline";
 
 /** 发布记录 */
@@ -28,8 +30,9 @@ export function editTimeLineApi(
 /** 获取记录（isMilestone 为 true 时仅返回大事记） */
 export function getTimeLineListApi(
   params: IPagination & { babyId: string; isMilestone?: boolean },
+  config?: AxiosRequestConfig,
 ): Promise<ApiResponse<ITimelineRes>> {
-  return post<ITimelineRes>("/api/v1/timeline/list", params);
+  return post<ITimelineRes>("/api/v1/timeline/list", params, config);
 }
 
 /** 获取记录详情 */
@@ -61,4 +64,12 @@ export function getFileListApi(params: {
   month?: string;
 }) {
   return post<IFileList>("/api/v1/timeline/fileList", params);
+}
+
+/** 获取全部记录（仅投影 3D 必需字段，单次请求保证快照一致性） */
+export function getAllTimeLineListApi(
+  params: { babyId: string },
+  config?: AxiosRequestConfig,
+): Promise<ApiResponse<ITimelineAllRes>> {
+  return post<ITimelineAllRes>("/api/v1/timeline/all", params, config);
 }

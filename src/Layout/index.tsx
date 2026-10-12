@@ -6,7 +6,7 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 // 导入布局样式组件
 import { LayoutContainer, Content } from "./styles";
 // 导入用户 store
-import { useUserStore } from "@/store";
+import { useUserStore, useTimelineStore } from "@/store";
 // 导入工具函数
 import { initRouter } from "@/utils";
 // 导入进度条hooks
@@ -20,6 +20,8 @@ const tabs = [
 
 export default function Layout() {
   const { userInfo, getUserInfo } = useUserStore((state) => state);
+  const { viewMode } = useTimelineStore((state) => state);
+
   const navigate = useNavigate();
   const location = useLocation();
   const [activeIndex, setActiveIndex] = useState(0);
@@ -52,7 +54,7 @@ export default function Layout() {
 
   return (
     <LayoutContainer>
-      <Content>
+      <Content mode={viewMode}>
         <Outlet />
       </Content>
       {(location.pathname === "/mine" || location.pathname === "/home") && (

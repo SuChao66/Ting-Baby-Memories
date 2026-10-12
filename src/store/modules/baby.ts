@@ -28,7 +28,7 @@ export const useBabyStore = create<BabyState>((set, get) => ({
     const { code, data } = await getBabyListApi();
     if (code === 0) {
       // 默认选择第一个宝宝
-      const defaultBabyId = data[0]._id;
+      const defaultBabyId = data.length > 0 && data[0]?._id;
       get().setBabyId(defaultBabyId);
       return data;
     }
