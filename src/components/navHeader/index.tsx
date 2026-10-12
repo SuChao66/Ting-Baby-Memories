@@ -17,7 +17,13 @@ function NavHeader(props: NavBarProps) {
   };
 
   return (
-    <NavBar title={title} back={back} right={right} onBackClick={handleBack} />
+    <NavBar
+      title={title}
+      back={back}
+      right={right}
+      onBackClick={handleBack}
+      safeAreaInsetTop
+    />
   );
 }
 

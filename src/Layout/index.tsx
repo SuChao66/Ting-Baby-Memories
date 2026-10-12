@@ -40,6 +40,14 @@ export default function Layout() {
     } else {
       setActiveIndex(-1);
     }
+
+    // 路由切换后复位 iOS WebView 因键盘等操作残留的页面位移（延迟等待布局恢复）
+    const resetTimer = window.setTimeout(() => {
+      if (window.scrollY !== 0) {
+        window.scrollTo(0, 0);
+      }
+    }, 300);
+    return () => window.clearTimeout(resetTimer);
   }, [location.pathname]);
 
   useEffect(() => {
