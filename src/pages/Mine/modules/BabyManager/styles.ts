@@ -7,8 +7,14 @@ import { vw } from "@/utils";
 export const BabyContainer = styled.div`
   display: flex;
   flex-direction: column;
-  height: 100%;
+  /* 用 flex:1 占据导航栏以下剩余空间；height:100% 会把容器撑出父级，
+     iOS 下超出部分被父级 overflow:hidden 裁剪，导致底部内容滚不到 */
+  flex: 1;
+  min-height: 0;
   gap: ${vw(16)};
+  /* 底部留出安全区，避免内容贴住 Home 指示条 */
+  padding-bottom: calc(${vw(16)} + constant(safe-area-inset-bottom));
+  padding-bottom: calc(${vw(16)} + env(safe-area-inset-bottom));
 
   .avatar {
     width: 100%;
