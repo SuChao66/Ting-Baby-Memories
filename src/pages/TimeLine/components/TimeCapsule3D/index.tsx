@@ -14,6 +14,8 @@ import type { ICapsuleData } from "./types";
 import CapsuleLoading from "./components/CapsuleLoading/index";
 import CapsuleEmpty from "./components/CapsuleEmpty/index";
 import CapsuleDetail from "./components/CapsuleDetail/index";
+// 导入月内记录列表覆盖层
+import MonthRecordList from "./components/MonthRecordList/index";
 // 导入 3D 场景
 import Scene from "./components/Scene/index";
 import { Canvas } from "@react-three/fiber";
@@ -37,6 +39,12 @@ function TimeCapsule3D(props: IProps) {
   // 按月聚合：月份簇驱动全局视图（节点数 = 月份数，与记录数解耦）
   // useMemo: 缓存计算结果，避免每次渲染都重新执行开销较大的计算
   const { clusters } = useMemo(() => groupByMonth(items), [items]);
+
+  // 聚焦月份簇：供月内记录列表取当月数据
+  const focusedCluster = useMemo(
+    () => clusters.find((cluster) => cluster.month === focusedMonth) ?? null,
+    [clusters, focusedMonth],
+  );
 
   /** 返回全景：清空聚焦月份与摘要卡片 */
   const handleBackToGlobal = () => {
@@ -62,13 +70,12 @@ function TimeCapsule3D(props: IProps) {
           {/* alpha 开启透明背景，露出外层深空渐变 */}
           <Canvas
             gl={{ alpha: true }}
-            camera={{ position: [0, 5.5, 14.5], fov: 60 }}
+            camera={{ position: [0, 0, -14.5], fov: 60 }}
           >
             <Scene
               clusters={clusters}
               focusedMonth={focusedMonth}
               onSelectMonth={setFocusedMonth}
-              onPickCapsule={setSelectedCapsule}
             />
           </Canvas>
           {/* 月内视图：返回全景按钮（卡片打开时隐藏避免重叠） */}
@@ -77,6 +84,14 @@ function TimeCapsule3D(props: IProps) {
               <BackArrow>‹</BackArrow>
               返回全景
             </BackButton>
+          )}
+          {/* 月内视图：当月记录列表覆盖层，点击记录打开摘要卡片 */}
+          {focusedMonth && focusedCluster && !selectedCapsule && (
+            <MonthRecordList
+              month={focusedMonth}
+              capsules={focusedCluster.capsules}
+              onPick={setSelectedCapsule}
+            />
           )}
           {/* 胶囊摘要卡片：底部滑出 */}
           {selectedCapsule && (

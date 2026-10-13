@@ -2,11 +2,10 @@
 import { useMemo } from "react";
 // 导入 fiber 与 drei 控制器
 import { OrbitControls } from "@react-three/drei";
-// 导入月份簇与胶囊类型
-import type { ICapsuleData, IMonthCluster } from "../../types";
-// 导入全局视图层、月内视图层与相机调度
+// 导入月份簇类型
+import type { IMonthCluster } from "../../types";
+// 导入全局视图层与相机调度
 import MonthClusters from "../MonthClusters/index";
-import MonthCapsules from "../MonthCapsules/index";
 import CameraRig from "./CameraRig";
 
 /** 聚焦期间月份节点选择置空：防止月内视角误触其他月份 */
@@ -19,15 +18,13 @@ interface IProps {
   focusedMonth: string | null;
   /** 点击月份节点回调（状态提升至入口组件） */
   onSelectMonth: (month: string) => void;
-  /** 点击月内胶囊回调（状态提升至入口组件） */
-  onPickCapsule: (capsule: ICapsuleData) => void;
 }
 
-/** 3D 场景主组件：灯光、雾、相机调度与全局/月内双层切换 */
+/** 3D 场景主组件：灯光、雾、相机调度与月份节点渲染（月内记录列表为 DOM 覆盖层） */
 function Scene(props: IProps) {
-  const { clusters, focusedMonth, onSelectMonth, onPickCapsule } = props;
+  const { clusters, focusedMonth, onSelectMonth } = props;
 
-  // 聚焦月份簇：供相机飞入定位与当月实例构建
+  // 聚焦月份簇：供相机飞入定位
   const focusedCluster = useMemo(
     () => clusters.find((cluster) => cluster.month === focusedMonth) ?? null,
     [clusters, focusedMonth],
@@ -46,40 +43,32 @@ function Scene(props: IProps) {
       {/* 当前端暖粉光（顶部内圈） */}
       <pointLight position={[0, 3.5, -2]} intensity={10} color="#FF6B8A" />
 
-      {/* 全局视图层：星空 + 螺旋轨道 + 月份簇节点（月内时保留作背景锚点） */}
+      {/* 全局视图层：星空 + 螺旋轨道 + 月份簇节点（月内时保留作背景锚点，月内记录列表为覆盖层） */}
       <MonthClusters
         clusters={clusters}
         focusedMonth={focusedMonth}
         onSelectMonth={focusedMonth ? NO_OP : onSelectMonth}
       />
 
-      {/* 月内视图层：飞入月份时挂载当月 InstancedMesh 胶囊，退出即销毁 */}
-      {/* group 定位到月份节点：胶囊局部坐标以节点为原点散布 */}
-      {focusedCluster && (
-        <group position={focusedCluster.position}>
-          <MonthCapsules
-            capsules={focusedCluster.capsules}
-            onPick={onPickCapsule}
-          />
-        </group>
-      )}
-
       {/* 相机调度：全景与聚焦间的飞入过渡 */}
       <CameraRig
         focusPosition={focusedCluster ? focusedCluster.position : null}
       />
 
-      {/* 轨道控制器：阻尼漫游，聚焦时停用自动旋转 */}
+      {/* 轨道控制器：阻尼漫游，聚焦时停用自动旋转；视角锁在隧道轴线附近防出壁
+          极角 ±0.09rad：最远缩放 35 时相机横偏 35*sin(0.09)≈3.1，仍在管半径 3.4 内
+          方位角锁死 π（正后轴线）：水平拖动会侧转出管，且方位角窗口跨 ±π 有环绕跳变，故锁单点 */}
       <OrbitControls
         makeDefault
         enableDamping
         dampingFactor={0.08}
         enablePan={false}
         minDistance={3}
-        maxDistance={30}
-        maxPolarAngle={Math.PI * 0.92}
-        autoRotate={!focusedMonth}
-        autoRotateSpeed={0.5}
+        maxDistance={40}
+        minPolarAngle={Math.PI / 2 - 0.12}
+        maxPolarAngle={Math.PI / 2 + 0.12}
+        minAzimuthAngle={Math.PI}
+        maxAzimuthAngle={Math.PI}
       />
     </>
   );

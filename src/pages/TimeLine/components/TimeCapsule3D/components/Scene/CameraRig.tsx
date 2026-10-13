@@ -5,13 +5,9 @@ import * as THREE from "three";
 // 导入hook
 import { useFrame, useThree } from "@react-three/fiber";
 
-/** 全局视角基础位姿：立于时光隧道洞口，望向深处 */
-const GLOBAL_CAMERA_POS = new THREE.Vector3(0, 5, 8);
-const GLOBAL_TARGET = new THREE.Vector3(0, 0, -15);
-/** 洞口平面（z=0）到视线目标的轴向距离，参与覆盖距离计算 */
-const GLOBAL_RING_GAP = 15;
-/** 全景需覆盖的隧道半径：竖屏时近端环不裁边 */
-const GLOBAL_COVER_RADIUS = 3.4;
+/** 全局视角基础位姿：悬浮于隧道深处轴心，望向洞口（+Z），环与脊线向尽头收敛 */
+const GLOBAL_CAMERA_POS = new THREE.Vector3(0, 0, -14.5);
+const GLOBAL_TARGET = new THREE.Vector3(0, 0, 0);
 /** 过渡超时兜底：防止到位判定被扰动卡死占用控制权 */
 const TRANSITION_TIMEOUT = 2.5;
 /** 飞入月内视图时相机相对月份节点的偏移（沿轴朝洞口 + 径向外扩） */
@@ -37,11 +33,6 @@ function CameraRig(props: IProps) {
   const controls = useThree(
     (state) => state.controls,
   ) as unknown as IControlsLike | null;
-  // 获取大小
-  const { width, height } = useThree((state) => state.size);
-  // 透视相机断言：fov 参与隧道口覆盖距离计算
-  const perspective = camera as THREE.PerspectiveCamera;
-  const aspect = width / height;
 
   // 目标位姿缓存，避免每帧新建向量
   const desired = useMemo(
@@ -51,13 +42,11 @@ function CameraRig(props: IProps) {
     }),
     [],
   );
-  // 过渡状态机：模式/屏幕比例变化时启动，到位或超时后停止干预，交还 OrbitControls
+  // 过渡状态机：模式变化时启动，到位或超时后停止干预，交还 OrbitControls
   const lastKeyRef = useRef<string | null>(null);
   const activeRef = useRef(false);
   const elapsedRef = useRef(0);
-  const modeKey = focusPosition
-    ? `focus:${focusPosition.join(",")}`
-    : `global:${aspect.toFixed(2)}`;
+  const modeKey = focusPosition ? `focus:${focusPosition.join(",")}` : "global";
 
   useFrame((_, delta) => {
     // 聚焦/全景模式变化时重新启动飞入过渡
@@ -74,17 +63,8 @@ function CameraRig(props: IProps) {
       desired.position.set(...focusPosition).add(FOCUS_OFFSET);
       desired.target.set(...focusPosition);
     } else {
-      // 立于洞口望向深处；竖屏水平视野变窄，按比例拉远保证近端环完整入画
-      const vHalf = THREE.MathUtils.degToRad(perspective.fov / 2);
-      const distance = Math.max(
-        GLOBAL_CAMERA_POS.distanceTo(GLOBAL_TARGET),
-        GLOBAL_COVER_RADIUS / (Math.tan(vHalf) * aspect) + GLOBAL_RING_GAP,
-      );
-      desired.position
-        .subVectors(GLOBAL_CAMERA_POS, GLOBAL_TARGET)
-        .normalize()
-        .multiplyScalar(distance)
-        .add(GLOBAL_TARGET);
+      // 全局视角：固定于隧道深处轴心望向洞口，环包围四周天然竖横屏通吃
+      desired.position.copy(GLOBAL_CAMERA_POS);
       desired.target.copy(GLOBAL_TARGET);
     }
 
@@ -105,7 +85,7 @@ function CameraRig(props: IProps) {
       activeRef.current = false;
     }
   });
-
+  // 无渲染实体：仅负责相机调度
   return null;
 }
 

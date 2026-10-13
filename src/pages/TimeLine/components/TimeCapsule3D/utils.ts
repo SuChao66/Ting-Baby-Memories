@@ -44,11 +44,6 @@ export function getTagColor(tags: string[]): string {
   return CAPSULE_PALETTE[0];
 }
 
-/** 胶囊尺寸：普通 0.16，里程碑 0.28（更大） */
-export function getCapsuleSize(isMilestone: boolean): number {
-  return isMilestone ? 0.28 : 0.16;
-}
-
 /** 取记录首个图片文件地址 */
 export function getFirstImage(files: IFile[] | undefined): string | undefined {
   const image = files?.find((file) => file.type === "IMAGE");
@@ -82,35 +77,11 @@ export function normalizeCapsuleItem(
   };
 }
 
-/** 月内胶囊局部坐标：确定性黄金角散布（同数据重渲染位置稳定） */
-function getCapsuleLocalPosition(
-  index: number,
-  count: number,
-): [number, number, number] {
-  // 黄金角散布在圆盘上，避免重叠
-  const goldenAngle = Math.PI * (3 - Math.sqrt(5));
-  const radius = 0.5 + 1.7 * Math.sqrt((index + 0.5) / Math.max(count, 1));
-  const angle = index * goldenAngle;
-  // 确定性 y 抖动形成层次感
-  const jitter = ((hashString(String(index)) % 100) / 100 - 0.5) * 0.8;
-  return [
-    Number((radius * Math.cos(angle)).toFixed(4)),
-    Number(jitter.toFixed(4)),
-    Number((radius * Math.sin(angle)).toFixed(4)),
-  ];
-}
-
-/** 记录 → 月内胶囊数据 */
-export function buildCapsuleData(
-  item: ICapsuleTimelineItem,
-  index: number,
-  count: number,
-): ICapsuleData {
+/** 记录 → 月内数据（月内列表与摘要卡片共用） */
+export function buildCapsuleData(item: ICapsuleTimelineItem): ICapsuleData {
   return {
     id: item._id,
-    position: getCapsuleLocalPosition(index, count),
     color: getTagColor(item.tags),
-    size: getCapsuleSize(item.isMilestone),
     isMilestone: item.isMilestone,
     publishTime: item.publishTime,
     content: item.content,
@@ -168,9 +139,7 @@ export function groupByMonth(items: ICapsuleTimelineItem[]): ICapsuleAggregate {
       color: dominantTag ? getTagColor([dominantTag]) : CAPSULE_PALETTE[4],
       dominantTag,
       hasMilestone: records.some((record) => record.isMilestone),
-      capsules: records.map((record, i) =>
-        buildCapsuleData(record, i, records.length),
-      ),
+      capsules: records.map((record) => buildCapsuleData(record)),
     };
   });
 

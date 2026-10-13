@@ -57,16 +57,12 @@ export interface IMonthCluster {
   capsules: ICapsuleData[];
 }
 
-/** 月内胶囊：月内视图 InstancedMesh 单实例数据 */
+/** 月内记录：月内列表与摘要卡片共用数据 */
 export interface ICapsuleData {
   /** 记录 id */
   id: string;
-  /** 月内局部坐标 */
-  position: [number, number, number];
-  /** 标签取色 */
+  /** 标签取色（列表色条） */
   color: string;
-  /** 尺寸，里程碑更大 */
-  size: number;
   isMilestone: boolean;
   publishTime: string;
   content: string;
