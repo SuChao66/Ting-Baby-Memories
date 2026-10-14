@@ -13,7 +13,7 @@ import {
 import { CiShoppingTag } from "react-icons/ci";
 import { HiOutlinePhotograph } from "react-icons/hi";
 // 导入 vw 工具函数
-import { vw, getTodayDate, compressImage } from "@/utils";
+import { vw, getTodayDate, compressImage, getExifData } from "@/utils";
 // 导入组件
 import NavHeader from "@/components/navHeader";
 import VideoPreview from "@/baseUI/videoPreview";
@@ -52,7 +52,12 @@ import type { IVisibleRoles } from "@/types";
 // 导入上传接口
 import { getPresignedUrlApi } from "@/api/upload";
 // 导入常量
-import { visibilityOptions, NUMBER, ONN_B } from "@/enums";
+import {
+  visibilityOptions,
+  NUMBER,
+  ONN_B,
+  TIME_LINE_VISIBLE_ROLES,
+} from "@/enums";
 
 // 模块级缓存：保存表单状态，避免从标签页返回时数据丢失
 let formCache: {
@@ -95,7 +100,9 @@ function TimelineForm() {
   const [isMilestone, setIsMilestone] = useState(!!isMilestoneValue);
 
   // 谁可以看
-  const [visibleRoles, setVisibilityRoles] = useState<IVisibleRoles>("public");
+  const [visibleRoles, setVisibilityRoles] = useState<IVisibleRoles>(
+    TIME_LINE_VISIBLE_ROLES.FAMILY,
+  );
 
   // 弹窗可见性
   const [timelineDateVisible, setTimelineDateVisible] = useState(false);
@@ -205,6 +212,12 @@ function TimelineForm() {
     if (!isImage && !isVideo) {
       Toast.show({ title: "请选择图片或视频文件", icon: "warn" });
       return;
+    }
+
+    // 读取图片拍摄时间并回填（须在压缩前读取，压缩会丢失 EXIF）
+    if (isImage) {
+      const takenTime = await getExifData(file);
+      if (takenTime) setDateTime(takenTime);
     }
 
     // 图片限制 10MB，视频限制 100MB

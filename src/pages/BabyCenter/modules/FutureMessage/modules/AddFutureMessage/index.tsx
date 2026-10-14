@@ -32,6 +32,7 @@ import {
   NUMBER,
   ONN_B,
   ALLOWED_CONTENT_TYPES,
+  TIME_LINE_VISIBLE_ROLES,
 } from "@/enums";
 // 导入类型
 import type { PickerOptions, PickerValue } from "@nutui/nutui-react";
@@ -96,7 +97,7 @@ function AddFutureMessage() {
   const [content, setContent] = useState("");
   // 谁可以看
   const [visibleRole, setVisibleRole] = useState<IVisibleRoles>(
-    visibilityOptions[0].value,
+    TIME_LINE_VISIBLE_ROLES.FAMILY,
   );
 
   // 弹层可见性

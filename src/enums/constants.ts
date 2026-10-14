@@ -58,7 +58,7 @@ export const TIME_LINE_VISIBLE_ROLES = {
   PUBLIC: "public", // 公开
   FAMILY: "family", // 家庭
   PRIVATE: "private", // 私有
-};
+} as const;
 
 // 用户与宝宝关系
 export const USER_AND_BABY_RELATION = {
