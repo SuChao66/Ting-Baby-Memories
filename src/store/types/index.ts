@@ -72,6 +72,7 @@ export interface UserState {
     birthday?: string;
     avatarUrl?: string;
   }) => Promise<boolean>; // 更新用户信息
+  getRelationOfBaby: (babyId: string) => Promise<string>;
 }
 
 // 定义宝宝状态类型

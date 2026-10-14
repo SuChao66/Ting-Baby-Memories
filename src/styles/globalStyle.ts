@@ -75,4 +75,8 @@ export const GlobalStyle = createGlobalStyle<{ theme?: Theme }>`
     height: ${vw(36)};
     border-radius: ${vw(18)};
   }
+
+  .nut-button-primary-disabled, .nut-button-primary-solid-disabled {
+    background-color: transparent;
+  }
 `;

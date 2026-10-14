@@ -20,20 +20,30 @@ import InviteModal from "../InviteModal";
 // 导入工具函数
 import { vw } from "@/utils";
 // 导入状态管理
-import { useFamilyStore } from "@/store";
+import { useFamilyStore, useUserStore } from "@/store";
+// 导入常量
+import { USER_AND_BABY_RELATION } from "@/enums";
 
 function InviteCard(props: { id: string }) {
   const { id } = props;
 
   // 获取家庭列表
   const { familyList, getFamilyList } = useFamilyStore((state) => state);
+  const { userInfo, getRelationOfBaby } = useUserStore((state) => state);
 
   // 邀请亲友弹层显示状态
   const [inviteVisible, setInviteVisible] = useState(false);
+  const [relation, setRelation] = useState<any>(null);
 
   useEffect(() => {
     getFamilyList(id);
   }, []);
+
+  useEffect(() => {
+    getRelationOfBaby(id).then((relation) => {
+      setRelation(relation);
+    });
+  }, [userInfo?._id]);
 
   return (
     <InviteContainer>
@@ -44,24 +54,26 @@ function InviteCard(props: { id: string }) {
         {familyList.map((item) => (
           <InviteItem key={item._id}>
             <InviteAvatar>
-              {item.userId.avatarUrl ? (
+              {item.userId.avatarUrl !== null ? (
                 <img src={item.userId.avatarUrl} alt={item.nickname} />
               ) : (
                 <span style={{ fontSize: vw(18), color: "#ff6b8a" }}>
-                  {item.nickname}
+                  {item.userId.nickname}
                 </span>
               )}
             </InviteAvatar>
-            <InviteName>{item.nickname}</InviteName>
+            <InviteName>{item.userId.nickname}</InviteName>
             <InviteVisit>来过{item.visitCount}次</InviteVisit>
           </InviteItem>
         ))}
-        <InviteAddBtn onClick={() => setInviteVisible(true)}>
-          <InviteAddIcon>
-            <HiOutlinePlus size={vw(24)} />
-          </InviteAddIcon>
-          <InviteAddText>邀请亲友</InviteAddText>
-        </InviteAddBtn>
+        {relation !== USER_AND_BABY_RELATION.OTHER && (
+          <InviteAddBtn onClick={() => setInviteVisible(true)}>
+            <InviteAddIcon>
+              <HiOutlinePlus size={vw(24)} />
+            </InviteAddIcon>
+            <InviteAddText>邀请亲友</InviteAddText>
+          </InviteAddBtn>
+        )}
       </InviteList>
 
       {/* 邀请亲友弹层 */}

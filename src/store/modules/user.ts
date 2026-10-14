@@ -9,6 +9,7 @@ import {
   changePasswordApi,
   getUserInfoApi,
   updateUserInfoApi,
+  getRelationOfBabyApi,
 } from "@/api/user";
 // 导入用户接口类型
 import type { ChangePasswordRequest } from "@/interface/user";
@@ -217,5 +218,10 @@ export const useUserStore = create<UserState>((set) => ({
   updateUserInfo: async (params) => {
     const { code } = await updateUserInfoApi(params);
     return code === 0 ? true : false;
+  },
+  // 获取用户与宝宝的关系
+  getRelationOfBaby: async (babyId: string) => {
+    const { code, data } = await getRelationOfBabyApi(babyId);
+    return code === 0 ? data?.relation : "";
   },
 }));

@@ -45,3 +45,8 @@ export function updateUserInfoApi(data: {
 }) {
   return post<string>("/api/v1/user/update", data);
 }
+
+// 获取用户与宝宝的关系
+export function getRelationOfBabyApi(babyId: string) {
+  return get<{ relation: string }>("/api/v1/user/relation", { babyId });
+}

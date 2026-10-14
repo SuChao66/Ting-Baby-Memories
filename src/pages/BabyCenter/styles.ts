@@ -8,6 +8,11 @@ export const BabyCenterContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: ${vw(16)};
+  flex: 1;
+  overflow: auto;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 /* ========== 宝宝档案卡片 ========== */
@@ -15,7 +20,6 @@ export const ArchiveCard = styled.div`
   background: #fff;
   border-radius: ${vw(20)};
   box-shadow: 0 ${vw(4)} ${vw(24)} rgba(255, 107, 138, 0.1);
-  overflow: hidden;
   .file {
     display: flex;
     align-items: center;
