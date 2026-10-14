@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 // 导入组件
 import NavHeader from "@/components/navHeader";
 import VideoPreview from "@/baseUI/videoPreview";
+import UploadProgress from "@/baseUI/uploadProgress";
 // 导入图标
 import { IoIosArrowBack } from "react-icons/io";
 import {
@@ -23,6 +24,7 @@ import {
   compressImage,
   isImage,
   isAudio,
+  batchUploadFiles,
 } from "@/utils";
 // 导入 store
 import { useBabyStore, useFutureMessageStore } from "@/store";
@@ -42,8 +44,6 @@ import type {
   addFutureMessageReq,
   IFutureMessage,
 } from "@/interface/futureMessage";
-// 导入上传接口
-import { getPresignedUrlApi } from "@/api/upload";
 // 导入样式
 import {
   AddFutureMessageContainer,
@@ -113,6 +113,11 @@ function AddFutureMessage() {
   const [previewIndex, setPreviewIndex] = useState(0);
   // 视频全屏预览
   const [videoPreviewUrl, setVideoPreviewUrl] = useState<string | null>(null);
+
+  // 上传进度弹框
+  const [uploadVisible, setUploadVisible] = useState(false);
+  const [uploadPercent, setUploadPercent] = useState(0);
+  const [uploadTitle, setUploadTitle] = useState("上传中...");
 
   const fileRef = useRef<HTMLInputElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -186,80 +191,101 @@ function AddFutureMessage() {
     fileRef.current?.click();
   };
 
-  // 选择附件（图片压缩后上传，视频/音频直接上传）
+  // 选择附件（支持多选；图片压缩后上传，视频/音频直接上传）
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    if (files.length >= 9) {
-      Toast.show({ title: "最多添加 9 个附件", icon: "warn" });
-      return;
+    const selected = Array.from(e.target.files ?? []);
+    // 立即重置，保证连续两次选择同一批文件也能触发 change
+    e.target.value = "";
+    if (!selected.length) return;
+
+    // 各类型大小上限：图片 10MB、音频 50MB、视频 100MB
+    const getMaxSize = (file: File) =>
+      isImage(file.type)
+        ? NUMBER.TEN
+        : isAudio(file.type)
+          ? NUMBER.FIFTY
+          : NUMBER.HUNDRED;
+
+    // 1. 数量上限：按剩余槽位裁剪
+    const remaining = NUMBER.NINE - files.length;
+    let validList = selected;
+    if (validList.length > remaining) {
+      validList = validList.slice(0, remaining);
+      Toast.show({
+        title: `最多添加 9 个附件，已保留前 ${remaining} 个`,
+        icon: "warn",
+      });
     }
 
-    // 检查文件类型是否在允许的范围内
-    if (!ALLOWED_CONTENT_TYPES.includes(file.type)) {
+    // 2. 逐个校验类型与大小
+    const skippedCount = validList.filter(
+      (file) =>
+        !ALLOWED_CONTENT_TYPES.includes(file.type) ||
+        file.size > getMaxSize(file) * ONN_B * ONN_B,
+    ).length;
+    validList = validList.filter(
+      (file) =>
+        ALLOWED_CONTENT_TYPES.includes(file.type) &&
+        file.size <= getMaxSize(file) * ONN_B * ONN_B,
+    );
+    if (!validList.length) {
       Toast.show({ title: "请选择图片、视频或音频文件", icon: "warn" });
       return;
     }
-
-    // 图片 10MB、音频 50MB、视频 100MB
-    const maxSize = isImage(file.type)
-      ? NUMBER.TEN
-      : isAudio(file.type)
-        ? NUMBER.FIFTY
-        : NUMBER.HUNDRED;
-    if (file.size > maxSize * ONN_B * ONN_B) {
+    if (skippedCount) {
       Toast.show({
-        title: `${
-          isImage(file.type) ? "图片" : isAudio(file.type) ? "音频" : "视频"
-        }不能超过 ${maxSize}MB`,
+        title: `${skippedCount} 个文件类型不支持或超过大小限制，已忽略`,
         icon: "warn",
       });
-      return;
     }
 
-    // 图片做压缩处理，视频/音频直接上传
-    let uploadFile = file;
-    if (isImage(file.type)) {
-      try {
-        uploadFile = await compressImage(file, 0.8);
-      } catch {
-        console.log("压缩失败，使用原图");
+    // 3. 弹出进度遮罩；图片串行压缩避免内存压力，视频/音频直接上传；压缩失败用原图
+    setUploadVisible(true);
+    setUploadPercent(0);
+    setUploadTitle("正在处理文件...");
+    const uploadList: File[] = [];
+    for (const file of validList) {
+      if (isImage(file.type)) {
+        try {
+          uploadList.push(await compressImage(file, 0.8));
+        } catch {
+          uploadList.push(file);
+        }
+      } else {
+        uploadList.push(file);
       }
     }
 
-    Toast.show({ title: "上传中...", icon: "loading", duration: 0 });
-    try {
-      const { data } = await getPresignedUrlApi({
-        filename: uploadFile.name,
-        contentType: uploadFile.type,
-      });
-      const res = await fetch(data.uploadUrl, {
-        method: "PUT",
-        headers: {
-          "Content-Type": uploadFile.type,
-          "x-cos-acl": "public-read",
-        },
-        body: uploadFile,
-      });
-      if (!res.ok) throw new Error("上传失败");
-      setFiles((prev) => [
-        ...prev,
-        {
-          type: isImage(file.type)
-            ? "IMAGE"
-            : isAudio(file.type)
-              ? "AUDIO"
-              : "VIDEO",
-          url: data.accessUrl,
-          fileName: file.name,
-        },
-      ]);
-    } catch {
-      Toast.show({ title: "上传失败，请重试", icon: "fail" });
-    } finally {
-      Toast.clear();
+    // 4. 并发上传，进度同步到弹框
+    setUploadTitle(`上传中 0/${uploadList.length}`);
+    const results = await batchUploadFiles(
+      uploadList,
+      (percent, done, total) => {
+        setUploadPercent(percent);
+        setUploadTitle(`上传中 ${done}/${total}`);
+      },
+    );
+
+    // 5. 成功的追加到列表，失败的汇总提示
+    const uploaded: IFile[] = [];
+    for (const result of results) {
+      if (result.status === "fulfilled") uploaded.push(result.value);
     }
-    e.target.value = "";
+    if (uploaded.length) setFiles((prev) => [...prev, ...uploaded]);
+    setTimeout(() => {
+      // 延时隐藏进度弹框
+      setUploadVisible(false);
+    }, 1000);
+
+    const failCount = uploadList.length - uploaded.length;
+    if (failCount) {
+      Toast.show({
+        title: `${uploaded.length ? `成功 ${uploaded.length} 个，` : ""}失败 ${failCount} 个，请重试`,
+        icon: "fail",
+      });
+    } else {
+      Toast.show({ title: "上传成功", icon: "success" });
+    }
   };
 
   // 删除附件
@@ -406,6 +432,7 @@ function AddFutureMessage() {
                 ref={fileRef}
                 type="file"
                 accept="image/*, video/*, audio/*"
+                multiple
                 style={{ display: "none" }}
                 onChange={(e) => handleFileChange(e)}
               />
@@ -479,6 +506,13 @@ function AddFutureMessage() {
           .map((f) => ({ src: f.url }))}
         defaultValue={previewIndex}
         onClose={() => setPreviewVisible(false)}
+      />
+
+      {/* 上传进度弹框 */}
+      <UploadProgress
+        visible={uploadVisible}
+        percent={uploadPercent}
+        title={uploadTitle}
       />
 
       {/* 视频全屏预览 */}

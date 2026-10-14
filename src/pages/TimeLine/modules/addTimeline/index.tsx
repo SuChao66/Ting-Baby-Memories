@@ -13,10 +13,17 @@ import {
 import { CiShoppingTag } from "react-icons/ci";
 import { HiOutlinePhotograph } from "react-icons/hi";
 // 导入 vw 工具函数
-import { vw, getTodayDate, compressImage, getExifData } from "@/utils";
+import {
+  vw,
+  getTodayDate,
+  compressImage,
+  getExifData,
+  batchUploadFiles,
+} from "@/utils";
 // 导入组件
 import NavHeader from "@/components/navHeader";
 import VideoPreview from "@/baseUI/videoPreview";
+import UploadProgress from "@/baseUI/uploadProgress";
 // 导入样式组件
 import {
   AddTimelineContainer,
@@ -49,8 +56,6 @@ import { useTagStore, useBabyStore, useTimelineStore } from "@/store";
 import type { PickerOptions, PickerValue } from "@nutui/nutui-react";
 import type { IFile } from "@/interface/timeline";
 import type { IVisibleRoles } from "@/types";
-// 导入上传接口
-import { getPresignedUrlApi } from "@/api/upload";
 // 导入常量
 import {
   visibilityOptions,
@@ -112,6 +117,11 @@ function TimelineForm() {
   const [previewVisible, setPreviewVisible] = useState(false);
   const [previewIndex, setPreviewIndex] = useState(0);
   const [videoPreviewUrl, setVideoPreviewUrl] = useState<string | null>(null);
+
+  // 上传进度弹框
+  const [uploadVisible, setUploadVisible] = useState(false);
+  const [uploadPercent, setUploadPercent] = useState(0);
+  const [uploadTitle, setUploadTitle] = useState("上传中...");
 
   // 获取记录详情 / 从缓存恢复
   useEffect(() => {
@@ -202,73 +212,105 @@ function TimelineForm() {
     }
   };
 
-  // 选择文件
+  // 选择文件（支持多选）
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const selected = Array.from(e.target.files ?? []);
+    // 立即重置，保证连续两次选择同一批文件也能触发 change
+    e.target.value = "";
+    if (!selected.length) return;
 
-    const isImage = file.type.startsWith("image/");
-    const isVideo = file.type.startsWith("video/");
-    if (!isImage && !isVideo) {
-      Toast.show({ title: "请选择图片或视频文件", icon: "warn" });
-      return;
+    // 1. 数量上限：按剩余槽位裁剪
+    const remaining = NUMBER.NINE - files.length;
+    let validList = selected;
+    if (validList.length > remaining) {
+      validList = validList.slice(0, remaining);
+      Toast.show({
+        title: `最多上传 ${NUMBER.NINE} 个文件，已保留前 ${remaining} 个`,
+        icon: "warn",
+      });
     }
 
-    // 读取图片拍摄时间并回填（须在压缩前读取，压缩会丢失 EXIF）
-    if (isImage) {
-      const takenTime = await getExifData(file);
+    // 2. 逐个校验类型与大小：图片 10MB，视频 100MB
+    const skippedCount = validList.filter((file) => {
+      const isImage = file.type.startsWith("image/");
+      const isVideo = file.type.startsWith("video/");
+      const maxSize = isImage ? NUMBER.TEN : isVideo ? NUMBER.HUNDRED : 0;
+      if (!maxSize || file.size > maxSize * ONN_B * ONN_B) return true;
+      return false;
+    }).length;
+    validList = validList.filter((file) => {
+      const isImage = file.type.startsWith("image/");
+      const isVideo = file.type.startsWith("video/");
+      const maxSize = isImage ? NUMBER.TEN : isVideo ? NUMBER.HUNDRED : 0;
+      return !!maxSize && file.size <= maxSize * ONN_B * ONN_B;
+    });
+    if (!validList.length) {
+      Toast.show({ title: "请选择符合要求的图片或视频文件", icon: "warn" });
+      return;
+    }
+    if (skippedCount) {
+      Toast.show({
+        title: `${skippedCount} 个文件类型不支持或超过大小限制，已忽略`,
+        icon: "warn",
+      });
+    }
+
+    // 3. 用第一张图片的拍摄时间回填（须在压缩前读取，压缩会丢失 EXIF）
+    const firstImage = validList.find((f) => f.type.startsWith("image/"));
+    if (firstImage) {
+      const takenTime = await getExifData(firstImage);
       if (takenTime) setDateTime(takenTime);
     }
 
-    // 图片限制 10MB，视频限制 100MB
-    const maxSize = isImage ? NUMBER.TEN : NUMBER.HUNDRED;
-    if (file.size > maxSize * ONN_B * ONN_B) {
-      Toast.show({
-        title: `${isImage ? "图片" : "视频"}不能超过 ${maxSize}MB`,
-        icon: "warn",
-      });
-      return;
-    }
-
-    // 图片做压缩处理，视频直接上传
-    let uploadFile = file;
-    if (isImage) {
-      try {
-        uploadFile = await compressImage(file, 0.8);
-      } catch {
-        console.log("压缩失败，使用原图");
+    // 4. 图片串行压缩避免内存压力，视频直接上传；压缩失败用原图
+    // 弹出自定义进度遮罩，期间阻断页面交互
+    setUploadVisible(true);
+    setUploadPercent(0);
+    setUploadTitle("正在处理图片...");
+    const uploadList: File[] = [];
+    for (const file of validList) {
+      if (file.type.startsWith("image/")) {
+        try {
+          uploadList.push(await compressImage(file, 0.8));
+        } catch {
+          uploadList.push(file);
+        }
+      } else {
+        uploadList.push(file);
       }
     }
 
-    Toast.show({ title: "上传中...", icon: "loading", duration: 0 });
-    try {
-      const { data } = await getPresignedUrlApi({
-        filename: uploadFile.name,
-        contentType: uploadFile.type,
-      });
-      const res = await fetch(data.uploadUrl, {
-        method: "PUT",
-        headers: {
-          "Content-Type": uploadFile.type,
-          "x-cos-acl": "public-read",
-        },
-        body: uploadFile,
-      });
-      if (!res.ok) throw new Error("上传失败");
-      setFiles([
-        ...files,
-        {
-          type: isImage ? "IMAGE" : "VIDEO",
-          url: data.accessUrl,
-          fileName: file.name,
-        },
-      ]);
-    } catch {
-      Toast.show({ title: "上传失败，请重试", icon: "fail" });
-    } finally {
-      Toast.clear();
+    // 5. 并发上传，进度同步到弹框
+    setUploadTitle(`上传中 0/${uploadList.length}`);
+    const results = await batchUploadFiles(
+      uploadList,
+      (percent, done, total) => {
+        setUploadPercent(percent);
+        setUploadTitle(`上传中 ${done}/${total}`);
+      },
+    );
+
+    // 6. 成功的追加到列表，失败的汇总提示
+    const uploaded: IFile[] = [];
+    for (const result of results) {
+      if (result.status === "fulfilled") uploaded.push(result.value);
     }
-    e.target.value = "";
+    if (uploaded.length) setFiles((prev) => [...prev, ...uploaded]);
+    // 关闭进度弹框后再展示结果
+    setTimeout(() => {
+      // 延时隐藏进度弹框
+      setUploadVisible(false);
+    }, 1000);
+
+    const failCount = uploadList.length - uploaded.length;
+    if (failCount) {
+      Toast.show({
+        title: `${uploaded.length ? `成功 ${uploaded.length} 个，` : ""}失败 ${failCount} 个，请重试`,
+        icon: "fail",
+      });
+    } else {
+      Toast.show({ title: "上传成功", icon: "success" });
+    }
   };
 
   // 删除文件
@@ -393,6 +435,7 @@ function TimelineForm() {
                 ref={imageRef}
                 type="file"
                 accept="image/*, video/*"
+                multiple
                 style={{ display: "none" }}
                 onChange={(e) => handleFileChange(e)}
               />
@@ -498,6 +541,13 @@ function TimelineForm() {
           .map((f) => ({ src: f.url }))}
         defaultValue={previewIndex}
         onClose={() => setPreviewVisible(false)}
+      />
+
+      {/* 上传进度弹框 */}
+      <UploadProgress
+        visible={uploadVisible}
+        percent={uploadPercent}
+        title={uploadTitle}
       />
 
       {/* 视频全屏预览 */}
