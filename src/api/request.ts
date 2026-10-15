@@ -67,6 +67,13 @@ instance.interceptors.response.use(
         icon: "fail",
       });
       console.error("[API Error] 请求参数错误");
+    } else if (status === 429) {
+      // 请求过于频繁（限流），提示用户稍后重试
+      Toast.show({
+        title: error.response?.data?.message || "请求过于频繁，请稍后再试",
+        icon: "fail",
+      });
+      console.error("[API Error] 请求过多(429)");
     } else if (status === 500) {
       Toast.show({
         title: error.response?.data.message || "服务器内部错误",
