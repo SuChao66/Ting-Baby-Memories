@@ -18,7 +18,11 @@ function ExhibitionHall() {
   const navigate = useNavigate();
 
   // 数据层：加载进度、精简记录、失败标记与重试
-  const { loading, progress, items, error, retry } = useMilestoneData(id, true);
+  const { loading, progress, items, error, retry } = useMilestoneData(
+    id ? id : "",
+    true,
+  );
+  // 年份簇
   const [yearClusters, setYearClusters] = useState<IYearCluster[]>([]);
 
   useEffect(() => {

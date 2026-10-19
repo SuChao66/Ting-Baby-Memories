@@ -13,7 +13,7 @@ export type ICapsuleSourceItem = Pick<
 /** 归一化为精简胶囊记录（兼容全量接口投影与分页完整结构） */
 export function normalizeCapsuleItem(
   item: ICapsuleSourceItem,
-): ICapsuleTimelineItem {
+): ICapsuleTimelineItem | undefined {
   if (item.isMilestone) {
     return {
       _id: item._id,
@@ -24,6 +24,17 @@ export function normalizeCapsuleItem(
       publishTime: item.publishTime,
     };
   }
+}
+
+/** 批量归一化并过滤非里程碑记录 */
+export function normalizeCapsuleList(
+  data: ICapsuleSourceItem[],
+): ICapsuleTimelineItem[] {
+  return data.reduce<ICapsuleTimelineItem[]>((acc, item) => {
+    const normalized = normalizeCapsuleItem(item);
+    if (normalized) acc.push(normalized);
+    return acc;
+  }, []);
 }
 
 /** 降级分页拉取的每页条数 */
@@ -96,7 +107,7 @@ export function useMilestoneData(
         );
         if (cancelled) return;
         total = res.data.total;
-        list.push(...res.data.data.map(normalizeCapsuleItem));
+        list.push(...normalizeCapsuleList(res.data.data));
         // 进度上限 95%，满格留给聚合完成
         if (total > 0) {
           setProgress(Math.min(Math.round((list.length / total) * 95), 95));
@@ -121,7 +132,7 @@ export function useMilestoneData(
         );
         if (cancelled) return;
         // 处理数据
-        finish(res.data.data.map(normalizeCapsuleItem));
+        finish(normalizeCapsuleList(res.data.data));
       } catch (err) {
         console.error("[TimeCapsule3D] 全量接口不可用，降级分页拉取:", err);
         if (cancelled) return;
