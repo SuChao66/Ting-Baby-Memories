@@ -11,6 +11,8 @@ import { useUserStore, useTimelineStore } from "@/store";
 import { initRouter } from "@/utils";
 // 导入进度条hooks
 import { useNProgress } from "@/hooks";
+// 导入常量
+import { TIME_LIME_VIEW_MODE } from "@/enums";
 
 /** 底部导航栏配置 */
 const tabs = [
@@ -20,10 +22,11 @@ const tabs = [
 
 export default function Layout() {
   const { userInfo, getUserInfo } = useUserStore((state) => state);
-  const { viewMode } = useTimelineStore((state) => state);
+  const { viewMode, setViewMode } = useTimelineStore((state) => state);
 
   const navigate = useNavigate();
   const location = useLocation();
+
   const [activeIndex, setActiveIndex] = useState(0);
 
   // 组件挂载时，把真实的 navigate 注入到全局工具中
@@ -39,6 +42,11 @@ export default function Layout() {
       setActiveIndex(0);
     } else {
       setActiveIndex(-1);
+    }
+    if (location.pathname.includes("exhibition-hall")) {
+      setViewMode(TIME_LIME_VIEW_MODE.THREE_D);
+    } else {
+      setViewMode(TIME_LIME_VIEW_MODE.LIST);
     }
 
     // 路由切换后复位 iOS WebView 因键盘等操作残留的页面位移（延迟等待布局恢复）

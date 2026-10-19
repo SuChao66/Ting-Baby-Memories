@@ -50,6 +50,9 @@ const AddFutureMessage = React.lazy(
   () =>
     import("@/pages/BabyCenter/modules/FutureMessage/modules/AddFutureMessage/index"),
 );
+const ExhibitionHall = React.lazy(
+  () => import("@/pages/BabyCenter/modules/ExhibitionHall/index"),
+);
 const UserManager = React.lazy(
   () => import("@/pages/Mine/modules/UserManager/index"),
 );
@@ -111,6 +114,10 @@ export const router = createHashRouter([
           {
             path: "future-message/:id",
             element: React.createElement(FutureMessage),
+          },
+          {
+            path: "exhibition-hall/:id",
+            element: React.createElement(ExhibitionHall),
           },
           {
             path: "add-future-message",

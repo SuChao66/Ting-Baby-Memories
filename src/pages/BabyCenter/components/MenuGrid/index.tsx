@@ -15,6 +15,7 @@ import {
   AiOutlineHeart,
   AiOutlineMessage,
 } from "react-icons/ai";
+import { LuMove3D } from "react-icons/lu";
 // 导入工具函数
 import { vw } from "@/utils";
 
@@ -75,6 +76,13 @@ const menuList = [
     icon: <AiOutlineMessage color="#ba68c8" size={vw(22)} />,
     bg: "#f3e5f5",
     path: "/future-message",
+  },
+  {
+    key: "exhibitionHall",
+    label: "成长馆",
+    icon: <LuMove3D color="#ffcc5c" size={vw(22)} />,
+    bg: "#fffde7",
+    path: "/exhibition-hall",
   },
 ];
 

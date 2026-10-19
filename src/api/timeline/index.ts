@@ -68,7 +68,7 @@ export function getFileListApi(params: {
 
 /** 获取全部记录（仅投影 3D 必需字段，单次请求保证快照一致性） */
 export function getAllTimeLineListApi(
-  params: { babyId: string },
+  params: { babyId: string; isMilestone?: boolean },
   config?: AxiosRequestConfig,
 ): Promise<ApiResponse<ITimelineAllRes>> {
   return post<ITimelineAllRes>("/api/v1/timeline/all", params, config);

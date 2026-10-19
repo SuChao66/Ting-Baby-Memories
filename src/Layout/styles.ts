@@ -24,7 +24,9 @@ export const LayoutContainer = styled.div`
 `;
 
 /** 内容区域 */
-export const Content = styled.main<{ mode: TimelineViewType }>`
+export const Content = styled.main<{
+  mode: TimelineViewType;
+}>`
   flex: 1;
   overflow: hidden;
   padding: ${(props) => (props.mode === TIME_LIME_VIEW_MODE.LIST ? vw(16) : 0)};

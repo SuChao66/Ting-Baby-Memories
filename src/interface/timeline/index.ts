@@ -131,3 +131,9 @@ export interface ITimelineAllRes {
   total: number;
   data: ICapsuleTimelineItem[];
 }
+
+/** 年份分组 */
+export interface IYearCluster {
+  key: number;
+  value: ICapsuleTimelineItem[];
+}

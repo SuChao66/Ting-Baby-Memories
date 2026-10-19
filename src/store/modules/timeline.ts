@@ -100,7 +100,10 @@ export const useTimelineStore = create<TimelineState>((set) => ({
     return code === 0 ? data : {};
   },
   // 获取全部记录
-  getAllTimeLineList: async (params: { babyId: string }) => {
+  getAllTimeLineList: async (params: {
+    babyId: string;
+    isMilestone?: boolean;
+  }) => {
     const { code, data } = await getAllTimeLineListApi(params);
     return code === 0 ? data : null;
   },
