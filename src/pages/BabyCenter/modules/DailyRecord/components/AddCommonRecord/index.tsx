@@ -2,7 +2,12 @@ import { useState, useRef, useEffect } from "react";
 // 导入图标
 import { AiOutlineRight } from "react-icons/ai";
 // 导入工具函数
-import { vw, formatDateTime, formatDuration } from "@/utils";
+import {
+  vw,
+  formatDateTime,
+  formatDuration,
+  toLocalISOString,
+} from "@/utils";
 // 导入类型
 import type { DailyRecordType } from "@/types";
 import type { PickerOptions, PickerValue } from "@nutui/nutui-react";
@@ -190,7 +195,7 @@ function AddCommonRecord(props: AddCommonRecordProps) {
       babyId,
       type,
       // 公共参数
-      startTime: startDateTime,
+      startTime: toLocalISOString(startDateTime),
       duration: type === DAILY_RECORD_TYPES.FOOD ? 0 : finalDuration,
       remark,
       // 其他事件

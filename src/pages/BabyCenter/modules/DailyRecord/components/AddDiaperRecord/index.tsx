@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 // 导入图标
 import { AiOutlineRight } from "react-icons/ai";
 // 导入工具函数
-import { vw, formatDateTime } from "@/utils";
+import { vw, formatDateTime, toLocalISOString } from "@/utils";
 // 导入常量
 import { DAILY_RECORD_TYPES } from "@/enums/constants";
 import {
@@ -161,7 +161,7 @@ function AddDiaperRecord(props: AddDiaperRecordProps) {
     const params: IAddDailyRecordParams = {
       babyId,
       type,
-      startTime: startDateTime,
+      startTime: toLocalISOString(startDateTime),
       status,
       poopColor: showPoop ? poopColor : undefined,
       poopShape: showPoop ? poopShape : undefined,

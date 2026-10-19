@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 // 导入图标
 import { AiOutlineRight } from "react-icons/ai";
 // 导入工具函数
-import { vw, formatDateTime } from "@/utils";
+import { vw, formatDateTime, toLocalISOString } from "@/utils";
 // 导入类型
 import type { SymptomRecordType } from "@/types";
 import type { PickerOptions, PickerValue } from "@nutui/nutui-react";
@@ -185,7 +185,7 @@ function AddSymptomRecord(props: AddSymptomRecordProps) {
     const params: IAddSymptomRecordParams = {
       babyId,
       type,
-      startTime: startDateTime,
+      startTime: toLocalISOString(startDateTime),
       remark,
       // 体温
       temperature:

@@ -5,7 +5,7 @@ export interface IAddDailyRecordParams {
   babyId: string;
   type: DailyRecordType; // 记录类型
   /** 公共记录 */
-  startTime?: Date; // 开始时间
+  startTime?: string; // 开始时间（本地时区 ISO 字符串，如 2026-10-19T05:36:00+08:00）
   remark?: string; // 评价
   /** 洗澡、睡眠、玩耍、游泳、其他事件 */
   duration?: number; // 持续时间

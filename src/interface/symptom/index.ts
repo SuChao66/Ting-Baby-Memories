@@ -4,7 +4,7 @@ import type { SymptomRecordType } from "@/types";
 export interface IAddSymptomRecordParams {
   babyId: string;
   type: SymptomRecordType; // 记录类型
-  startTime?: Date; // 记录时间
+  startTime?: string; // 记录时间（本地时区 ISO 字符串，如 2026-10-19T05:36:00+08:00）
   remark?: string; // 备注
   /** 体温 */
   temperature?: number; // 体温值 ℃

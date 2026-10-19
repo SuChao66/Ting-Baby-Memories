@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 // 导入图标
 import { AiOutlineRight } from "react-icons/ai";
 // 导入工具函数
-import { vw, formatDateTime, formatSeconds } from "@/utils";
+import { vw, formatDateTime, formatSeconds, toLocalISOString } from "@/utils";
 // 导入常量
 import { DAILY_RECORD_TYPES, TIME_UNIT } from "@/enums";
 import {
@@ -235,7 +235,7 @@ function AddFeedRecord(props: AddFeedRecordProps) {
     const params: IAddDailyRecordParams = {
       babyId,
       type,
-      startTime: startDateTime, // 开始时间
+      startTime: toLocalISOString(startDateTime), // 开始时间（本地时区，避免 UTC 转换导致日期偏移）
       breastMode,
       leftDuration: leftDur, // 左侧亲喂时长
       rightDuration: rightDur, // 右侧亲喂时长

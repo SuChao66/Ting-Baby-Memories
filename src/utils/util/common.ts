@@ -133,6 +133,26 @@ export const formatDay = (date: Date): string => {
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
 };
 
+/**
+ * Date 转带本地时区偏移的 ISO 字符串：2026-10-19T05:36:00+08:00
+ * 避免 JSON.stringify 调用 toISOString() 转成 UTC 后日期偏移（如 19号凌晨变18号）
+ * */
+export const toLocalISOString = (date: Date): string => {
+  const pad = (n: number) => String(n).padStart(2, "0");
+  // getTimezoneOffset：东区为负数（如东八区返回 -480）
+  const offset = date.getTimezoneOffset();
+  const sign = offset <= 0 ? "+" : "-";
+  const absOffset = Math.abs(offset);
+  const offsetStr = `${sign}${pad(Math.floor(absOffset / 60))}:${pad(
+    absOffset % 60,
+  )}`;
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(
+    date.getDate(),
+  )}T${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(
+    date.getSeconds(),
+  )}${offsetStr}`;
+};
+
 /** 格式化日期时间为 YYYY-MM-DD HH:mm */
 export const formatDateTime = (date: Date): string => {
   const pad = (n: number) => String(n).padStart(2, "0");

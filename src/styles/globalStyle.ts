@@ -65,7 +65,7 @@ export const GlobalStyle = createGlobalStyle<{ theme?: Theme }>`
   /** 修改popup样式 */
   .nut-popup {
     max-height: 90%;
-    overflow: hidden;
+    overflow: auto;
     display: flex;
     flex-direction: column;
   }
