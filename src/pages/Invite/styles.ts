@@ -16,7 +16,7 @@ export const InviteContainer = styled.div`
   background: linear-gradient(180deg, #ffe3ec 0%, #fff0f3 40%, #fff 100%);
   padding: ${vw(24)} ${vw(24)};
   box-sizing: border-box;
-  &:--webkit-scrollbar {
+  &::-webkit-scrollbar {
     display: none;
   }
 `;
