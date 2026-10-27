@@ -5,6 +5,7 @@ import Door from "../Door/index";
 import { OrbitControls } from "@react-three/drei";
 // 导入类型
 import type { IYearCluster } from "@/interface/timeline";
+import * as THREE from "three";
 
 interface IProps {
   yearClusters: IYearCluster[];
@@ -13,9 +14,19 @@ interface IProps {
 function Scene(props: IProps) {
   const { yearClusters } = props;
   const [years, setYears] = useState<number[]>([]);
+  const [doorPostions, setDoorPositions] = useState({});
 
   useEffect(() => {
-    setYears(yearClusters.map((item) => item.key));
+    // 获取年份簇
+    const years = yearClusters.map((item) => item.key);
+    setYears(years);
+    // 设置门的位置
+    const doorPositions = {};
+    years.forEach((year, index) => {
+      const x = index * 2;
+      doorPositions[year] = new THREE.Vector3(x, 0, 0);
+    });
+    setDoorPositions(doorPositions);
   }, [yearClusters]);
 
   return (
@@ -24,17 +35,15 @@ function Scene(props: IProps) {
       <ambientLight intensity={0.5} />
       <directionalLight position={[4, 6, 5]} intensity={1.1} />
 
-      <mesh rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[10, 10]} />
-        <meshStandardMaterial color="#000000" transparent opacity={0.4} />
-      </mesh>
+      {/* 坐标轴 */}
+      <axesHelper args={[5]} />
 
       {/* 模型加载组件-门 */}
       {/* 使用 Suspense 处理加载等待状态 */}
       {years.map((year, index) => {
         return (
           <Suspense key={index} fallback="loading...">
-            <Door year={year} />
+            <Door year={year} position={doorPostions[year]} />
           </Suspense>
         );
       })}
