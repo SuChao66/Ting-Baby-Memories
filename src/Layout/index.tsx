@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 // 导入 NutUI 图标
 import { AiOutlineHome, AiOutlineUser } from "react-icons/ai";
+import { FaAirbnb } from "react-icons/fa";
 // 导入路由相关方法
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 // 导入布局样式组件
-import { LayoutContainer, Content } from "./styles";
+import { LayoutContainer, Content, TabAiIconWrap } from "./styles";
 // 导入用户 store
 import { useUserStore, useTimelineStore } from "@/store";
 // 导入工具函数
@@ -13,10 +14,13 @@ import { initRouter } from "@/utils";
 import { useNProgress } from "@/hooks";
 // 导入常量
 import { TIME_LIME_VIEW_MODE } from "@/enums";
+// 导入 vw 工具函数
+import { vw } from "@/utils";
 
 /** 底部导航栏配置 */
 const tabs = [
   { path: "/home", title: "汀宝宝" },
+  { path: "/ai", title: "AI 助手" },
   { path: "/mine", title: "我的" },
 ];
 
@@ -37,6 +41,8 @@ export default function Layout() {
   // 监听路由变化，更新 activeIndex
   useEffect(() => {
     if (location.pathname === "/mine") {
+      setActiveIndex(2);
+    } else if (location.pathname === "/ai") {
       setActiveIndex(1);
     } else if (location.pathname === "/home") {
       setActiveIndex(0);
@@ -73,7 +79,9 @@ export default function Layout() {
       <Content mode={viewMode}>
         <Outlet />
       </Content>
-      {(location.pathname === "/mine" || location.pathname === "/home") && (
+      {(location.pathname === "/mine" ||
+        location.pathname === "/home" ||
+        location.pathname === "/ai") && (
         <Tabbar
           value={activeIndex}
           onSwitch={(index: number) => navigate(tabs[index].path)}
@@ -89,6 +97,14 @@ export default function Layout() {
           />
           <Tabbar.Item
             title={tabs[1].title}
+            icon={() => (
+              <TabAiIconWrap $active={activeIndex === 1}>
+                <FaAirbnb color="#fff" size={vw(22)} />
+              </TabAiIconWrap>
+            )}
+          />
+          <Tabbar.Item
+            title={tabs[2].title}
             icon={(active: boolean) => (
               <AiOutlineUser color={active ? "#ff6b8a" : "#7d7e80"} />
             )}

@@ -5,7 +5,6 @@ import Door from "../Door/index";
 import { OrbitControls } from "@react-three/drei";
 // 导入类型
 import type { IYearCluster } from "@/interface/timeline";
-import * as THREE from "three";
 
 interface IProps {
   yearClusters: IYearCluster[];
@@ -14,17 +13,19 @@ interface IProps {
 function Scene(props: IProps) {
   const { yearClusters } = props;
   const [years, setYears] = useState<number[]>([]);
-  const [doorPostions, setDoorPositions] = useState({});
+  const [doorPostions, setDoorPositions] = useState<
+    Record<number, Array<number>>
+  >({});
 
   useEffect(() => {
     // 获取年份簇
     const years = yearClusters.map((item) => item.key);
     setYears(years);
     // 设置门的位置
-    const doorPositions = {};
+    const doorPositions: Record<number, Array<number>> = {};
     years.forEach((year, index) => {
       const x = index * 2;
-      doorPositions[year] = new THREE.Vector3(x, 0, 0);
+      doorPositions[year] = [x, 0, 0];
     });
     setDoorPositions(doorPositions);
   }, [yearClusters]);

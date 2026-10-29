@@ -10,6 +10,7 @@ const Login = React.lazy(() => import("@/pages/Login/index"));
 const Invite = React.lazy(() => import("@/pages/Invite/index"));
 const Home = React.lazy(() => import("@/pages/Home/index"));
 const Mine = React.lazy(() => import("@/pages/Mine/index"));
+const AiAssistant = React.lazy(() => import("@/pages/AiAssistant/index"));
 const TimeLine = React.lazy(() => import("@/pages/TimeLine/index"));
 const AddTimeLine = React.lazy(
   () => import("@/pages/TimeLine/modules/AddTimeline/index"),
@@ -88,6 +89,7 @@ export const router = createHashRouter([
         element: React.createElement(Layout),
         children: [
           { path: "home", element: React.createElement(Home) },
+          { path: "ai", element: React.createElement(AiAssistant) },
           { path: "mine", element: React.createElement(Mine) },
           { path: "timeline/:id", element: React.createElement(TimeLine) },
           { path: "add-timeline", element: React.createElement(AddTimeLine) },

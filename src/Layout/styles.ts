@@ -34,3 +34,50 @@ export const Content = styled.main<{
   display: flex;
   flex-direction: column;
 `;
+
+/** TabBar 中间 AI 助手凸起按钮（占位与普通图标一致，视觉上浮凸出 TabBar 上边缘） */
+export const TabAiIconWrap = styled.span<{ $active: boolean }>`
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: ${vw(24)};
+  height: ${vw(24)};
+  /* 整体上移形成凸起；transform 不占布局，中间 title 与两侧保持同线 */
+  transform: translateY(${vw(-16)});
+  transition: transform 0.2s;
+
+  /* 凸起大圆底 */
+  &::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: ${vw(50)};
+    height: ${vw(50)};
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ff6b8a 0%, #ff9eb5 100%);
+    border: ${vw(4)} solid #fff;
+    box-sizing: border-box;
+    box-shadow: 0 ${vw(6)} ${vw(16)} rgba(255, 107, 138, 0.45);
+    transition: box-shadow 0.2s;
+  }
+
+  /* 图标置于圆底之上 */
+  > svg {
+    position: relative;
+    z-index: 1;
+  }
+
+  ${(props) =>
+    props.$active
+      ? `
+    transform: translateY(${vw(-16)}) scale(1.06);
+
+    &::before {
+      box-shadow: 0 ${vw(8)} ${vw(20)} rgba(255, 107, 138, 0.55);
+    }
+  `
+      : ""}
+`;
