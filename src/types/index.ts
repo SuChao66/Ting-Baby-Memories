@@ -26,3 +26,11 @@ export type SymptomRecordType =
 
 /** 成长轨迹查看类型 */
 export type TimelineViewType = "list" | "3d";
+
+/** AI问答session */
+export interface sessionItem {
+  reqId: string;
+  sessionCode: string;
+  question: string;
+  answer: string;
+}

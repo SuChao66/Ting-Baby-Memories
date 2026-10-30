@@ -10,3 +10,4 @@ export { useHeightWeightStore } from "./modules/heightWeight";
 export { useSymptomStore } from "./modules/symptom";
 export { useVaccineStore } from "./modules/vaccine";
 export { useBabyInviteStore } from "./modules/babyInvite";
+export { useAiStore } from "./modules/ai";

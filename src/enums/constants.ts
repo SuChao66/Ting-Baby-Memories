@@ -194,3 +194,6 @@ export const TIME_LIME_VIEW_MODE = {
   LIST: "list",
   THREE_D: "3d",
 } as const;
+
+/** 对话历史最多保留条数，防止上下文超限 */
+export const MAX_HISTORY = 10;

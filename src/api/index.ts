@@ -11,3 +11,4 @@ export * from "./heightWeight";
 export * from "./symptom";
 export * from "./vaccine";
 export * from "./babyInvite";
+export * from "./ai";

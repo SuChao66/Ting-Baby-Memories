@@ -8,14 +8,23 @@ import { TbSparkles, TbSend } from "react-icons/tb";
 // 导入context
 import { InputValueContext } from "@/context";
 
-export default function InputPill() {
+interface IProps {
+  send: () => void;
+}
+
+export default function InputPill(props: IProps) {
+  const { send } = props;
   // 输入框内容由父级 Provider 提供，与快捷指令共享同一份状态
   const { question, setQuestion } = useContext(InputValueContext)!;
 
   // 发送消息（AI 对话能力 v2 接入，当前提示即将上线）
-  const handleSend = () => {
+  const handleSend = async () => {
     if (!question.trim()) return;
-    Toast.show({ title: "AI助手即将上线，敬请期待" });
+    // 设置输入框内容
+    setQuestion(question.trim());
+    // 发送请求
+    send();
+    // 清空输入框
     setQuestion("");
   };
 

@@ -1,12 +1,13 @@
 import styled from "styled-components";
 import { vw } from "@/utils";
 
-/** 快捷指令横向滚动条（固定在输入框上方，隐藏滚动条） */
+/** 快捷指令横向滚动条（固定在输入框上方，隐藏滚动条；在 QuickBar 中占剩余宽度可滚动） */
 export const ChipsBar = styled.div`
+  flex: 1;
+  min-width: 0;
   display: flex;
   gap: ${vw(8)};
   overflow-x: auto;
-  padding: ${vw(2)} 0 ${vw(8)};
   scrollbar-width: none;
 
   &::-webkit-scrollbar {

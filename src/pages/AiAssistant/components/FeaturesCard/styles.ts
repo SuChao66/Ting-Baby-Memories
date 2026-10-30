@@ -1,12 +1,11 @@
 import styled from "styled-components";
 import { vw } from "@/utils";
 
-/** 功能入口 */
+/** 功能列表容器（弹框内展示，白底由弹框提供） */
 export const CardContainer = styled.div`
-  background: #fff;
-  border-radius: ${vw(12)};
-  box-shadow: 0 ${vw(4)} ${vw(24)} rgba(255, 107, 138, 0.1);
-  padding: ${vw(6)};
+  display: flex;
+  flex-direction: column;
+  padding: 0 ${vw(6)};
   box-sizing: border-box;
 `;
 
@@ -68,22 +67,4 @@ export const FeatureArrow = styled.span`
   align-items: center;
   color: #ccc;
   flex-shrink: 0;
-`;
-
-/** 轮播页指示器 */
-export const Dots = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: ${vw(6)};
-  padding: ${vw(10)} 0 ${vw(2)};
-`;
-
-/** 轮播页指示点 */
-export const Dot = styled.div<{ $active?: boolean }>`
-  width: ${vw(6)};
-  height: ${vw(6)};
-  border-radius: 50%;
-  background: ${({ $active }) => ($active ? "#ff6b8a" : "#ffe1e8")};
-  transition: background 0.2s;
 `;

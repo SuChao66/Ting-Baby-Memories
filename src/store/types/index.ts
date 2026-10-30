@@ -197,3 +197,9 @@ export interface BabyInviteState {
   ) => Promise<IInviteLinkPreviewInfo | undefined>;
   acceptInvite: (params: any) => Promise<boolean>;
 }
+
+// AI状态类型
+export interface AiState {
+  sessionCode: string;
+  setSessionCode: (code: string) => void;
+}
