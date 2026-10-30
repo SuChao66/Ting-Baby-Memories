@@ -31,7 +31,7 @@ import { useAiStore } from "@/store";
 import type { sessionItem } from "@/types";
 import type { IAiChatMessage, AiScene } from "@/interface/ai";
 // 导入接口
-import { chatApi } from "@/api";
+import { chatApi, chatStreamApi } from "@/api";
 // 导入工具函数
 import { SessionManager, uuid, vw } from "@/utils";
 // 导入常量
@@ -51,6 +51,8 @@ export default function AiAssistant() {
 
   // 发送中标记（ref 拦截重复点击，state 受闭包旧值影响拦不住连点）
   const sendingRef = useRef(false);
+  // 进行中流式请求的 abort 引用：切新会话时中止回答
+  const abortRef = useRef<(() => void) | null>(null);
 
   // 选择 AI 功能：填充引导语到输入框并记录场景，弹框关闭后用户直接发送
   const handleSelectFeature = (feature: { key: AiScene; prompt: string }) => {
@@ -61,6 +63,9 @@ export default function AiAssistant() {
 
   // 创建新会话
   const createNewDialog = () => {
+    // 中止进行中的流式回答
+    abortRef.current?.();
+    abortRef.current = null;
     // 创建新的会话码
     setSessionCode(uuid());
     // 清空会话
@@ -123,6 +128,75 @@ export default function AiAssistant() {
       sendingRef.current = false;
     }
   };
+  // send 暂不接入 UI：显式引用以满足 noUnusedLocals，回退时把下方 InputPill 的 send 改回 send 即可
+  void send;
+
+  // 流式发送：回答以增量文本逐段渲染（保留 send 非流式方法备回退）
+  const sendStream = async () => {
+    const text = question.trim();
+    if (!text || sendingRef.current) return;
+    sendingRef.current = true;
+    // 会话码：首次发送时生成并写入 store
+    let code = sessionCode;
+    if (!code) {
+      code = uuid();
+      setSessionCode(code);
+    }
+    // 先渲染用户气泡，AI 气泡进入"思考中"占位
+    const session = SessionManager.createSession(code);
+    session.question = text;
+    setSessions((prev) => [...prev, session]);
+    // 失败兜底：answer 为空时写入失败文案，已有部分回答则保留
+    const fail = (message: string) => {
+      setSessions((prev) =>
+        prev.map((item) =>
+          item.reqId === session.reqId
+            ? { ...item, answer: item.answer || message }
+            : item,
+        ),
+      );
+    };
+    try {
+      // 携带最近 10 轮问答作为多轮上下文（回答未返回的占位不参与）
+      const history = sessions.slice(-MAX_HISTORY).flatMap((item) => {
+        const msgs: IAiChatMessage[] = [
+          { role: "user", content: item.question },
+        ];
+        if (item.answer) {
+          msgs.push({ role: "assistant", content: item.answer });
+        }
+        return msgs;
+      });
+      const { abort, promise } = chatStreamApi({
+        question: text,
+        reqId: session.reqId,
+        sessionCode: code,
+        scene: scene || undefined,
+        history,
+        onDelta: (delta) => {
+          // 增量追加回答，触发气泡逐段渲染
+          setSessions((prev) =>
+            prev.map((item) =>
+              item.reqId === session.reqId
+                ? { ...item, answer: item.answer + delta }
+                : item,
+            ),
+          );
+        },
+        onError: fail,
+      });
+      abortRef.current = abort;
+      await promise;
+    } catch {
+      // 接口层已把 HTTP/网络/业务错误转成文案回调，这里兜底未覆盖的异常
+      fail("抱歉，回答生成失败了，请重新问一次试试～");
+    } finally {
+      abortRef.current = null;
+      // 场景为一次性标记，本次发送后重置，避免影响后续普通问答
+      setScene("");
+      sendingRef.current = false;
+    }
+  };
 
   return (
     <>
@@ -158,7 +232,7 @@ export default function AiAssistant() {
             </QuickBar>
 
             {/* 输入框 */}
-            <InputPill send={send} />
+            <InputPill send={sendStream} />
 
             {/* AI 说明与免责 */}
             <Disclaimer>

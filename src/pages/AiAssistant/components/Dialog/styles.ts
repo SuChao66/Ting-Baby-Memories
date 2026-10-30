@@ -71,7 +71,8 @@ export const BubbleAnswer = styled.div`
   font-size: ${vw(14)};
   line-height: ${vw(22)};
   word-break: break-word;
-  white-space: pre-wrap;
+  /* 内容经 Markdown 渲染，换行由 <p>/<br> 控制，禁用 pre-wrap 防间距翻倍 */
+  white-space: normal;
 `;
 
 /** 思考中气泡（同回答气泡，内放跳动小圆点） */

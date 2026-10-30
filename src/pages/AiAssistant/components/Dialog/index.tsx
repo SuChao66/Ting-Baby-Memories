@@ -16,6 +16,8 @@ import {
 import { TbSparkles } from "react-icons/tb";
 // 导入工具函数
 import { vw } from "@/utils";
+// 导入 Markdown 渲染组件
+import MarkdownContent from "@/components/MarkdownContent";
 // 导入类型
 import type { sessionItem } from "@/types";
 
@@ -47,7 +49,10 @@ export default function Dialog(props: IProps) {
                 <TbSparkles color="#fff" size={vw(16)} />
               </AiAvatar>
               {item.answer ? (
-                <BubbleAnswer>{item.answer}</BubbleAnswer>
+                <BubbleAnswer>
+                  {/* LLM 回答为 Markdown，经渲染组件输出（内部已做 XSS 结构性防护） */}
+                  <MarkdownContent content={item.answer} />
+                </BubbleAnswer>
               ) : (
                 <BubbleThinking>
                   <ThinkingDot />

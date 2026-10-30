@@ -7,6 +7,6 @@ export interface IInputValueContext {
 }
 
 export const InputValueContext = createContext<IInputValueContext | null>({
-  question: null,
+  question: "",
   setQuestion: () => {},
 });
