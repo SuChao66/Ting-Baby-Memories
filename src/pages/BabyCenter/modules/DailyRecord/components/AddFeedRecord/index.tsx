@@ -79,7 +79,7 @@ function AddFeedRecord(props: AddFeedRecordProps) {
     (state) => state,
   );
   // 弹窗标题
-  const { title, editTitle } = recordTypeConfig[DAILY_RECORD_TYPES.DIAPER];
+  const { title, editTitle } = recordTypeConfig[DAILY_RECORD_TYPES.FEED];
 
   // 开始时间
   const [startDateTime, setStartDateTime] = useState(new Date());
