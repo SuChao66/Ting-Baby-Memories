@@ -20,7 +20,7 @@ import { getBabyInfoApi } from "@/api";
 // 导入类型
 import type { ITimelineItem } from "@/interface/timeline";
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 5;
 // 滚动触底阈值（px）
 const SCROLL_THRESHOLD = 80;
 

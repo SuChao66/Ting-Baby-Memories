@@ -134,3 +134,77 @@ export const FeaturePopupTitle = styled.div`
   text-align: center;
   margin-bottom: ${vw(12)};
 `;
+
+/** 历史记录弹框容器（左侧弹出，固定宽度满高） */
+export const HistoryPopup = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  padding: ${vw(20)} ${vw(12)} ${vw(12)};
+  background: #fff;
+  border-radius: 0 ${vw(12)} ${vw(12)} 0;
+`;
+
+/** 历史记录弹框标题 */
+export const HistoryPopupTitle = styled.div`
+  flex-shrink: 0;
+  font-size: ${vw(16)};
+  font-weight: 600;
+  color: #2d2d2d;
+  text-align: center;
+  margin-bottom: ${vw(8)};
+`;
+
+/** 历史记录滚动列表 */
+export const HistoryList = styled.div`
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+`;
+
+/** 日期分组标题 */
+export const DateGroupTitle = styled.div`
+  font-size: ${vw(13)};
+  color: #b0b0b0;
+  padding: ${vw(10)} ${vw(4)} ${vw(6)};
+`;
+
+/** 会话卡片（展示会话首句 + 元信息） */
+export const SessionCard = styled.div`
+  padding: ${vw(10)} ${vw(12)};
+  margin-bottom: ${vw(8)};
+  border-radius: ${vw(12)};
+  background: #fff5f7;
+  cursor: pointer;
+
+  &:active {
+    transform: scale(0.98);
+  }
+`;
+
+/** 会话首句（单行截断） */
+export const SessionQuestion = styled.div`
+  font-size: ${vw(14)};
+  color: #2d2d2d;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+
+/** 历史记录空态 / 加载提示 */
+export const HistoryEmpty = styled.div`
+  padding: ${vw(40)} 0;
+  text-align: center;
+  font-size: ${vw(13)};
+  color: #b0b0b0;
+`;
+
+/** 历史记录底部加载提示（触底加载下一页） */
+export const HistoryLoadMore = styled.div`
+  padding: ${vw(12)} 0 ${vw(4)};
+  text-align: center;
+  font-size: ${vw(12)};
+  color: #b0b0b0;
+`;

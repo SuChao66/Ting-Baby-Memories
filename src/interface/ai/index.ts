@@ -28,3 +28,41 @@ export interface IAiChatResult {
   /** AI 回答全文 */
   answer: string;
 }
+
+/** 会话列表 */
+export interface ISessionList {
+  list: List;
+  total: number;
+  page: number;
+  pageSize: number;
+}
+
+export interface List {
+  [key: string]: IsessionItem[];
+}
+
+export interface IsessionItem {
+  sessionCode: string;
+  question: string;
+  chatCount: number;
+  time: string;
+}
+
+/** 会话问答明细单项 */
+export interface ISessionRecordItem {
+  _id: string;
+  question: string;
+  answer: string;
+  /** 1-成功 0-失败 */
+  status: number;
+  createdAt: string;
+  time: string;
+}
+
+/** 会话问答明细 */
+export interface ISessionRecordList {
+  list: ISessionRecordItem[];
+  total: number;
+  page: number;
+  pageSize: number;
+}

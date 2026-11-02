@@ -18,7 +18,7 @@ import { TimeLineContext } from "@/context";
 // 导入工具函数
 import { getTodayDate } from "@/utils";
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 5;
 // 滚动触底阈值（px）
 const SCROLL_THRESHOLD = 80;
 

@@ -202,4 +202,6 @@ export interface BabyInviteState {
 export interface AiState {
   sessionCode: string;
   setSessionCode: (code: string) => void;
+  getAiChatRecord: (params: { page: number; pageSize: number }) => Promise<any>;
+  getAiChatRecordDetail: (params: { sessionCode: string }) => Promise<any>;
 }

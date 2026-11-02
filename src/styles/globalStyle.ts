@@ -70,6 +70,10 @@ export const GlobalStyle = createGlobalStyle<{ theme?: Theme }>`
     flex-direction: column;
   }
 
+  .nut-popup-left {
+    width: 75%;
+  }
+
   /** 修改button样式 */
   .submit-button {
     height: ${vw(36)};

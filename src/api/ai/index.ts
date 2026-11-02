@@ -6,12 +6,27 @@ import { sseRequest } from "@/api/sseRequest";
 import type { ApiResponse } from "@/api/request";
 import type { SSEReturn } from "@/api/sseRequest";
 // 导入 AI 对话类型
-import type { IAiChatParams, IAiChatResult } from "@/interface/ai";
+import type {
+  IAiChatParams,
+  IAiChatResult,
+  ISessionList,
+  ISessionRecordList,
+} from "@/interface/ai";
 
 /** AI 请求超时时间（毫秒）：大模型生成较慢，覆盖全局 10s 超时 */
 const AI_TIMEOUT = 60 * 1000;
 /** 流式请求超时时间（毫秒）：需覆盖首包等待 + 全文生成的总时长 */
 const AI_STREAM_TIMEOUT = 120 * 1000;
+
+/** 获取历史记录 */
+export function getAiChatRecordApi(params: { page: number; pageSize: number }) {
+  return post<ISessionList>("/api/v1/ai/chat/record", params);
+}
+
+/** 获取某个会话的问答明细 */
+export function getAiChatRecordDetailApi(params: { sessionCode: string }) {
+  return post<ISessionRecordList>("/api/v1/ai/chat/record/detail", params);
+}
 
 /** 非流式问答 */
 export function chatApi(
