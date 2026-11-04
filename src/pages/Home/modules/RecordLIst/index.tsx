@@ -9,6 +9,7 @@ import {
   BabyInfoSection,
   BabyName,
   BabyRecords,
+  LoadingMask,
 } from "./style";
 import { RowArrow } from "@/styles/common";
 // 导入图标
@@ -32,9 +33,20 @@ function BabyList() {
   const { getBabyList, setBabyId } = useBabyStore((state) => state);
   // 当前用户相关联的宝宝
   const [babies, setBabies] = useState<IBabyItem[]>([]);
+  // 列表是否加载中
+  const [loading, setLoading] = useState(true);
+  // 是否正在自动跳转中（跳转期间保持空白，直到路由切换完成）
+  const [redirecting, setRedirecting] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
+
+  // 渲染期同步判断本次挂载是否会自动跳转（与 useEffect 内的跳转条件一致），
+  // 仅用于跳转决策；列表区域在数据返回前统一展示 Loading
+  const fromLogin = location.state?.from === "/login";
+  const willRedirect =
+    autoRedirectedFromKey === null ||
+    (fromLogin && autoRedirectedFromKey !== location.key);
 
   useEffect(() => {
     // 组件卸载后放弃本次请求结果，避免快速返回登录页时仍触发跳转
@@ -42,21 +54,19 @@ function BabyList() {
     // 获取宝宝列表
     getBabyList().then((data) => {
       if (cancelled) return;
-      setBabies(data);
-      const fromLogin = location.state?.from === "/login";
       // 本次会话首次进入首页，或从登录页进入了新的首页条目时，
       // 默认跳转至第一个宝宝的成长轨迹页面
-      if (
-        data.length > 0 &&
-        (autoRedirectedFromKey === null ||
-          (fromLogin && autoRedirectedFromKey !== location.key))
-      ) {
+      if (willRedirect && data.length > 0) {
         autoRedirectedFromKey = location.key;
-        const babyId = data[0]._id;
-        // 更新当前babyId
-        setBabyId(babyId);
-        navigate(`/timeline/${babyId}`);
+        // 保持空白渲染并立即跳转；不更新列表状态，
+        // 避免列表状态更新（紧急）先于路由切换（过渡）上屏导致列表闪现
+        setRedirecting(true);
+        setBabyId(data[0]._id);
+        navigate(`/timeline/${data[0]._id}`);
+        return;
       }
+      setBabies(data);
+      setLoading(false);
     });
     return () => {
       cancelled = true;
@@ -73,7 +83,12 @@ function BabyList() {
   return (
     <BabyListContainer>
       <BabyItem>
-        {babies.length > 0 ? (
+        {loading || redirecting ? (
+          // 数据加载中及跳转过渡期间展示全屏蒙层，直到路由切换完成
+          <LoadingMask>
+            <Loading />
+          </LoadingMask>
+        ) : babies.length > 0 ? (
           babies.map((baby) => (
             <SwipeItem
               key={baby._id}

@@ -8,6 +8,20 @@ export const BabyListContainer = styled.div`
   overflow: auto;
 `;
 
+/** 列表加载/跳转过渡全屏蒙层 */
+export const LoadingMask = styled.div`
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.4);
+  /* 覆盖 NutUI Loading 默认样式（默认 12px、灰色）：加大尺寸并使用主题粉色 */
+  --nutui-loading-icon-size: ${vw(36)};
+  --nutui-loading-icon-color: #ff6b8a;
+`;
+
 export const BabyItem = styled.div`
   display: flex;
   flex-direction: column;
