@@ -9,10 +9,12 @@ import { useEffect } from "react";
  * 2. 键盘收起 / 返回页面后，上推位移残留不复位（window.scrollY 非 0），
  *    导致顶部导航栏被顶出屏幕外，露出 body 白色背景。
  *
- * 处理策略：
- * - 键盘弹起期间不干预，避免把正在输入的内容推到键盘下方；
- * - 键盘收起（可视高度恢复）、输入框失焦、非键盘状态下的异常滚动时，
- *   分多个时点复位页面滚动到顶部。
+ * 处理策略（v2，真机验证修正）：
+ * - 不再监听 window scroll 做"异常位移"立即复位——它会把 WebView 键盘
+ *   弹起时的正常上推误判为异常并拉回，导致输入框永远顶不起来（实测：
+ *   禁用该逻辑后页面正常顶起）；
+ * - 只保留键盘收起（可视高度恢复）与输入框失焦后的延迟复位，消除收起
+ *   后页面未完全回位的残留。
  */
 export function useViewportGuard() {
   useEffect(() => {
@@ -34,18 +36,6 @@ export function useViewportGuard() {
       ) {
         window.scrollTo(0, 0);
       }
-    };
-
-    // 键盘是否处于弹起状态（可视高度明显小于窗口高度）
-    const isKeyboardVisible = () => {
-      if (!visualViewport) return false;
-      return visualViewport.height < window.innerHeight * 0.75;
-    };
-
-    // 非键盘状态下，body 本应不可滚动，出现窗口级滚动即为异常位移，立即复位
-    const onWindowScroll = () => {
-      if (isKeyboardVisible()) return;
-      requestAnimationFrame(resetWindowScroll);
     };
 
     // 键盘收起（可视高度变大）后，复位 WebView 残留的页面位移
@@ -78,13 +68,11 @@ export function useViewportGuard() {
       }
     };
 
-    window.addEventListener("scroll", onWindowScroll, { passive: true });
     visualViewport?.addEventListener("resize", onVisualViewportResize);
     document.addEventListener("focusout", onFocusOut);
 
     return () => {
       clearTimers();
-      window.removeEventListener("scroll", onWindowScroll);
       visualViewport?.removeEventListener("resize", onVisualViewportResize);
       document.removeEventListener("focusout", onFocusOut);
     };
