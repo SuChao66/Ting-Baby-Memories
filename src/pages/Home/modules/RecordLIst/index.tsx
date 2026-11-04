@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 // 导入宝宝列表样式组件
 import {
   BabyListContainer,
@@ -24,17 +24,33 @@ import { useBabyStore } from "@/store";
 // 导入组件
 import Empty from "@/baseUI/empty";
 
+// 标记本次会话是否已默认跳转过（刷新页面后重置），防止从成长轨迹页返回首页时再次跳转导致无法返回
+let hasAutoRedirected = false;
+
 function BabyList() {
   const { getBabyList, setBabyId } = useBabyStore((state) => state);
   // 当前用户相关联的宝宝
   const [babies, setBabies] = useState<IBabyItem[]>([]);
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
+    // 从登录页跳转过来时重置标记，使登录后同样默认进入第一个宝宝的成长轨迹
+    if (location.state?.from === "/login") {
+      hasAutoRedirected = false;
+    }
     // 获取宝宝列表
     getBabyList().then((data) => {
       setBabies(data);
+      // 仅本次会话第一次进入首页时，默认跳转至第一个宝宝的成长轨迹页面
+      if (data.length > 0 && !hasAutoRedirected) {
+        hasAutoRedirected = true;
+        const babyId = data[0]._id;
+        // 更新当前babyId
+        setBabyId(babyId);
+        navigate(`/timeline/${babyId}`);
+      }
     });
   }, []);
 
